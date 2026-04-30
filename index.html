@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shabir Ahmad | Construction Data Automation Engineer</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-glass: rgba(15, 22, 35, 0.35);
+            /* Reduced opacity for more background visibility */
+            --border-color: rgba(255, 255, 255, 0.08);
+
+            /* Premium Light Golden Accent */
+            --accent: #D4AF37;
+            --accent-glow: rgba(212, 175, 55, 0.3);
+
+            --text-primary: #F1F5F9;
+            --text-secondary: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            /* This ensures clicking anchor links smoothly scrolls the page */
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ------------------------------------- */
+        /* GLOBAL BACKGROUND & CONTINUOUS ZOOM   */
+        /* ------------------------------------- */
+        .global-bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .global-bg {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            will-change: transform;
+            transform-origin: center center;
+        }
+
+        .global-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(8, 12, 20, 0.5);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ------------------------------------- */
+        /* TOP NAVIGATION                        */
+        /* ------------------------------------- */
+        .top-nav {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            display: flex;
+            gap: 24px;
+            z-index: 100;
+            align-items: center;
+        }
+
+        .top-nav a.social-icon {
+            color: white;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .top-nav a.social-icon:hover {
+            opacity: 1;
+            color: var(--accent);
+            transform: translateY(-2px);
+            filter: drop-shadow(0 0 8px var(--accent-glow));
+        }
+
+        .nav-btn {
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                top: 20px;
+                right: 20px;
+            }
+        }
+
+        /* ------------------------------------- */
+        /* GLASSMORPHISM BOX                     */
+        /* ------------------------------------- */
+        .glass-panel {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dot:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .dot.active {
+            background-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            transform: scale(1.5);
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .scroll-indicator {
+                display: none;
+            }
+        }
+
+        /* Layout */
+        section {
+            padding: 160px 20px;
+            /* Increased spacing for scrolling enjoyment */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4 {
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .section-heading {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent);
+            color: #000;
+            /* Dark text on gold button */
+            padding: 18px 36px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.125rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 30px var(--accent-glow);
+            background-color: #FDE047;
+            /* Brighter gold on hover */
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: rgba(15, 22, 35, 0.4);
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            padding: 16px 34px;
+            /* Adjust padding to match solid btn with border */
+        }
+
+        .btn-outline:hover {
+            background-color: var(--accent);
+            color: #000;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px);
+            filter: blur(10px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform, filter;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .delay-1 {
+            transition-delay: 0.15s;
+        }
+
+        .delay-2 {
+            transition-delay: 0.3s;
+        }
+
+        .delay-3 {
+            transition-delay: 0.45s;
+        }
+
+        /* Fluid Load Animation for Hero */
+        @keyframes fluidLoad {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+                filter: blur(10px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        /* Hero */
+        #hero {
+            padding: 0;
+            align-items: center;
+            min-height: 85vh;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150vw;
+            height: 150vw;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 30%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 1000px;
+            /* slightly narrower for a tighter look */
+            z-index: 2;
+            padding: 30px 40px !important;
+            /* Reduces the box height */
+            margin-top: 80px;
+            /* Pushes it down so it never touches the top nav */
+        }
+
+        .hero-content>* {
+            opacity: 0;
+            /* Ensures elements wait for animation */
+        }
+
+        .hero-content .hero-label {
+            animation: fluidLoad 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.1s;
+        }
+
+        .hero-content h1 {
+            animation: fluidLoad 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s;
+        }
+
+        .hero-content p {
+            animation: fluidLoad 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+        }
+
+        .hero-content .hero-buttons {
+            animation: fluidLoad 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.7s;
+        }
+
+        .hero-content small {
+            animation: fluidLoad 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.9s;
+        }
+
+        .hero-label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 4.5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        /* Removed word animation CSS */
+
+        .hero-content p {
+            font-size: clamp(1.05rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        .hero-content small {
+            display: block;
+            margin-top: 20px;
+            color: #94A3B8;
+            font-size: 0.95rem;
+        }
+
+        /* About Section */
+        .about-text {
+            font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+            line-height: 1.8;
+            color: #F8FAFC;
+            margin-bottom: 30px;
+        }
+
+        .about-tagline {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Loom Placeholder */
+        .loom-placeholder {
+            border: 2px dashed rgba(212, 175, 55, 0.3);
+            /* Golden dash */
+            background: var(--bg-glass);
+            text-align: center;
+            font-weight: 700;
+            color: var(--accent);
+            /* Golden text */
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 16/9;
+            width: 100%;
+        }
+
+        /* Problem Section */
+        .problem-statement {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            transform: translateY(-5px);
+            background: rgba(15, 22, 35, 0.85);
+        }
+
+        .card-icon {
+            color: var(--accent);
+            margin-bottom: 24px;
+            display: flex;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* StructBOQ Section */
+        .section-subtitle {
+            font-size: clamp(1rem, 1.8vw, 1.15rem);
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin: 60px 0;
+            padding: 40px 0;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item h4 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .stat-item p {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .terminal {
+            background: rgba(2, 4, 8, 0.85);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            margin: 60px 0;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .term-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .term-dot:nth-child(1) {
+            background: #EF4444;
+        }
+
+        .term-dot:nth-child(2) {
+            background: #F59E0B;
+        }
+
+        .term-dot:nth-child(3) {
+            background: #10B981;
+        }
+
+        .terminal-line {
+            margin-bottom: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .term-gold {
+            color: var(--accent);
+        }
+
+        .term-red {
+            color: #F87171;
+        }
+
+        .term-yellow {
+            color: #FBBF24;
+        }
+
+        .term-white {
+            color: #F8FAFC;
+        }
+
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 60px 0;
+        }
+
+        @media (max-width: 768px) {
+            .before-after {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ba-card {
+            border-radius: 16px;
+            padding: 32px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Badges */
+        .ba-badge {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* Icons */
+        .ba-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Typography & Layout */
+        .ba-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .ba-body {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .ba-divider {
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .ba-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+            flex-grow: 1;
+            /* Pushes the bottom text down so both cards align perfectly */
+        }
+
+        .ba-list li {
+            font-size: 0.9rem;
+            line-height: 2;
+        }
+
+        .ba-bottom {
+            font-size: 0.8rem;
+            font-style: italic;
+            margin-top: auto;
+            /* Always pins to the bottom */
+        }
+
+        /* --- BEFORE CARD SPECIFICS --- */
+        .ba-before {
+            background:
+                linear-gradient(to bottom, rgba(8, 12, 20, 0.85), rgba(8, 12, 20, 0.95)),
+                url('assets/before-manual-new.jpg');
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .ba-before .ba-badge {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .ba-before .ba-icon {
+            background: rgba(239, 68, 68, 0.15);
+            color: #EF4444;
+        }
+
+        .ba-before .ba-list li {
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        .ba-before .ba-bottom {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* --- AFTER CARD SPECIFICS --- */
+        .ba-after {
+            background:
+                linear-gradient(to bottom, rgba(8, 12, 20, 0.75), rgba(8, 12, 20, 0.9)),
+                url('assets/after-structboq-new.jpg');
+            background-size: cover;
+            background-position: center;
+
+            /* Glowing Border */
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .ba-after .ba-badge {
+            background: rgba(212, 175, 55, 0.25);
+            color: var(--accent);
+        }
+
+        .ba-after .ba-icon {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--accent);
+        }
+
+        .ba-after .ba-list li {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .ba-after .ba-bottom {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Services Section */
+        .service-block {
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .service-block:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            background: rgba(15, 22, 35, 0.85);
+            transform: translateY(-5px);
+        }
+
+        .service-line {
+            height: 2px;
+            width: 40px;
+            background-color: var(--accent);
+            margin-bottom: 20px;
+            transition: width 0.3s ease;
+        }
+
+        .service-block:hover .service-line {
+            width: 80px;
+        }
+
+        .service-num {
+            font-size: 5rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.08);
+            margin-bottom: 0px;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .service-block h3 {
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+        }
+
+        /* Other Tools Section */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 24px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: text-shadow 0.2s;
+        }
+
+        .project-link:hover {
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Contact Form */
+        .contact-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        @media (max-width: 800px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .contact-wrapper {
+                padding: 30px 20px;
+            }
+
+            .glass-panel {
+                padding: 25px;
+            }
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* Footer */
+        footer {
+            background: transparent;
+            color: white;
+            padding: 40px 20px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.85rem;
+            color: #4B5563;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Global Background Elements -->
+    <div class="global-bg-container">
+        <div class="global-bg" id="global-bg"></div>
+    </div>
+    <div class="global-overlay"></div>
+
+    <!-- Top Navigation for Social Links -->
+    <div class="top-nav">
+        <a href="mailto:engrshabir@shabirbim.com" class="nav-btn">Contact Me</a>
+        <a href="https://github.com/EngrShabir" target="_blank" aria-label="GitHub" class="social-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                <path d="M9 18c-4.51 2-5-2-7-2" />
+            </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/shabir-ahmad-0886b0342" target="_blank" aria-label="LinkedIn"
+            class="social-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                <rect width="4" height="12" x="2" y="9" />
+                <circle cx="4" cy="4" r="2" />
+            </svg>
+        </a>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+
+    <!-- Section 1: Hero -->
+    <section id="hero">
+        <canvas id="particle-canvas"></canvas>
+        <div class="container hero-content glass-panel reveal active">
+            <span class="hero-label">CONSTRUCTION DATA AUTOMATION</span>
+            <h1 id="hero-headline">Manual Quantity Takeoff Is Dead. I Built The Replacement.</h1>
+            <p>IFC files in. Validated BOQ reports out. In 24 hours.</p>
+            <div class="hero-buttons">
+                <a href="#contact" class="btn">Submit Your IFC File</a>
+                <a href="#demo-video" class="btn btn-outline">Watch Demo</a>
+            </div>
+            <small>Free for your first project. No commitment.</small>
+        </div>
+    </section>
+
+    <!-- Section 2: About -->
+    <section id="about">
+        <div class="container">
+            <div class="glass-panel reveal delay-1">
+                <span class="section-label">ABOUT</span>
+                <h2 class="section-heading">Who Builds This</h2>
+
+                <p class="about-text">I'm Shabir Ahmad — a Construction Data Automation Engineer admitted to Bauhaus
+                    University Weimar, Germany. I combine IFC/BIM domain knowledge with Python automation and
+                    engineering logic to build tools that the AEC industry actually needs. My focus is the automation
+                    layer between BIM models and actionable construction data. I am not a generic software developer. I
+                    process the data that comes out of BIM workflows and turn it into validated, client-ready reports.
+                </p>
+
+                <p class="about-tagline">Domain-driven engineer. Not a generalist.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Demo Video -->
+    <section id="demo-video">
+        <div class="loom-placeholder glass-panel reveal" style="padding: 0; overflow: hidden;">
+            <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+                <iframe src="https://www.loom.com/embed/74cdf4da3261456aa44773ee61696386" frameborder="0"
+                    webkitallowfullscreen mozallowfullscreen allowfullscreen
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: The Problem -->
+    <section id="problem">
+        <div class="container">
+            <div class="glass-panel reveal delay-1" style="margin-bottom: 60px; max-width: 1000px;">
+                <h2 class="problem-statement">Every IFC model has data quality problems. Most engineers never find them.
+                    They show up later — in wrong quantities, inflated costs, and failed audits.</h2>
+            </div>
+
+            <div class="grid-3">
+                <div class="card glass-panel reveal delay-1">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                            <path d="M12 9v4" />
+                            <path d="M12 17h.01" />
+                        </svg>
+                    </div>
+                    <h3>Misclassified Elements</h3>
+                    <p>Footings read as slabs. Roof slabs counted as floors. Your BOQ is wrong before you even open
+                        Excel.</p>
+                </div>
+                <div class="card glass-panel reveal delay-2">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 17 12 22 22 17" />
+                            <path d="M2 12 12 17 22 12" />
+                            <path d="M12 2 2 7 12 12 22 7 12 2Z" />
+                        </svg>
+                    </div>
+                    <h3>No Data Source Audit</h3>
+                    <p>You don't know if a quantity came from BaseQuantities, a Pset, or a geometric fallback. Neither
+                        does your QS.</p>
+                </div>
+                <div class="card glass-panel reveal delay-3">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 16 14" />
+                        </svg>
+                    </div>
+                    <h3>Manual Extraction Is Slow</h3>
+                    <p>Hours spent on quantity takeoff that could be done in minutes — with full validation,
+                        automatically.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: StructBOQ -->
+    <section id="solution">
+        <div class="container">
+            <div class="glass-panel reveal delay-1" style="margin-bottom: 60px;">
+                <span class="section-label">THE SOLUTION</span>
+                <h2 class="section-heading">StructBOQ — IFC Processing Engine</h2>
+                <p class="section-subtitle">StructBOQ reads your IFC file directly — exported from Revit, ArchiCAD, or
+                    Tekla — and extracts validated construction quantities with a full data source audit per element.
+                    Every quantity is traced back to its source: BaseQuantities, Pset properties, or geometric fallback.
+                    Every suspicious element is flagged with severity level, confidence percentage, and a suggested fix.
+                    Output: Excel BOQ + Narrative PDF validation report. Delivered in 24 hours.</p>
+            </div>
+
+            <div class="stats-grid glass-panel reveal delay-2" style="padding: 40px;">
+                <div class="stat-item">
+                    <h4 class="stat-num" data-target="200" data-suffix="+">0</h4>
+                    <p>classification keywords</p>
+                </div>
+                <div class="stat-item">
+                    <h4 class="stat-num" data-target="3" data-suffix="-layer">0</h4>
+                    <p>plausibility checks</p>
+                </div>
+                <div class="stat-item">
+                    <h4>IFC2x3, IFC4, IFC4x3</h4>
+                    <p>supported formats</p>
+                </div>
+                <div class="stat-item">
+                    <h4 class="stat-num" data-target="24" data-suffix="h">0</h4>
+                    <p>turnaround time</p>
+                </div>
+            </div>
+
+            <div class="terminal glass-panel reveal delay-3">
+                <div class="terminal-header">
+                    <div class="term-dot"></div>
+                    <div class="term-dot"></div>
+                    <div class="term-dot"></div>
+                </div>
+                <div class="terminal-line"><span class="term-gold">[INFO] Analyzing IFC file structure...</span></div>
+                <div class="terminal-line"><span class="term-gold">[INFO] Extracting BaseQuantities and Psets...</span>
+                </div>
+                <div class="terminal-line"><span class="term-red">[HIGH] GUID 3xPz9Q_$H2qA...: IfcColumn classified as
+                        IfcSlab. Geometry mismatch. Confidence: 92%.</span></div>
+                <div class="terminal-line"><span class="term-red">→ Suggestion: Re-map element type in authoring tool
+                        before export.</span></div>
+                <div class="terminal-line"><span class="term-yellow">[MED] GUID 1aBv7M_...: Missing
+                        Qto_WallBaseQuantities. Falling back to geometric volume.</span></div>
+                <div class="terminal-line"><span class="term-white">[SUCCESS] Every quantity traced. Plausibility checks
+                        complete.</span></div>
+                <div class="terminal-line"><span class="term-white">[SUCCESS] Generating Excel BOQ and Narrative PDF...
+                        Done.</span></div>
+            </div>
+
+            <div class="before-after">
+                <!-- BEFORE CARD -->
+                <div class="ba-card ba-before reveal">
+                    <span class="ba-badge">BEFORE</span>
+
+                    <div class="ba-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </div>
+
+                    <h4 class="ba-title">Manual BOQ</h4>
+                    <p class="ba-body">No audit trail. No data source. No validation. Just numbers.</p>
+                </div>
+
+                <!-- AFTER CARD -->
+                <div class="ba-card ba-after reveal delay-1">
+                    <span class="ba-badge">AFTER</span>
+
+                    <div class="ba-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+
+                    <h4 class="ba-title">StructBOQ Output</h4>
+                    <p class="ba-body" style="margin-bottom: 0;">Every element traced. Every anomaly flagged.
+                        Client-ready in 24 hours.</p>
+                </div>
+            </div>
+
+            <!-- Removed the redundant 'Submit Your IFC File' button from here -->
+        </div>
+    </section>
+
+    <!-- Section 6: What I Do -->
+    <section id="services">
+        <div class="container">
+            <div class="glass-panel reveal delay-1" style="margin-bottom: 60px;">
+                <span class="section-label">SERVICES</span>
+                <h2 class="section-heading" style="margin-bottom: 0;">Three Things I Do. All Connected.</h2>
+            </div>
+
+            <div class="grid-3">
+                <div class="service-block glass-panel reveal delay-1">
+                    <div class="service-line"></div>
+                    <div class="service-num">01.</div>
+                    <h3>IFC → Validated BOQ Reports</h3>
+                    <p>I process your IFC file and return a validated Bill of Quantities with a full data source audit.
+                        Every element is classified, checked for anomalies, and reported with severity levels. Excel +
+                        PDF output.</p>
+                </div>
+                <div class="service-block glass-panel reveal delay-2">
+                    <div class="service-line"></div>
+                    <div class="service-num">02.</div>
+                    <h3>BIM Data Automation Scripts</h3>
+                    <p>Custom Python scripts that automate repetitive BIM data workflows — quantity extraction,
+                        classification checking, report generation, data export pipelines. Built specifically for your
+                        software stack.</p>
+                </div>
+                <div class="service-block glass-panel reveal delay-3">
+                    <div class="service-line"></div>
+                    <div class="service-num">03.</div>
+                    <h3>Engineering Data Dashboards</h3>
+                    <p>Streamlit-based dashboards that turn raw construction data into live visual reports. For project
+                        tracking, cost monitoring, quantity visualization, and decision-making during design and
+                        construction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Other Projects -->
+    <section id="tools">
+        <div class="container">
+            <div class="glass-panel reveal delay-1" style="margin-bottom: 60px;">
+                <span class="section-label">ALSO BUILT</span>
+                <h2 class="section-heading">Other Tools</h2>
+                <p class="section-subtitle">These exist to show range. StructBOQ is the main service.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card glass-panel reveal delay-1">
+                    <h3>RC Column Design Tool</h3>
+                    <p>ACI-based reinforced concrete column design tool with P-M interaction diagrams, slenderness
+                        checks, and load classification. PDF report output.</p>
+                    <a href="https://rc-column-design-tool-arxjtyufth7tpjdryg8cch.streamlit.app/" target="_blank"
+                        class="project-link">
+                        Open Tool →
+                    </a>
+                </div>
+                <div class="card glass-panel reveal delay-2">
+                    <h3>Engineering Data Analysis Tool</h3>
+                    <p>CSV/Excel data cleaning, statistical analysis, visualization, and PDF reporting. Built for
+                        engineering datasets.</p>
+                    <a href="https://engineering-data-analysis-tool-q7pp3mas5z9msrvjgndlub.streamlit.app/"
+                        target="_blank" class="project-link">
+                        Open Tool →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: Contact Form -->
+    <section id="contact">
+        <div class="container">
+            <div class="contact-wrapper glass-panel reveal delay-1">
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <span class="section-label">GET STARTED</span>
+                        <h2 class="section-heading" style="font-size: 2.5rem; margin-bottom: 15px;">Submit Your IFC File
+                        </h2>
+                        <p class="section-subtitle"
+                            style="margin-bottom: 0; font-size: 1.1rem; color: var(--text-secondary);">I'll run your
+                            file through StructBOQ and send you a validated BOQ report within 24 hours. Free for your
+                            first project.</p>
+                    </div>
+
+                    <div class="contact-form">
+                        <form action="https://api.web3forms.com/submit" method="POST" id="ifcForm">
+                            <input type="hidden" name="access_key" value="59fec470-8ad0-4cde-980b-bde97ff4032a">
+                            <input type="hidden" name="subject" value="New IFC Submission — shabirbim.com">
+                            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="name">Full Name</label>
+                                    <input type="text" id="name" name="name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="company">Company</label>
+                                    <input type="text" id="company" name="company" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email Address</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="notes">Project Description / Notes</label>
+                                <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-full">Request Free BOQ Report</button>
+
+                            <div id="form-result"
+                                style="display: none; margin-top: 20px; padding: 20px; border-radius: 8px; font-weight: 500; border: 1px solid;">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-bottom">
+            &copy; 2026 Shabir Ahmad. shabirbim.com
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 1. Scroll Indicator Setup (Updated for 8 sections)
+            const sections = document.querySelectorAll('section');
+            const dotsContainer = document.getElementById('scrollIndicator');
+
+            sections.forEach((sec, i) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active');
+
+                dot.addEventListener('click', () => {
+                    sec.scrollIntoView({ behavior: 'smooth' });
+                });
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = document.querySelectorAll('.dot');
+
+            // 2. Intersection Observers for Scroll Animations
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+
+                        // Update active dot in navigation
+                        if (entry.target.tagName.toLowerCase() === 'section') {
+                            const index = Array.from(sections).indexOf(entry.target);
+                            dots.forEach(d => d.classList.remove('active'));
+                            if (dots[index]) dots[index].classList.add('active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal, section').forEach(el => {
+                revealObserver.observe(el);
+            });
+
+            // 3. Stat Counters Animation
+            const statNums = document.querySelectorAll('.stat-num[data-target]');
+            let statsAnimated = false;
+
+            const statsObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && !statsAnimated) {
+                    statsAnimated = true;
+                    statNums.forEach(num => {
+                        const target = parseInt(num.getAttribute('data-target'));
+                        const suffix = num.getAttribute('data-suffix') || '';
+                        const duration = 2000;
+                        const start = performance.now();
+
+                        const updateStat = (currentTime) => {
+                            const elapsed = currentTime - start;
+                            const progress = Math.min(elapsed / duration, 1);
+                            const easeProgress = 1 - Math.pow(1 - progress, 3);
+                            num.innerText = Math.floor(easeProgress * target) + suffix;
+                            if (progress < 1) {
+                                requestAnimationFrame(updateStat);
+                            }
+                        };
+                        requestAnimationFrame(updateStat);
+                    });
+                }
+            });
+
+            const statsGrid = document.querySelector('.stats-grid');
+            if (statsGrid) statsObserver.observe(statsGrid);
+
+            // 4. Terminal Typewriter Animation
+            const terminalLines = document.querySelectorAll('.terminal-line');
+            let termAnimated = false;
+
+            const termObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && !termAnimated) {
+                    termAnimated = true;
+                    terminalLines.forEach((line, index) => {
+                        setTimeout(() => {
+                            line.style.opacity = 1;
+                        }, index * 400 + 200);
+                    });
+                }
+            });
+
+            const terminal = document.querySelector('.terminal');
+            if (terminal) termObserver.observe(terminal);
+
+            // 5. Particle Canvas Animation
+            const canvas = document.getElementById('particle-canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                let particles = [];
+                let mouse = { x: -1000, y: -1000 };
+
+                function resize() {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                }
+                window.addEventListener('resize', () => { resize(); initParticles(); });
+                resize();
+
+                canvas.addEventListener('mousemove', e => {
+                    mouse.x = e.clientX;
+                    mouse.y = e.clientY;
+                });
+                canvas.addEventListener('mouseleave', () => {
+                    mouse.x = -1000;
+                    mouse.y = -1000;
+                });
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height;
+                        this.vx = (Math.random() - 0.5) * 0.5;
+                        this.vy = (Math.random() - 0.5) * 0.5;
+                        this.radius = 1.5;
+                    }
+                    update() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+
+                        if (this.x < 0) this.x = width;
+                        if (this.x > width) this.x = 0;
+                        if (this.y < 0) this.y = height;
+                        if (this.y > height) this.y = 0;
+
+                        let dx = mouse.x - this.x;
+                        let dy = mouse.y - this.y;
+                        let distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < 150) {
+                            this.x += dx * 0.01;
+                            this.y += dy * 0.01;
+                        }
+                    }
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                        let dx = mouse.x - this.x;
+                        let dy = mouse.y - this.y;
+                        let distance = Math.sqrt(dx * dx + dy * dy);
+                        ctx.fillStyle = distance < 150 ? 'rgba(212, 175, 55, 0.8)' : 'rgba(212, 175, 55, 0.3)'; /* Golden particles */
+                        ctx.fill();
+                    }
+                }
+
+                function initParticles() {
+                    particles = [];
+                    let num = window.innerWidth > 768 ? 80 : 40;
+                    for (let i = 0; i < num; i++) particles.push(new Particle());
+                }
+
+                function animateParticles() {
+                    ctx.clearRect(0, 0, width, height);
+                    for (let i = 0; i < particles.length; i++) {
+                        particles[i].update();
+                        particles[i].draw();
+
+                        for (let j = i + 1; j < particles.length; j++) {
+                            let dx = particles[i].x - particles[j].x;
+                            let dy = particles[i].y - particles[j].y;
+                            let dist = Math.sqrt(dx * dx + dy * dy);
+
+                            if (dist < 120) {
+                                ctx.beginPath();
+                                ctx.moveTo(particles[i].x, particles[i].y);
+                                ctx.lineTo(particles[j].x, particles[j].y);
+                                ctx.strokeStyle = `rgba(212, 175, 55,${0.2 * (1 - dist / 120)})`; /* Golden lines */
+                                ctx.lineWidth = 1;
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    requestAnimationFrame(animateParticles);
+                }
+                initParticles();
+                animateParticles();
+            }
+
+            // 7. Global Scroll Zoom Background Animation
+            const globalBg = document.getElementById('global-bg');
+            let lastScrollY = window.scrollY;
+            let ticking = false;
+
+            function updateGlobalZoom(scrollY) {
+                if (!globalBg) return;
+
+                const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+                const scrollPercent = Math.min(Math.max(scrollY / maxScroll, 0), 1);
+
+                const scale = 1 + (scrollPercent * 0.35);
+                globalBg.style.transform = `scale(${scale})`;
+            }
+
+            window.addEventListener('scroll', () => {
+                lastScrollY = window.scrollY;
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        updateGlobalZoom(lastScrollY);
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+            // Initial call
+            updateGlobalZoom(window.scrollY);
+
+            // 8. Premium 3D Tilt Effect for Cards
+            // This adds a subtle, floating 3D tracking effect to all boxes when hovering.
+            const tiltElements = document.querySelectorAll('.glass-panel, .ba-card, .service-block, .card');
+            tiltElements.forEach(el => {
+                el.addEventListener('mousemove', e => {
+                    // Don't apply if it's still doing the initial scroll reveal animation
+                    if (el.classList.contains('reveal') && !el.classList.contains('active')) return;
+
+                    const rect = el.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    // Very subtle rotation (max 3 degrees)
+                    const rotateX = ((y - centerY) / centerY) * -3;
+                    const rotateY = ((x - centerX) / centerX) * 3;
+
+                    el.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    el.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                    el.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+                });
+
+                el.addEventListener('mouseenter', () => {
+                    el.style.transition = 'transform 0.1s ease-out';
+                });
+            });
+
+            // 9. Web3Forms Submission Handling
+            const form = document.getElementById('ifcForm');
+            const result = document.getElementById('form-result');
+
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+                    const object = Object.fromEntries(formData);
+                    const json = JSON.stringify(object);
+
+                    const btn = form.querySelector('button[type="submit"]');
+                    const originalText = btn.innerText;
+                    btn.innerText = 'Sending...';
+                    btn.disabled = true;
+
+                    fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: json
+                    })
+                        .then(async (response) => {
+                            let json = await response.json();
+                            if (response.status == 200) {
+                                result.style.display = "block";
+                                const companyName = encodeURIComponent(object.company || 'New Client');
+                                form.reset();
+                                Array.from(form.children).forEach(child => {
+                                    if (child.id !== 'form-result') {
+                                        child.style.display = 'none';
+                                    }
+                                });
+                                result.style.background = "transparent";
+                                result.style.borderColor = "transparent";
+                                result.innerHTML = `
+                                <div style="margin-bottom: 12px; font-size: 1.2rem; color: white; font-weight: 700;">Details received! Step 1 complete.</div>
+                                <div style="margin-bottom: 30px; color: var(--text-secondary);">Now, please attach your IFC file to an email so I can process it.</div>
+                                <a href="mailto:engrshabir@shabirbim.com?subject=IFC File Submission — ${companyName}&body=Hi Shabir,%0A%0APlease find my IFC file attached.%0A" class="btn" style="text-decoration: none; display: inline-flex;">📎 Send Your IFC File →</a>
+                            `;
+                            } else {
+                                console.log(response);
+                                result.style.display = "block";
+                                result.style.background = "rgba(239, 68, 68, 0.1)";
+                                result.style.color = "#EF4444";
+                                result.style.borderColor = "rgba(239, 68, 68, 0.2)";
+                                result.innerHTML = json.message || "Something went wrong. Please email engrshabir@shabirbim.com directly.";
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            result.style.display = "block";
+                            result.style.background = "rgba(239, 68, 68, 0.1)";
+                            result.style.color = "#EF4444";
+                            result.style.borderColor = "rgba(239, 68, 68, 0.2)";
+                            result.innerHTML = "Something went wrong. Please email engrshabir@shabirbim.com directly.";
+                        })
+                        .finally(function () {
+                            btn.innerText = originalText;
+                            btn.disabled = false;
+                        });
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
