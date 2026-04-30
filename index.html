@@ -32,8 +32,7 @@
         }
 
         html {
-            /* This ensures clicking anchor links smoothly scrolls the page */
-            scroll-behavior: smooth;
+            /* Scroll behavior is now handled by Lenis via JS */
         }
 
         body {
@@ -281,28 +280,26 @@
         /* Animations */
         .reveal {
             opacity: 0;
-            transform: translateY(60px);
-            filter: blur(10px);
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform, filter;
+            transform: translateY(40px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
         }
 
         .reveal.active {
             opacity: 1;
             transform: translateY(0);
-            filter: blur(0);
         }
 
         .delay-1 {
-            transition-delay: 0.15s;
+            transition-delay: 0.1s;
         }
 
         .delay-2 {
-            transition-delay: 0.3s;
+            transition-delay: 0.2s;
         }
 
         .delay-3 {
-            transition-delay: 0.45s;
+            transition-delay: 0.3s;
         }
 
         /* Fluid Load Animation for Hero */
@@ -310,13 +307,11 @@
             0% {
                 opacity: 0;
                 transform: translateY(30px) scale(0.98);
-                filter: blur(10px);
             }
 
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
-                filter: blur(0);
             }
         }
 
@@ -1260,7 +1255,21 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
     <script>
+        // Initialize Lenis
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+        });
+        window.lenis = lenis;
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
         document.addEventListener('DOMContentLoaded', () => {
 
             // 1. Scroll Indicator Setup (Updated for 8 sections)
@@ -1273,12 +1282,33 @@
                 if (i === 0) dot.classList.add('active');
 
                 dot.addEventListener('click', () => {
-                    sec.scrollIntoView({ behavior: 'smooth' });
+                    if (window.lenis) {
+                        window.lenis.scrollTo(sec);
+                    } else {
+                        sec.scrollIntoView({ behavior: 'smooth' });
+                    }
                 });
                 dotsContainer.appendChild(dot);
             });
 
             const dots = document.querySelectorAll('.dot');
+
+            // Smooth scroll for all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl) {
+                        e.preventDefault();
+                        if (window.lenis) {
+                            window.lenis.scrollTo(targetEl);
+                        } else {
+                            targetEl.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
 
             // 2. Intersection Observers for Scroll Animations
             const observerOptions = {
