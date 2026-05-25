@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Shabir Ahmad — BIM Automation Engineer</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <style>
+        :root {
+            --bg-solid: #E8E6E1;
+            --border-color: rgba(0, 0, 0, 0.09);
+            --accent: #D4AF37;
+            --accent-glow: rgba(212, 175, 55, 0.3);
+            --text-primary: #0F0E0A;
+            --text-secondary: #6B6859;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F4F0;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 70px;
+        }
+
+        /* NAV */
+        .top-navbar {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 70px;
+            background-color: #F5F4F0;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+        .nav-container {
+            max-width: 1200px; margin: 0 auto;
+            height: 100%; padding: 0 32px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo {
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--accent); text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        .nav-cta {
+            background: var(--accent); color: #000;
+            padding: 9px 20px; border-radius: 4px;
+            font-size: 0.875rem; font-weight: 700;
+            text-decoration: none; transition: all 0.25s;
+        }
+        .nav-cta:hover { background: #FDE047; box-shadow: 0 0 20px var(--accent-glow); }
+
+        /* LAYOUT */
+        .page-wrap { max-width: 1000px; margin: 0 auto; padding: 80px 20px 100px; }
+
+        .section-label {
+            font-size: 0.8rem; font-weight: 700; color: var(--accent);
+            letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 14px; display: block;
+        }
+
+        /* HERO BLOCK */
+        .about-hero {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 60px; margin-bottom: 70px;
+        }
+        .about-hero h1 {
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.15; margin-bottom: 20px;
+        }
+        .about-hero h1 span { color: var(--accent); }
+        .about-hero .lead {
+            font-size: clamp(1rem, 1.8vw, 1.2rem);
+            color: var(--text-secondary); max-width: 680px;
+            line-height: 1.75; margin-bottom: 36px;
+        }
+        .core-differentiator {
+            display: inline-block;
+            background: rgba(212,175,55,0.08);
+            border: 1px solid rgba(212,175,55,0.25);
+            border-left: 3px solid var(--accent);
+            border-radius: 4px;
+            padding: 18px 24px;
+            font-size: 1rem; font-style: italic;
+            color: var(--text-primary); max-width: 680px;
+            line-height: 1.6;
+        }
+
+        /* SOCIAL ROW */
+        .social-row {
+            display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap;
+        }
+        .social-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 10px 18px;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.875rem; font-weight: 600;
+            transition: all 0.25s ease;
+        }
+        .social-link:hover {
+            border-color: var(--accent); color: var(--accent);
+            background: rgba(212,175,55,0.06);
+        }
+        .social-link svg { flex-shrink: 0; }
+
+        /* SECTION HEADERS */
+        .block-title {
+            font-size: 1.5rem; font-weight: 800;
+            margin-bottom: 32px; letter-spacing: -0.02em;
+        }
+        .content-block { margin-bottom: 70px; }
+
+        /* EDUCATION TIMELINE */
+        .edu-list { display: flex; flex-direction: column; gap: 0; }
+        .edu-item {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 0 30px;
+            position: relative;
+            padding-bottom: 40px;
+        }
+        .edu-item:last-child { padding-bottom: 0; }
+        .edu-item::before {
+            content: '';
+            position: absolute;
+            left: 160px; top: 8px; bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            opacity: 0.3;
+        }
+        .edu-item:last-child::before { display: none; }
+        .edu-year {
+            font-size: 0.8rem; font-weight: 700; color: var(--accent);
+            padding-top: 4px; text-align: right;
+            letter-spacing: 0.04em;
+        }
+        .edu-body { padding-left: 30px; }
+        .edu-body h3 {
+            font-size: 1.1rem; font-weight: 700;
+            margin-bottom: 4px; line-height: 1.3;
+        }
+        .edu-body .institution {
+            font-size: 0.9rem; color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .edu-badge {
+            display: inline-block;
+            background: rgba(212,175,55,0.12);
+            border: 1px solid rgba(212,175,55,0.25);
+            color: var(--accent); border-radius: 20px;
+            font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 0.06em; padding: 3px 10px;
+            text-transform: uppercase; margin-bottom: 10px;
+        }
+        .edu-badge.incoming {
+            background: rgba(99,179,237,0.1);
+            border-color: rgba(99,179,237,0.3);
+            color: #63B3ED;
+        }
+        .edu-detail {
+            font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .edu-item { grid-template-columns: 1fr; }
+            .edu-item::before { display: none; }
+            .edu-year { text-align: left; margin-bottom: 8px; }
+            .edu-body { padding-left: 0; }
+            .about-hero-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+            .about-hero-grid > div:last-child { flex-direction: row !important; align-items: center !important; gap: 20px !important; }
+            .about-hero-grid img { width: 100px !important; height: 100px !important; }
+        }
+
+        /* SKILL GRID */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .skills-grid { grid-template-columns: 1fr; }
+        }
+        .skill-card {
+            background: var(--bg-solid);
+            border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 24px;
+            transition: all 0.3s ease;
+        }
+        .skill-card:hover {
+            border-color: rgba(212,175,55,0.35);
+            background: #232112;
+        }
+        .skill-card-title {
+            font-size: 0.75rem; font-weight: 700; color: var(--accent);
+            letter-spacing: 0.1em; text-transform: uppercase;
+            margin-bottom: 14px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .skill-card-title::after {
+            content: ''; flex: 1; height: 1px;
+            background: rgba(212,175,55,0.2);
+        }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .skill-tag {
+            background: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.09);
+            border-radius: 4px; padding: 5px 10px;
+            font-size: 0.8rem; color: var(--text-primary); font-weight: 500;
+        }
+
+        /* CERTS */
+        .cert-list { display: flex; flex-direction: column; gap: 16px; }
+        .cert-item {
+            background: var(--bg-solid);
+            border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 22px 26px;
+            display: flex; align-items: flex-start;
+            gap: 18px; transition: all 0.3s ease;
+        }
+        .cert-item:hover {
+            border-color: rgba(212,175,55,0.3);
+            background: #232112;
+        }
+        .cert-icon {
+            width: 40px; height: 40px; border-radius: 8px;
+            background: rgba(212,175,55,0.1);
+            border: 1px solid rgba(212,175,55,0.2);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; color: var(--accent);
+        }
+        .cert-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+        .cert-info .cert-issuer {
+            font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;
+        }
+        .cert-verify {
+            font-size: 0.78rem; color: var(--accent);
+            text-decoration: none; font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        .cert-verify:hover { opacity: 0.75; }
+
+        /* RECOGNITION BLOCK */
+        .recognition-block {
+            background: var(--bg-solid);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent);
+            border-radius: 12px; padding: 32px;
+        }
+        .recognition-item {
+            display: flex; gap: 16px; align-items: flex-start;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .recognition-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .recognition-item:first-child { padding-top: 0; }
+        .recog-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--accent); flex-shrink: 0; margin-top: 7px;
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+        .recog-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
+        .recog-text strong { color: var(--text-primary); }
+
+        /* CTA */
+        .cta-block {
+            background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02));
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 16px; padding: 50px;
+            text-align: center;
+        }
+        .cta-block h2 {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 800; margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        .cta-block p {
+            color: var(--text-secondary); font-size: 1.05rem;
+            margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;
+        }
+        .btn-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--accent); color: #000;
+            padding: 16px 32px; border-radius: 4px;
+            font-weight: 800; font-size: 1rem;
+            text-decoration: none; transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: #FDE047;
+            box-shadow: 0 0 25px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: transparent; color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 16px 32px; border-radius: 4px;
+            font-weight: 600; font-size: 1rem;
+            text-decoration: none; transition: all 0.3s ease;
+        }
+        .btn-outline:hover {
+            border-color: var(--accent); color: var(--accent);
+            background: rgba(212,175,55,0.06);
+        }
+
+        /* DIVIDER */
+        .divider {
+            height: 1px; background: var(--border-color);
+            margin: 0 0 70px;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 32px 28px; text-align: center;
+            font-size: 0.85rem; color: #64748b;
+        }
+        .footer-links {
+            display: flex; justify-content: center; gap: 32px;
+            margin-bottom: 16px;
+        }
+        .footer-links a {
+            color: #94A3B8; text-decoration: none;
+            font-size: 0.85rem; font-weight: 500;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: #F1F5F9; }
+
+        /* REVEAL */
+        .reveal { opacity: 0; transform: translateY(24px); transition: all 0.65s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <header class="top-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+            <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+        </div>
+    </header>
+
+    <div class="page-wrap">
+
+        <!-- HERO -->
+        <div class="about-hero reveal active">
+            <div class="about-hero-grid" style="display:grid; grid-template-columns: 1fr 240px; gap: 56px; align-items: center;">
+                <div>
+                    <span class="section-label">About Me</span>
+                    <h1>BIM Automation Engineer.</h1>
+                    <p class="lead">
+                        I build the automation layer between BIM models and actionable construction data. My work sits at the intersection of IFC schema engineering, Python automation, and structural engineering logic — turning raw model output into validated, auditable reports that engineers and QS teams can actually rely on.
+                    </p>
+                    <div class="core-differentiator">
+                        "I can explain exactly where every quantity came from, why it failed, and how reliable it is."
+                    </div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:center; gap:18px; padding-left:270px;">
+                    <img src="assets/shabir.jpg" alt="Shabir Ahmad"
+                        style="width:230px; height:250px; object-fit:cover; object-position: center top; border-radius:14px; border:1px solid var(--border-color); display:block;">
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:10px; width:100%;">
+                        <a href="https://linkedin.com/in/shabir-bim" target="_blank"
+                            style="display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:8px;border:1px solid var(--border-color);color:var(--text-secondary);text-decoration:none;transition:all 0.25s;"
+                            onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+                            onmouseout="this.style.borderColor='var(--border-color)';this.style.color='var(--text-secondary)'">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                        </a>
+                        <a href="mailto:engrshabir@shabirbim.com"
+                            style="font-size:0.85rem;color:var(--text-secondary);text-decoration:none;font-weight:500;transition:color 0.2s;text-align:center;"
+                            onmouseover="this.style.color='var(--accent)'"
+                            onmouseout="this.style.color='var(--text-secondary)'">
+                            engrshabir@shabirbim.com
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDUCATION -->
+        <div class="content-block reveal">
+            <span class="section-label">Education</span>
+            <h2 class="block-title">Academic Background</h2>
+            <div class="edu-list">
+
+                <div class="edu-item">
+                    <div class="edu-year">Oct 2026 →</div>
+                    <div class="edu-body">
+                        <span class="edu-badge incoming">Incoming</span>
+                        <h3>MSc Digital Engineering</h3>
+                        <div class="institution">Bauhaus University Weimar — Germany</div>
+                        <div class="edu-detail">Specialisation in computational design, digital construction workflows, and engineering data systems.</div>
+                    </div>
+                </div>
+
+                <div class="edu-item">
+                    <div class="edu-year">2021 – 2025</div>
+                    <div class="edu-body">
+                        <span class="edu-badge">Completed</span>
+                        <h3>BSc Civil Engineering</h3>
+                        <div class="institution">COMSATS University Islamabad, Abbottabad Campus</div>
+                        <div class="edu-detail">Structural Engineering · Geotechnical · Construction & Project Management · Sustainable Infrastructure · Risk & Hazard Analysis. Final Year Project: CFD-based hydrodynamic analysis of vegetated channels — ANSYS Fluent, RANS turbulence models, 6 vegetation configurations. Presented at INNOVaTEx Expo 2025.</div>
+                    </div>
+                </div>
+
+                <div class="edu-item">
+                    <div class="edu-year">2019 – 2021</div>
+                    <div class="edu-body">
+                        <span class="edu-badge">Completed</span>
+                        <h3>FSc Pre-Engineering</h3>
+                        <div class="institution">Islamia College, Peshawar</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- SKILLS -->
+        <div class="content-block reveal">
+            <span class="section-label">Technical Skills</span>
+            <h2 class="block-title">Tools & Domain Knowledge</h2>
+            <div class="skills-grid">
+
+                <div class="skill-card">
+                    <div class="skill-card-title">IFC / BIM</div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">IfcOpenShell</span>
+                        <span class="skill-tag">IFC2x3 / IFC4 / IFC4x3</span>
+                        <span class="skill-tag">Bonsai / BlenderBIM</span>
+                        <span class="skill-tag">BaseQuantities</span>
+                        <span class="skill-tag">Pset Parsing</span>
+                        <span class="skill-tag">Revit / ArchiCAD / Tekla / Allplan</span>
+                        <span class="skill-tag">Quantity Validation</span>
+                        <span class="skill-tag">Classification Engines</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card-title">Python</div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">OOP</span>
+                        <span class="skill-tag">pandas</span>
+                        <span class="skill-tag">numpy</span>
+                        <span class="skill-tag">plotly</span>
+                        <span class="skill-tag">reportlab</span>
+                        <span class="skill-tag">openpyxl</span>
+                        <span class="skill-tag">SQLite</span>
+                        <span class="skill-tag">Streamlit</span>
+                        <span class="skill-tag">API integration</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card-title">Engineering Software</div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AutoCAD</span>
+                        <span class="skill-tag">ANSYS Fluent</span>
+                        <span class="skill-tag">Primavera P6</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card-title">Output / Deploy</div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Excel BOQ</span>
+                        <span class="skill-tag">Narrative PDF</span>
+                        <span class="skill-tag">Streamlit Cloud</span>
+                        <span class="skill-tag">GitHub Pages</span>
+                        <span class="skill-tag">Web3Forms</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- OTHER PROJECTS -->
+        <div class="content-block reveal">
+            <span class="section-label">Also Built</span>
+            <h2 class="block-title">Other Tools</h2>
+            <div class="skills-grid">
+
+                <div class="skill-card" style="padding: 30px;">
+                    <div class="skill-card-title">RC Column Design Tool</div>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.65; margin-bottom: 20px;">
+                        ACI 318-based reinforced concrete column design. P-M interaction diagrams, slenderness checks, load classification. PDF report output.
+                    </p>
+                    <div class="skill-tags" style="margin-bottom: 20px;">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Streamlit</span>
+                        <span class="skill-tag">ACI 318-19</span>
+                        <span class="skill-tag">reportlab</span>
+                    </div>
+                    <a href="https://rc-column-design-tool-arxjtyufth7tpjdryg8cch.streamlit.app/" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">Open Tool →</a>
+                </div>
+
+                <div class="skill-card" style="padding: 30px;">
+                    <div class="skill-card-title">Engineering Data Analysis Tool</div>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.65; margin-bottom: 20px;">
+                        CSV/Excel data cleaning, statistical analysis, visualization, and PDF reporting — built for engineering datasets.
+                    </p>
+                    <div class="skill-tags" style="margin-bottom: 20px;">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">pandas</span>
+                        <span class="skill-tag">plotly</span>
+                        <span class="skill-tag">Streamlit</span>
+                    </div>
+                    <a href="https://engineering-data-analysis-tool-q7pp3mas5z9msrvjgndlub.streamlit.app/" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">Open Tool →</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- BACK LINK -->
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;color:var(--text-secondary);text-decoration:none;font-size:0.9rem;font-weight:600;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-secondary)'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to Home
+        </a>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+        </div>
+        <p>&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

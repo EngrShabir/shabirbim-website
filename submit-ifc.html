@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit IFC File | StructBOQ</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <style>
+        :root {
+            --bg-solid: #E8E6E1;
+            --border-color: rgba(0, 0, 0, 0.09);
+            --accent: #D4AF37;
+            --accent-glow: rgba(212, 175, 55, 0.3);
+            --text-primary: #0F0E0A;
+            --text-secondary: #6B6859;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F4F0;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 70px; /* Space for fixed navbar */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ------------------------------------- */
+        /* HEADER NAVIGATION BAR & DROPDOWN      */
+        /* ------------------------------------- */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background-color: #F5F4F0;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-logo {
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--accent); text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        .nav-cta {
+            background: var(--accent); color: #000;
+            padding: 9px 20px; border-radius: 4px;
+            font-size: 0.875rem; font-weight: 700;
+            text-decoration: none; transition: all 0.25s;
+        }
+        .nav-cta:hover { background: #FDE047; }
+
+        .dropdown-menu-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-trigger-btn {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .dropdown-trigger-btn:hover {
+            background: var(--accent);
+            color: #F5F4F0;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .dropdown-chevron {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-menu-container.active .dropdown-chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu-content {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            background-color: #201E13;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            min-width: 180px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1100;
+            animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-menu-container.active .dropdown-menu-content {
+            display: flex;
+        }
+
+        .dropdown-menu-content a {
+            color: var(--text-primary);
+            padding: 12px 18px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .dropdown-menu-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu-content a:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+            color: var(--accent);
+            padding-left: 22px;
+        }
+
+        /* ------------------------------------- */
+        /* LAYOUT & PANEL STYLING                */
+        /* ------------------------------------- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        .contact-wrapper {
+            background: var(--bg-solid);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        @media (max-width: 800px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .contact-wrapper {
+                padding: 30px 20px;
+            }
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .section-heading {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Form Controls */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.04);
+            color: #0F0E0A;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+            background: rgba(0, 0, 0, 0.07);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent);
+            color: #000;
+            padding: 18px 36px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.125rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 30px var(--accent-glow);
+            background-color: #FDE047;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: transparent;
+            color: white;
+            padding: 40px 20px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid rgba(0, 0, 0, 0.09);
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+            <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <span class="section-label">GET STARTED</span>
+                        <h2 class="section-heading">Submit Your IFC File</h2>
+                        <p class="section-subtitle">
+                            I'll run your file through StructBOQ and send you a validated BOQ report within 24 hours. Free for your first project.
+                        </p>
+                    </div>
+
+                    <div class="contact-form">
+                        <form action="https://api.web3forms.com/submit" method="POST" id="ifcForm">
+                            <input type="hidden" name="access_key" value="59fec470-8ad0-4cde-980b-bde97ff4032a">
+                            <input type="hidden" name="subject" value="New IFC Submission — shabirbim.com">
+                            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="name">Full Name</label>
+                                    <input type="text" id="name" name="name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="company">Company</label>
+                                    <input type="text" id="company" name="company" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email Address</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="notes">Project Description / Notes</label>
+                                <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-full">Request Free BOQ Report</button>
+
+                            <div id="form-result"
+                                style="display: none; margin-top: 20px; padding: 20px; border-radius: 8px; font-weight: 500; border: 1px solid;">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-bottom">
+            <div style="display:flex;justify-content:center;gap:32px;margin-bottom:16px;">
+                <a href="index.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Home</a>
+                <a href="about.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">About</a>
+                <a href="case-studies.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Case Studies</a>
+                <a href="demo.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Demo</a>
+            </div>
+            &copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const container = document.getElementById('navDropdownContainer');
+            container.classList.toggle('active');
+        }
+
+        document.addEventListener('click', (event) => {
+            const container = document.getElementById('navDropdownContainer');
+            if (container && !container.contains(event.target)) {
+                container.classList.remove('active');
+            }
+        });
+
+        // Web3Forms Submission Handling
+        const form = document.getElementById('ifcForm');
+        const result = document.getElementById('form-result');
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const object = Object.fromEntries(formData);
+                const json = JSON.stringify(object);
+
+                const btn = form.querySelector('button[type="submit"]');
+                const originalText = btn.innerText;
+                btn.innerText = 'Sending...';
+                btn.disabled = true;
+
+                fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: json
+                })
+                    .then(async (response) => {
+                        let json = await response.json();
+                        if (response.status == 200) {
+                            result.style.display = "block";
+                            const companyName = encodeURIComponent(object.company || 'New Client');
+                            form.reset();
+                            Array.from(form.children).forEach(child => {
+                                if (child.id !== 'form-result') {
+                                    child.style.display = 'none';
+                                }
+                            });
+                            result.style.background = "transparent";
+                            result.style.borderColor = "transparent";
+                            result.innerHTML = `
+                            <div style="margin-bottom: 12px; font-size: 1.2rem; color: white; font-weight: 700;">Details received! Step 1 complete.</div>
+                            <div style="margin-bottom: 30px; color: var(--text-secondary);">Now, please attach your IFC file to an email so I can process it.</div>
+                            <a href="mailto:engrshabir@shabirbim.com?subject=IFC File Submission — ${companyName}&body=Hi Shabir,%0A%0APlease find my IFC file attached.%0A" class="btn" style="text-decoration: none; display: inline-flex;">📎 Send Your IFC File →</a>
+                        `;
+                        } else {
+                            console.log(response);
+                            result.style.display = "block";
+                            result.style.background = "rgba(239, 68, 68, 0.1)";
+                            result.style.color = "#EF4444";
+                            result.style.borderColor = "rgba(239, 68, 68, 0.2)";
+                            result.innerHTML = json.message || "Something went wrong. Please email engrshabir@shabirbim.com directly.";
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        result.style.display = "block";
+                        result.style.background = "rgba(239, 68, 68, 0.1)";
+                        result.style.color = "#EF4444";
+                        result.style.borderColor = "rgba(239, 68, 68, 0.2)";
+                        result.innerHTML = "Something went wrong. Please email engrshabir@shabirbim.com directly.";
+                    })
+                    .finally(function () {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                    });
+            });
+        }
+    </script>
+</body>
+
+</html>

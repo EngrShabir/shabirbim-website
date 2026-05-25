@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shabir Ahmad | BIM Automation Engineer</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <style>
+        :root {
+            --accent: #D4AF37;
+            --accent-glow: rgba(212, 175, 55, 0.25);
+            --border: rgba(0, 0, 0, 0.09);
+            --bg: #F5F4F0;
+            --bg2: #EDECEA;
+            --bg3: #E8E6E1;
+            --text: #0F0E0A;
+            --muted: #6B6859;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── NAV ── */
+        .navbar {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 70px;
+            background: transparent;
+            border-bottom: none;
+            z-index: 1000;
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            height: 100%; padding: 0 32px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo {
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--accent); text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        .nav-cta {
+            background: var(--accent); color: #000;
+            padding: 9px 20px; border-radius: 4px;
+            font-size: 0.875rem; font-weight: 700;
+            text-decoration: none; transition: all 0.25s;
+        }
+        .nav-cta:hover { background: #FDE047; box-shadow: 0 0 20px var(--accent-glow); }
+
+
+        /* ── SHARED ── */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+        .label {
+            display: block; font-size: 0.75rem; font-weight: 700;
+            color: var(--accent); letter-spacing: 0.12em;
+            text-transform: uppercase; margin-bottom: 20px;
+        }
+        .reveal { opacity: 0; transform: translateY(28px); transition: all 0.7s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.in { opacity: 1; transform: none; }
+        .d1 { transition-delay: 0.1s; }
+        .d2 { transition-delay: 0.2s; }
+        .d3 { transition-delay: 0.3s; }
+
+        hr.rule { border: none; border-top: 1px solid var(--border); }
+
+        /* ── HERO ── */
+        @keyframes kenburns {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        #hero {
+            position: relative;
+            height: 100vh;
+            min-height: 580px;
+            display: flex; align-items: flex-end; justify-content: flex-start;
+            overflow: hidden;
+        }
+        #hero::after {
+            content: '';
+            position: absolute; inset: 0; z-index: 0;
+            background: url('assets/3.jpg') center/cover no-repeat;
+            animation: kenburns 20s linear infinite;
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+        #hero::before {
+            content: '';
+            position: absolute; inset: 0; z-index: 1;
+            background: linear-gradient(to bottom, rgba(10,10,10,0.72) 0%, rgba(10,10,10,0.55) 60%, rgba(20,20,20,0.9) 100%);
+        }
+        .hero-body {
+            position: relative; z-index: 2;
+            max-width: 760px; padding: 0 32px 80px 32px;
+            text-align: left;
+        }
+        .hero-body .label { font-size: 0.78rem; margin-bottom: 28px; }
+        .hero-body h1 {
+            font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+            font-weight: 800; line-height: 1.08;
+            letter-spacing: -0.035em;
+            color: #fff;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+            margin-bottom: 28px;
+        }
+        .hero-body h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+        .hero-sub {
+            font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+            color: rgba(255,255,255,0.6);
+            font-weight: 400;
+            margin-bottom: 32px;
+            line-height: 1.7;
+            max-width: 520px;
+        }
+        .hero-cta-row { display: flex; gap: 16px; justify-content: flex-start; align-items: center; flex-wrap: wrap; }
+        .btn-gold {
+            background: var(--accent); color: #000;
+            padding: 16px 36px; border-radius: 4px;
+            font-weight: 800; font-size: 1rem;
+            text-decoration: none; display: inline-block;
+            transition: all 0.25s;
+        }
+        .btn-gold:hover { background: #FDE047; box-shadow: 0 0 28px var(--accent-glow); transform: translateY(-2px); }
+        .btn-ghost {
+            color: rgba(255,255,255,0.65); text-decoration: none;
+            font-size: 0.9rem; font-weight: 500;
+            transition: color 0.2s; border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 2px;
+        }
+        .btn-ghost:hover { color: #fff; }
+        .hero-verify {
+            margin-top: 40px;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 0.04em;
+        }
+        .hero-verify span { color: var(--accent); }
+
+        /* ── PROBLEM ── */
+        #problem { padding: 120px 0; background: var(--bg); }
+        .problem-header {
+            max-width: 680px;
+            margin-bottom: 72px;
+        }
+        .problem-header h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+        }
+        .pain-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+        }
+        .pain-card {
+            padding-top: 32px;
+            border-top: 2px solid var(--accent);
+        }
+        .pain-num {
+            display: block;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -0.05em;
+            line-height: 1;
+            margin-bottom: 24px;
+        }
+        .pain-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .pain-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+        @media (max-width: 768px) {
+            .pain-cards { grid-template-columns: 1fr; gap: 32px; }
+        }
+
+        /* ── SERVICE FEATURED ── */
+        #services { padding: 0; background: var(--bg); }
+        .svc-featured {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 580px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .svc-img {
+            overflow: hidden;
+            position: relative;
+        }
+        .svc-img img {
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: calc(50% - 96px) center;
+            display: block;
+            filter: brightness(0.65);
+            position: absolute; inset: 0;
+            opacity: 0;
+            transition: opacity 1.2s ease, filter 0.6s ease;
+        }
+        .svc-img img.active { opacity: 1; }
+        .svc-featured:hover .svc-img img.active { filter: brightness(0.75); }
+        .svc-content {
+            padding: 80px 64px;
+            display: flex; flex-direction: column; justify-content: center;
+            border-right: 1px solid var(--border);
+        }
+        .svc-num {
+            font-size: 0.7rem; font-weight: 700;
+            color: var(--accent); letter-spacing: 0.14em;
+            text-transform: uppercase; margin-bottom: 20px;
+            display: block;
+        }
+        .svc-content h3 {
+            font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.15; margin-bottom: 24px;
+        }
+        .svc-content p {
+            color: var(--muted); font-size: 1rem;
+            line-height: 1.75; margin-bottom: 32px;
+        }
+        .svc-list {
+            list-style: none; padding: 0;
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .svc-list li {
+            font-size: 0.85rem; color: var(--muted);
+            padding-left: 16px; position: relative;
+        }
+        .svc-list li::before {
+            content: '—';
+            position: absolute; left: 0;
+            color: var(--accent);
+        }
+        @media (max-width: 768px) {
+            .svc-featured { grid-template-columns: 1fr; }
+            .svc-img { height: 280px; }
+            .svc-content { padding: 48px 32px; border-left: none; border-top: 1px solid var(--border); }
+        }
+
+        /* ── STRUCTBOQ ── */
+        #solution { padding: 120px 0; background: var(--bg2); }
+        .solution-top {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+            margin-bottom: 0;
+        }
+        .solution-text h2 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.2; margin-bottom: 24px;
+        }
+        .solution-text p {
+            color: var(--muted); font-size: 1rem;
+            line-height: 1.75;
+        }
+        @media (max-width: 900px) {
+            .solution-top { grid-template-columns: 1fr; gap: 40px; }
+        }
+        .stat-inline {
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            margin-bottom: 32px;
+        }
+        .stat-inline .snum {
+            display: block;
+            font-size: 2rem; font-weight: 800;
+            color: var(--accent); letter-spacing: -0.04em;
+            line-height: 1; margin-bottom: 6px;
+        }
+        .stat-inline .sdesc {
+            display: block;
+            font-size: 0.8rem; color: var(--muted);
+            line-height: 1.5;
+        }
+        .solution-link {
+            color: var(--accent); text-decoration: none;
+            font-size: 0.9rem; font-weight: 600;
+            transition: opacity 0.2s; display: inline-block;
+        }
+        .solution-link:hover { opacity: 0.7; }
+
+        /* Landscape comparison table */
+        .compare-landscape {
+            margin-top: 56px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .cl-row {
+            display: grid;
+            grid-template-columns: 140px repeat(6, 1fr);
+            border-bottom: 1px solid var(--border);
+        }
+        .cl-row:last-child { border-bottom: none; }
+        .cl-head-row {
+            display: grid;
+            grid-template-columns: 140px repeat(6, 1fr);
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.03);
+        }
+        .cl-corner { padding: 12px 16px; }
+        .cl-attr {
+            padding: 12px 16px;
+            font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--muted);
+            border-left: 1px solid var(--border);
+        }
+        .cl-label {
+            padding: 16px;
+            font-size: 0.78rem; font-weight: 700;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            display: flex; align-items: center;
+        }
+        .cl-row.manual .cl-label { color: var(--muted); }
+        .cl-row.structboq .cl-label { color: var(--accent); }
+        .cl-cell {
+            padding: 16px;
+            font-size: 0.85rem; line-height: 1.4;
+            border-left: 1px solid var(--border);
+            display: flex; align-items: center;
+        }
+        .cl-row.manual { background: rgba(0,0,0,0.02); }
+        .cl-row.manual .cl-cell { color: var(--muted); }
+        .cl-row.structboq { background: rgba(212,175,55,0.03); }
+        .cl-row.structboq .cl-cell { color: var(--text); }
+        .tick { color: var(--accent); font-weight: 700; margin-right: 4px; }
+
+        /* ── CONTACT ── */
+        #contact { padding: 120px 0; background: #936355; position: relative; overflow: hidden; }
+        #contact::before {
+            content: '';
+            position: absolute; inset: 0; z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: 0.90;
+            pointer-events: none;
+        }
+        .contact-inner { position: relative; z-index: 1; }
+        #contact .contact-left h2 { color: #fff; }
+        #contact .contact-left p { color: rgba(255,255,255,0.75); }
+        #contact .contact-detail { color: rgba(255,255,255,0.65); }
+        #contact .contact-detail:hover { color: #fff; }
+        .contact-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 32px;
+        }
+        .contact-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 80px; align-items: center;
+        }
+        .contact-left h2 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.2; margin-bottom: 16px;
+        }
+        .contact-left p { color: var(--muted); font-size: 1rem; line-height: 1.7; margin-bottom: 28px; }
+        .contact-detail {
+            display: flex; align-items: center; gap: 10px;
+            color: var(--muted); text-decoration: none;
+            font-size: 0.875rem; margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+        .contact-detail:hover { color: var(--accent); }
+        .contact-right { text-align: center; }
+        .contact-right .btn-gold { font-size: 1.05rem; padding: 18px 40px; }
+        .contact-right .contact-note {
+            margin-top: 14px; font-size: 0.8rem; color: var(--muted);
+        }
+
+        @media (max-width: 680px) {
+            .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+            .contact-right { text-align: left; }
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 40px 32px 28px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.8rem;
+            color: #4A5568;
+        }
+        .footer-links {
+            display: flex; justify-content: center; gap: 32px;
+            margin-bottom: 16px;
+        }
+        .footer-links a {
+            color: var(--muted); text-decoration: none;
+            font-size: 0.85rem; font-weight: 500;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--text); }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+            <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="hero-body reveal in">
+            <span class="label">BIM Automation · IFC Validation · Construction Data</span>
+            <h1>Manual Quantity Takeoff<br>Is <em>Dead.</em></h1>
+            <p class="hero-sub">Submit an IFC file. Receive a fully audited BOQ — every quantity traced to its source, every anomaly flagged with severity and confidence. Back in 24 hours.</p>
+            <p class="hero-verify">Verified against buildingSMART reference benchmark</p>
+        </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section id="problem">
+        <div class="container">
+            <div class="problem-header reveal">
+                <h2>Every IFC model has data quality issues. Most engineers never find them.</h2>
+            </div>
+            <div class="pain-cards">
+                <div class="pain-card reveal">
+                    <span class="pain-num">01</span>
+                    <h3>Misclassified Elements</h3>
+                    <p>Footings exported as slabs. Roof slabs counted as floors. Your BOQ is wrong before you open Excel.</p>
+                </div>
+                <div class="pain-card reveal d1">
+                    <span class="pain-num">02</span>
+                    <h3>No Data Source Audit</h3>
+                    <p>You don't know if a quantity came from BaseQuantities, a Pset, or a geometric fallback. Neither does your QS.</p>
+                </div>
+                <div class="pain-card reveal d2">
+                    <span class="pain-num">03</span>
+                    <h3>Manual Extraction Is Slow</h3>
+                    <p>Hours spent on takeoff that could be done in minutes — with full validation, automatically.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICE -->
+    <section id="services">
+        <div class="svc-featured reveal">
+            <div class="svc-content">
+                <span class="svc-num">Service</span>
+                <h3>IFC → Validated BOQ</h3>
+                <p>Your IFC file returned as a validated Bill of Quantities with full data source audit per element. Every quantity traced to its source — BaseQuantities, Pset, or geometric fallback. Every anomaly flagged with severity level and confidence score.</p>
+                <ul class="svc-list">
+                    <li>Revit · ArchiCAD · Tekla · Allplan</li>
+                    <li>IFC2x3, IFC4, IFC4x3</li>
+                    <li>Excel BOQ + narrative PDF</li>
+                    <li>24-hour turnaround</li>
+                </ul>
+            </div>
+            <div class="svc-img">
+                <img class="active" src="assets/4.jpg" alt="Construction site">
+                <img src="assets/5.jpg" alt="Construction site">
+                <img src="assets/6.jpg" alt="Construction site">
+                <img src="assets/7.jpg" alt="Construction site">
+            </div>
+        </div>
+    </section>
+
+    <!-- STRUCTBOQ -->
+    <section id="solution">
+        <div class="container">
+            <div class="solution-top reveal">
+                <div class="solution-text">
+                    <h2>StructBOQ — IFC Validation System</h2>
+                    <p>StructBOQ reads your IFC file directly — Revit, ArchiCAD, Tekla, Allplan — and extracts validated construction quantities with a full data source audit per element. It is not a BOQ generator. It is a quality gate between your model and downstream engineering decisions. Supports IFC2x3, IFC4, IFC4x3.</p>
+                </div>
+                <div class="solution-stat">
+                    <div class="stat-inline">
+                        <span class="snum">0.0001 m³</span>
+                        <span class="sdesc">Verified delta across 131.669 m³ concrete volume — buildingSMART FZK-Haus benchmark (ArchiCAD IFC4)</span>
+                    </div>
+                    <a href="case-studies.html" class="solution-link">Read the case studies →</a>
+                </div>
+            </div>
+
+            <div class="compare-landscape reveal d1">
+                <div class="cl-head-row">
+                    <div class="cl-corner"></div>
+                    <div class="cl-attr">Quantity Source</div>
+                    <div class="cl-attr">Classification</div>
+                    <div class="cl-attr">Error Detection</div>
+                    <div class="cl-attr">Confidence</div>
+                    <div class="cl-attr">Turnaround</div>
+                    <div class="cl-attr">Audit Trail</div>
+                </div>
+                <div class="cl-row manual">
+                    <div class="cl-label">Manual</div>
+                    <div class="cl-cell">Unknown</div>
+                    <div class="cl-cell">Unverified</div>
+                    <div class="cl-cell">Undetected</div>
+                    <div class="cl-cell">None</div>
+                    <div class="cl-cell">Days</div>
+                    <div class="cl-cell">None</div>
+                </div>
+                <div class="cl-row structboq">
+                    <div class="cl-label">StructBOQ</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Per element</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Auto-verified</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Flagged + severity</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Scored per element</div>
+                    <div class="cl-cell"><span class="tick">✓</span>24 hours</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Excel + PDF</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+        <div class="contact-inner">
+            <div class="contact-grid">
+                <div class="contact-left reveal">
+                    <h2>Send Your IFC File.</h2>
+                    <p>No engagement required for a first run — IFC file in, audited BOQ out. 24-hour turnaround.</p>
+                    <a href="mailto:engrshabir@shabirbim.com" class="contact-detail">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        engrshabir@shabirbim.com
+                    </a>
+                    <a href="https://linkedin.com/in/shabir-bim" target="_blank" class="contact-detail">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                        linkedin.com/in/shabir-bim
+                    </a>
+                </div>
+                <div class="contact-right reveal d1">
+                    <a href="submit-ifc.html" class="btn-gold">Submit IFC File →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+        </div>
+        <p>&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </footer>
+
+    <script>
+
+
+        // Nav background on scroll (light mode)
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > window.innerHeight * 0.8) {
+                navbar.style.background = 'rgba(245,244,240,0.95)';
+                navbar.style.backdropFilter = 'blur(10px)';
+                navbar.style.borderBottom = '1px solid rgba(0,0,0,0.09)';
+            } else {
+                navbar.style.background = 'transparent';
+                navbar.style.backdropFilter = 'none';
+                navbar.style.borderBottom = 'none';
+            }
+        });
+
+        // Service image slideshow
+        const slides = document.querySelectorAll('.svc-img img');
+        let current = 0;
+        setInterval(() => {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+        }, 4000);
+
+        // Reveal on scroll
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    </script>
+</body>
+</html>

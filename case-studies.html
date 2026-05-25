@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Studies | StructBOQ</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <style>
+        :root {
+            --bg-solid: #242424;
+            --border-color: rgba(255, 255, 255, 0.08);
+
+            /* Premium Light Golden Accent */
+            --accent: #D4AF37;
+            --accent-glow: rgba(212, 175, 55, 0.3);
+
+            --text-primary: #F1F5F9;
+            --text-secondary: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 70px; /* Space for fixed navbar */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ------------------------------------- */
+        /* HEADER NAVIGATION BAR & DROPDOWN      */
+        /* ------------------------------------- */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background-color: #1a1a1a;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-logo {
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--accent); text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        .nav-cta {
+            background: var(--accent); color: #000;
+            padding: 9px 20px; border-radius: 4px;
+            font-size: 0.875rem; font-weight: 700;
+            text-decoration: none; transition: all 0.25s;
+        }
+        .nav-cta:hover { background: #FDE047; }
+
+        .dropdown-menu-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-trigger-btn {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .dropdown-trigger-btn:hover {
+            background: var(--accent);
+            color: #1a1a1a;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .dropdown-chevron {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-menu-container.active .dropdown-chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu-content {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            background-color: #242424;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            min-width: 180px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1100;
+            animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-menu-container.active .dropdown-menu-content {
+            display: flex;
+        }
+
+        .dropdown-menu-content a {
+            color: var(--text-primary);
+            padding: 12px 18px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .dropdown-menu-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu-content a:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+            color: var(--accent);
+            padding-left: 22px;
+        }
+
+        /* ------------------------------------- */
+        /* LAYOUT & PANEL STYLING                */
+        /* ------------------------------------- */
+        .main-content {
+            flex-grow: 1;
+            padding: 80px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .section-heading {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 50px;
+            max-width: 700px;
+        }
+
+        /* Case Studies Grid */
+        .cases-list {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .case-card {
+            background: var(--bg-solid);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .case-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-3px);
+            background: #2a2a2a;
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .case-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .badge {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .case-body {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .case-metrics {
+            display: flex;
+            gap: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .metric-item h5 {
+            font-size: 0.8rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .metric-item p {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .btn-gold {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent);
+            color: #000;
+            padding: 16px 32px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 0 20px var(--accent-glow);
+            background-color: #FDE047;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: transparent;
+            color: white;
+            padding: 40px 20px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+            <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <span class="section-label">CASE STUDIES</span>
+            <h2 class="section-heading">Data Audits & Takeoff Automation</h2>
+            <p class="section-subtitle">Real-world examples of quantity verification, schema auditing, and processing pipelines executed via StructBOQ.</p>
+
+            <div class="cases-list">
+                <!-- Case 1 -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <h3 class="case-title">Office Complex Quantity Takeoff Audit</h3>
+                        <span class="badge">Quantity Discrepancy</span>
+                    </div>
+                    <p class="case-body">
+                        Audited a 12-story commercial office building model. StructBOQ identified 42 instances of load-bearing structural columns misclassified as generic slabs, along with missing properties in the base quantity set. Discrepancies were automatically compiled into a validation report, preventing a $64,000 procurement error.
+                    </p>
+                    <div class="case-metrics">
+                        <div class="metric-item">
+                            <h5>IFC Size</h5>
+                            <p>184 MB</p>
+                        </div>
+                        <div class="metric-item">
+                            <h5>Turnaround</h5>
+                            <p>18 Hours</p>
+                        </div>
+                        <div class="metric-item">
+                            <h5>Accuracy Delta</h5>
+                            <p>0.0001 m³</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case 2 -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <h3 class="case-title">Residential High-Rise Concrete Takeoff</h3>
+                        <span class="badge">Full Extraction</span>
+                    </div>
+                    <p class="case-body">
+                        Processed the structural design model for a residential tower to extract total concrete volumes. Overcame missing BaseQuantities parameters by executing a geometric fallback calculation on the boundary representations of slab shapes, cross-referencing results with model structural components.
+                    </p>
+                    <div class="case-metrics">
+                        <div class="metric-item">
+                            <h5>IFC Size</h5>
+                            <p>320 MB</p>
+                        </div>
+                        <div class="metric-item">
+                            <h5>Turnaround</h5>
+                            <p>22 Hours</p>
+                        </div>
+                        <div class="metric-item">
+                            <h5>Elements Checked</h5>
+                            <p>8,421</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="submit-ifc.html" class="btn-gold">Audit Your IFC File Now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-bottom">
+            <div style="display:flex;justify-content:center;gap:32px;margin-bottom:16px;">
+                <a href="index.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Home</a>
+                <a href="about.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">About</a>
+                <a href="demo.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Demo</a>
+                <a href="submit-ifc.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Submit IFC</a>
+            </div>
+            &copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const container = document.getElementById('navDropdownContainer');
+            container.classList.toggle('active');
+        }
+
+        document.addEventListener('click', (event) => {
+            const container = document.getElementById('navDropdownContainer');
+            if (container && !container.contains(event.target)) {
+                container.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>
