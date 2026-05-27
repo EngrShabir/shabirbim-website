@@ -83,6 +83,9 @@
             text-decoration: none; transition: all 0.25s;
         }
         .nav-cta:hover { background: #FDE047; }
+        .nav-links { display: flex; gap: 28px; align-items: center; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-primary); }
 
         .dropdown-menu-container {
             position: relative;
@@ -338,6 +341,11 @@
     <header class="top-navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+            <div class="nav-links">
+                <a href="about.html">About</a>
+                <a href="case-studies.html">Case Studies</a>
+                <a href="demo.html">Demo</a>
+            </div>
             <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
         </div>
     </header>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AC20-FZK-Haus | Case Studies | Shabir Ahmad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <style>
+        :root { --accent:#D4AF37; --accent-glow:rgba(212,175,55,0.25); --border:rgba(0,0,0,0.09); --bg:#F5F4F0; --bg2:#EDECEA; --bg3:#E8E6E1; --text:#0F0E0A; --muted:#6B6859; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:70px;}
+        .navbar{position:fixed;top:0;left:0;width:100%;height:70px;background:rgba(245,244,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;}
+        .nav-inner{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:space-between;align-items:center;}
+        .nav-logo{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.01em;}
+        .nav-cta{background:var(--accent);color:#000;padding:9px 20px;border-radius:4px;font-size:0.875rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
+        .nav-cta:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
+        .nav-links{display:flex;gap:28px;align-items:center;}
+        .nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .nav-links a:hover{color:var(--text);}
+        .container{max-width:900px;margin:0 auto;padding:0 32px;}
+        .label{display:block;font-size:0.72rem;font-weight:700;color:var(--accent);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:16px;}
+        .reveal{opacity:0;transform:translateY(24px);transition:all 0.7s cubic-bezier(0.16,1,0.3,1);}
+        .reveal.in{opacity:1;transform:none;}
+        .d1{transition-delay:0.1s;} .d2{transition-delay:0.2s;}
+        .breadcrumb{padding:14px 0;border-bottom:1px solid var(--border);}
+        .breadcrumb a{font-size:0.8rem;font-weight:600;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .breadcrumb a:hover{color:var(--text);}
+        .study-intro{padding:64px 0 48px;border-bottom:1px solid var(--border);}
+        .intro-top{display:flex;align-items:flex-start;gap:28px;}
+        .intro-num{font-size:4.5rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-0.04em;flex-shrink:0;width:88px;padding-top:4px;}
+        .intro-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-0.025em;line-height:1.05;margin-bottom:12px;}
+        .intro-source{font-size:0.82rem;color:var(--muted);font-weight:500;margin-bottom:14px;line-height:1.6;}
+        .intro-badge{display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(212,175,55,0.4);padding:4px 10px;border-radius:2px;}
+        .content-block{padding:56px 0;border-bottom:1px solid var(--border);}
+        .prose p{font-size:0.975rem;line-height:1.85;color:var(--text);margin-bottom:14px;}
+        .prose p:last-child{margin-bottom:0;}
+        .file-facts{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);padding:28px 32px;margin-top:32px;}
+        .file-facts ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:9px 40px;}
+        .file-facts ul li{font-size:0.85rem;color:var(--text);font-weight:500;padding-left:18px;position:relative;line-height:1.5;}
+        .file-facts ul li::before{content:'—';position:absolute;left:0;color:var(--muted);}
+        .data-row{display:flex;flex-wrap:wrap;border:1px solid var(--border);margin:20px 0;background:var(--bg);}
+        .data-cell{flex:1;min-width:150px;padding:14px 18px;border-right:1px solid var(--border);}
+        .data-cell:last-child{border-right:none;}
+        .dc-label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.09em;display:block;margin-bottom:5px;}
+        .dc-value{font-size:0.9rem;font-weight:700;color:var(--text);}
+        .dc-value.gold{color:var(--accent);}
+        .findings{margin-top:32px;}
+        .finding{border-top:1px solid var(--border);padding:28px 0;}
+        .finding:last-child{border-bottom:1px solid var(--border);}
+        .finding-header{display:flex;align-items:baseline;gap:18px;margin-bottom:14px;flex-wrap:wrap;}
+        .finding-num{font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;flex-shrink:0;}
+        .finding-title{font-size:0.875rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.03em;line-height:1.4;}
+        .finding-body p{font-size:0.95rem;line-height:1.82;color:var(--text);margin-bottom:12px;}
+        .finding-body p:last-child{margin-bottom:0;}
+        .result-bar{background:var(--text);display:flex;margin-top:32px;}
+        .result-item{flex:1;padding:28px 32px;border-right:1px solid rgba(255,255,255,0.07);}
+        .result-item:last-child{border-right:none;}
+        .r-label{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:block;margin-bottom:10px;}
+        .r-value{font-size:1.45rem;font-weight:800;color:var(--accent);letter-spacing:-0.02em;line-height:1;display:block;margin-bottom:6px;}
+        .r-sub{font-size:0.72rem;color:rgba(255,255,255,0.3);display:block;}
+        .limitation{padding:40px 0;border-bottom:1px solid var(--border);}
+        .limitation .label{color:var(--muted);}
+        .limitation p{font-size:0.9rem;line-height:1.82;color:var(--muted);}
+        .why-matters{padding:40px 0;}
+        .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
+        .why-matters p:last-child{margin-bottom:0;}
+        footer{padding:48px 0 32px;border-top:1px solid var(--border);}
+        .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+        .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .footer-links a:hover{color:var(--text);}
+        .footer-copy{text-align:center;font-size:0.78rem;color:var(--muted);}
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+        </div>
+        <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+    </div>
+</nav>
+
+<div class="breadcrumb">
+    <div class="container">
+        <a href="case-studies.html">← Case Studies</a>
+    </div>
+</div>
+
+<header class="study-intro">
+    <div class="container">
+        <div class="intro-top reveal">
+            <span class="intro-num">01</span>
+            <div>
+                <h1 class="intro-title">AC20-FZK-Haus</h1>
+                <p class="intro-source">ArchiCAD IFC4 &nbsp;·&nbsp; Karlsruhe Institute of Technology &nbsp;·&nbsp; buildingSMART benchmark model</p>
+                <span class="intro-badge">Benchmark Model</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <div class="content-block reveal">
+            <span class="label">THE PROBLEM</span>
+            <div class="prose">
+                <p>Most automated quantity extraction workflows assume IFC semantics are reliable enough for direct interpretation. A property is read, mapped to a category, and transferred into a BOQ with minimal validation.</p>
+                <p>In practice, IFC data is a product of modeling decisions, export behavior, drafting conventions, and software-specific interpretation layers — not a dataset explicitly structured for downstream quantity takeoff.</p>
+                <p>FZK-Haus is one of the most widely used IFC benchmark models in the industry. Developed by researchers at KIT and distributed through buildingSMART, it is used globally by software vendors, universities, and BIM researchers to test interoperability and quantity extraction behavior.</p>
+                <p>The file exported without error. The quantities existed. The semantics still required verification.</p>
+            </div>
+
+            <div class="file-facts">
+                <span class="label">WHAT THE FILE CONTAINED</span>
+                <ul>
+                    <li>18 concrete structural elements</li>
+                    <li>131.669 m³ total concrete volume</li>
+                    <li>42 timber roof members</li>
+                    <li>1 foundation slab</li>
+                    <li>2 sloped roof slabs</li>
+                    <li>1 concrete beam — inconsistent material metadata</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">FINDINGS</span>
+            <div class="findings">
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 01</span>
+                        <span class="finding-title">Non-Dimensional Property Misinterpreted as Geometry Input</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>The roof rafters were exported as IfcMember elements with no explicit material identifiers — no timber, wood, or holz in naming or material assignments. Each element contained a property named Slope with a value of 1718.873 under Pset_BeamCommon.</p>
+                        <p>In naive extraction logic, non-geometric properties within common Psets can be incorrectly mapped as dimensional inputs. Under such a mapping, this value propagates into a derived depth calculation of approximately 37.65 m — which is not physically meaningful.</p>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">Calculated depth (incorrect)</span><span class="dc-value">37.65 m</span></div>
+                            <div class="data-cell"><span class="dc-label">Actual rafter depth</span><span class="dc-value gold">0.16 m</span></div>
+                            <div class="data-cell"><span class="dc-label">Elements affected</span><span class="dc-value">42 rafters</span></div>
+                        </div>
+                        <p>The validation pipeline explicitly excludes non-dimensional attributes — Slope, FireRating, ThermalTransmittance, LoadBearing — from geometry inference. All 42 rafters were correctly classified as non-concrete and excluded from RC quantity extraction.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 02</span>
+                        <span class="finding-title">Structural Element with Non-Semantic Material Metadata</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>The only concrete beam in the model carried the exported material identifier: "Radial Gradient Fill 1515460218" — originating from an ArchiCAD 2D section fill definition rather than a structural material assignment. Additional surface metadata referenced Kiefer glänzend (pine glossy), inconsistent with concrete classification.</p>
+                        <p>Element classification was derived from combined evidence: structural naming convention ("Unterzug"), full BaseQuantities availability, geometric placement beneath the primary slab system at ground floor level, and contextual consistency within the structural grid. Material metadata alone was not sufficient for reliable classification.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 03</span>
+                        <span class="finding-title">Misclassification of Foundation Element Type</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>The foundation slab "Bodenplatte" was exported as IfcSlab with PredefinedType = BASESLAB. In standard workflows, slabs are often processed under uniform reinforcement assumptions. Foundation elements require distinct structural and reinforcement logic. The pipeline detected the predefined type and reclassified the element into a foundation category prior to quantity and reinforcement logic assignment.</p>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">Bonsai NetVolume</span><span class="dc-value">24.0000 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">StructBOQ output</span><span class="dc-value gold">24.0000 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">Difference</span><span class="dc-value">0.0000 m³</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 04</span>
+                        <span class="finding-title">Net vs Gross Volume Error Due to Void Geometry</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>One floor slab contained a circular opening for a staircase core. If GrossVolume is used for estimation, the slab is over-quantified by 13.7% on this element alone.</p>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">GrossVolume</span><span class="dc-value">23.128 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">NetVolume</span><span class="dc-value gold">19.967 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">Void removed</span><span class="dc-value">3.161 m³ — 13.7%</span></div>
+                        </div>
+                        <p>The pipeline consistently uses NetVolume for all quantity calculations. BOQs reflect constructed geometry rather than pre-void mass representation.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">THE RESULT</span>
+            <p style="font-size:0.975rem;line-height:1.85;margin-bottom:16px;">All 18 concrete elements were independently validated against raw IFC quantities using Bonsai / BlenderBIM. No material quantity discrepancies were identified. All final concrete quantities were derived exclusively from IFC BaseQuantities. No geometric fallback was required at any stage.</p>
+            <div class="result-bar">
+                <div class="result-item">
+                    <span class="r-label">Total Concrete</span>
+                    <span class="r-value">131.6686 m³</span>
+                    <span class="r-sub">18 elements validated</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Bonsai Reference</span>
+                    <span class="r-value">131.6685 m³</span>
+                    <span class="r-sub">BlenderBIM cross-check</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Quantity Delta</span>
+                    <span class="r-value">0.0001 m³</span>
+                    <span class="r-sub">Floating-point only</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="limitation reveal">
+            <span class="label">ONE HONEST LIMITATION</span>
+            <p>This benchmark model does not contain modeled reinforcement geometry. Steel quantities were derived using rule-based estimation based on BS EN 1992 design assumptions. Concrete quantities are fully validated at the data-source level. Steel outputs remain indicative and are not suitable for procurement or contractual use.</p>
+        </div>
+
+        <div class="why-matters reveal">
+            <span class="label">WHY THIS MATTERS</span>
+            <p>IFC is not a deterministic representation of construction reality. It is an exported model whose semantics are shaped by authoring decisions, software interpretation layers, and exchange configurations.</p>
+            <p>In quantity workflows, failures rarely originate from incorrect mathematics. They originate from unvalidated semantic assumptions that propagate silently through estimation, procurement, reinforcement planning, and cost control processes.</p>
+            <p>The role of validation is not to override engineering judgment, but to surface ambiguity before it becomes a financial or contractual error downstream.</p>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+            <a href="submit-ifc.html">Submit IFC</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </div>
+</footer>
+
+<script>
+    const obs = new IntersectionObserver(
+        (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+        { threshold: 0.08 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

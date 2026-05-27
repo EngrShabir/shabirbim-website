@@ -1,0 +1,97 @@
+CASE STUDY 06
+Allplan 2017 Test Bauteil-Oberflächen.ifc
+Allplan 2017 · IFC2X3 · Underground car park — mixed concrete and non-structural elements
+
+THE PROBLEM
+This file represents a below-grade structure — an underground car park (TIEFGARAGE) built using waterproof concrete to WU standard (AWF02-C25-30-WU-BIM).
+It is also a mixed-authoring environment where structural and non-structural systems coexist under identical IFC classes.
+Masonry walls. Plasterboard ceilings. Insulation systems. Natural stone finishes. Sanitary fixtures. All exported as IfcWallStandardCase and IfcSlab. No LoadBearing flags. No explicit structural separation anywhere in the file.
+A standard extraction treats everything as potential concrete.
+Reported concrete volume — 94.074 m³.
+Correct concrete volume — 62.703 m³.
+Overstatement — 31.371 m³.
+Error — 50%.
+The required classification signals were present in the IFC. Not in standard fields.
+
+WHAT THE FILE CONTAINED
+63 total IFC elements
+14 structural concrete elements
+62.703 m³ validated concrete volume
+4 concrete downstand beams — Unterzug
+2 concrete slabs — DEF04-C25-30-BIM, 250mm
+8 waterproof concrete walls — AWF02-C25-30-WU-BIM
+23 non-structural walls — masonry, plasterboard, insulation, finishes
+3 non-structural slabs — mineral wool, plasterboard
+4 sanitary fixture proxies — sink, toilet, washbasin, washing machine
+Zero IfcReinforcingBar — steel quantities ratio estimated
+
+FINDING 1 — 31.371 M³ OF NON-STRUCTURAL ELEMENTS PASSING AS CONCRETE. THE ANSWER WAS IN ONE FIELD.
+Every material layer in every Allplan wall carries a field called Gewerk. Construction trade assignment. It is stored in IfcComplexProperty Object Layer Attributes nodes — not in standard IFC property sets.
+31.371 m³ of masonry, plasterboard, insulation, and stone finish entered the BOQ because this field was not read.
+The Gewerk values in this file are unambiguous.
+Betonarbeiten — concrete works — include.
+Mauerarbeiten — masonry works — exclude.
+Trockenbauarbeiten — dry construction, plasterboard — exclude.
+Putz- und Stuckarbeiten — plaster and stucco — exclude.
+Abdichtung gegen Wasser — waterproofing — exclude.
+Wärmedämmung — thermal insulation — exclude.
+Natursteinarbeiten — natural stone finish — exclude.
+This is not a heuristic. It is author-assigned construction classification written into the model at authoring time — the most authoritative classification signal in the file.
+Engines that do not read IfcComplexProperty nodes miss it entirely. All 23 non-structural walls pass through. All 3 non-structural slabs pass through. 31.371 m³ enters the BOQ.
+After Gewerk-based filtering — 62.703 m³. Validated to 4 decimal places.
+
+FINDING 2 — MULTI-LAYER WALLS REQUIRE FRACTIONAL CONCRETE EXTRACTION
+Eight concrete walls are multi-layer assemblies. One IFC element. Multiple material layers. One combined NetVolume that includes all of them.
+Wall 3 — the clearest example.
+Concrete layer — AWF02-C25-30-WU-BIM — 300mm — Betonarbeiten — include.
+Waterproofing layer — FAS2-DRW-DAE — 120mm — Abdichtung — exclude.
+Total wall build-up — 420mm.
+IFC NetVolume — 7.757400 m³ — combined volume of both layers.
+Concrete volume — 7.757400 × (300 / 420) = 5.541000 m³.
+Extracting NetVolume directly and pricing it as concrete overstates this element by 40%. This calculation must be applied to every multi-layer concrete wall. The IFC volume is the assembly total — not the structural concrete volume.
+All 7 multi-layer concrete walls calculated by fraction splitting. All confirmed against Bonsai to 4 decimal places.
+
+FINDING 3 — 61.7% OF A WATERPROOF CONCRETE WALL REMOVED BY AN OPENING
+Wall 20 — AWF02-C25-30-WU-BIM — a waterproof external concrete wall.
+GrossVolume — 3.433 m³.
+NetVolume — 1.313 m³.
+Opening removal — 2.120 m³ — 61.7% of gross volume.
+More than half of this wall's gross volume does not exist. A GrossVolume-based workflow overstates concrete on this element by 161%.
+The commercial consequence is specific to this material. WU concrete — Wasserundurchlässig — is a regulated specification in German construction practice. It requires certified mix design, independent inspection, and specialist placement. It is priced at a premium. Pricing the gross volume of a WU concrete wall means paying premium rates for concrete that was never poured.
+NetVolume used throughout. Opening subtractions confirmed correct on all elements.
+
+FINDING 4 — FOUR SANITARY FIXTURES CLASSIFIED AS STRUCTURAL CONCRETE
+Four IfcBuildingElementProxy elements in the file.
+A sink. A washbasin. A toilet. A washing machine.
+Identified via Objektname: Sanitär in Allplan Attributes. Unit — St, pieces, not volume. Zero structural relevance.
+Without Objektname reading these appear in the BOQ labeled as Concrete (assumed). A washing machine labeled as a structural concrete element in an engineering report destroys trust in every number that follows it.
+All four correctly excluded after Objektname classification implemented.
+
+VALIDATION PIPELINE
+Gewerk extraction from IfcComplexProperty Object Layer Attributes — primary classification signal
+Layer-level trade classification for multi-layer walls
+Fractional decomposition of composite wall volumes — concrete layer thickness divided by total assembly thickness
+Allplan proprietary quantity sets — WallQuantities, SlabQuantities, BeamQuantities
+NetVolume-first extraction with opening validation throughout
+Objektname-based detection for IfcBuildingElementProxy sanitary fixtures
+IFC2X3 unit normalization — millimetre project declaration handled explicitly
+Element-level reconciliation in Bonsai/BlenderBIM
+Full per-element traceability
+
+THE RESULT
+14 concrete elements validated against IFC data in Bonsai/BlenderBIM.
+Ground truth — 62.703 m³
+StructBOQ after classification correction — 62.703 m³
+Delta — 0.000034 m³ — floating point precision only
+Before correction — 94.074 m³.
+After correction — 62.703 m³.
+Non-structural contamination removed — 31.371 m³.
+
+ONE HONEST LIMITATION
+Steel reinforcement is not modeled in this file. All steel quantities are ratio estimated from BS EN 1992. Uncertainty range ±50 to 300%. This is a waterproof concrete underground structure — actual reinforcement density in WU walls is project-specific and cannot be estimated reliably from ratios. Do not use for procurement, fabrication, or contractual pricing.
+
+WHY THIS MATTERS
+This is a German IFC model. Allplan. IFC2X3. Underground car park. WU concrete specification. The classification system is trade-based — Gewerk defines construction responsibility, Objektname defines semantic object intent, IfcComplexProperty carries authoritative layer-level meaning.
+Standard IFC extraction engines built around Revit conventions miss this entirely. Without reading these signals — structural and non-structural systems collapse into one category, waterproof concrete is priced alongside insulation and masonry, and BOQ inflation reaches 50% in a 63-element file.
+The IFC did not fail.
+The extraction system simply did not read the part of the file that contained the classification truth.

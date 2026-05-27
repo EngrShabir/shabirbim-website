@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bauteil-Oberflächen | Case Studies | Shabir Ahmad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <style>
+        :root { --accent:#D4AF37; --accent-glow:rgba(212,175,55,0.25); --border:rgba(0,0,0,0.09); --bg:#F5F4F0; --bg2:#EDECEA; --bg3:#E8E6E1; --text:#0F0E0A; --muted:#6B6859; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:70px;}
+        .navbar{position:fixed;top:0;left:0;width:100%;height:70px;background:rgba(245,244,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;}
+        .nav-inner{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:space-between;align-items:center;}
+        .nav-logo{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.01em;}
+        .nav-cta{background:var(--accent);color:#000;padding:9px 20px;border-radius:4px;font-size:0.875rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
+        .nav-cta:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
+        .nav-links{display:flex;gap:28px;align-items:center;}
+        .nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .nav-links a:hover{color:var(--text);}
+        .container{max-width:900px;margin:0 auto;padding:0 32px;}
+        .label{display:block;font-size:0.72rem;font-weight:700;color:var(--accent);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:16px;}
+        .reveal{opacity:0;transform:translateY(24px);transition:all 0.7s cubic-bezier(0.16,1,0.3,1);}
+        .reveal.in{opacity:1;transform:none;}
+        .breadcrumb{padding:14px 0;border-bottom:1px solid var(--border);}
+        .breadcrumb a{font-size:0.8rem;font-weight:600;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .breadcrumb a:hover{color:var(--text);}
+        .study-intro{padding:64px 0 48px;border-bottom:1px solid var(--border);}
+        .intro-top{display:flex;align-items:flex-start;gap:28px;}
+        .intro-num{font-size:4.5rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-0.04em;flex-shrink:0;width:88px;padding-top:4px;}
+        .intro-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-0.025em;line-height:1.05;margin-bottom:12px;}
+        .intro-source{font-size:0.82rem;color:var(--muted);font-weight:500;margin-bottom:14px;line-height:1.6;}
+        .intro-badge{display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(212,175,55,0.4);padding:4px 10px;border-radius:2px;}
+        .content-block{padding:56px 0;border-bottom:1px solid var(--border);}
+        .prose p{font-size:0.975rem;line-height:1.85;color:var(--text);margin-bottom:14px;}
+        .prose p:last-child{margin-bottom:0;}
+        .file-facts{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);padding:28px 32px;margin-top:32px;}
+        .file-facts ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:9px 40px;}
+        .file-facts ul li{font-size:0.85rem;color:var(--text);font-weight:500;padding-left:18px;position:relative;line-height:1.5;}
+        .file-facts ul li::before{content:'—';position:absolute;left:0;color:var(--muted);}
+        .data-row{display:flex;flex-wrap:wrap;border:1px solid var(--border);margin:20px 0;background:var(--bg);}
+        .data-cell{flex:1;min-width:150px;padding:14px 18px;border-right:1px solid var(--border);}
+        .data-cell:last-child{border-right:none;}
+        .dc-label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.09em;display:block;margin-bottom:5px;}
+        .dc-value{font-size:0.9rem;font-weight:700;color:var(--text);}
+        .dc-value.gold{color:var(--accent);}
+        .findings{margin-top:32px;}
+        .finding{border-top:1px solid var(--border);padding:28px 0;}
+        .finding:last-child{border-bottom:1px solid var(--border);}
+        .finding-header{display:flex;align-items:baseline;gap:18px;margin-bottom:14px;flex-wrap:wrap;}
+        .finding-num{font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;flex-shrink:0;}
+        .finding-title{font-size:0.875rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.03em;line-height:1.4;}
+        .finding-body p{font-size:0.95rem;line-height:1.82;color:var(--text);margin-bottom:12px;}
+        .finding-body p:last-child{margin-bottom:0;}
+        .gewerk-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.85rem;}
+        .gewerk-table th{text-align:left;font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.09em;padding:10px 14px;border-bottom:2px solid var(--border);}
+        .gewerk-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+        .gewerk-table tr:last-child td{border-bottom:none;}
+        .tag-include{display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#000;background:var(--accent);padding:2px 8px;}
+        .tag-exclude{display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);background:var(--bg3);padding:2px 8px;}
+        .result-bar{background:var(--text);display:flex;margin-top:32px;}
+        .result-item{flex:1;padding:28px 32px;border-right:1px solid rgba(255,255,255,0.07);}
+        .result-item:last-child{border-right:none;}
+        .r-label{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:block;margin-bottom:10px;}
+        .r-value{font-size:1.45rem;font-weight:800;color:var(--accent);letter-spacing:-0.02em;line-height:1;display:block;margin-bottom:6px;}
+        .r-sub{font-size:0.72rem;color:rgba(255,255,255,0.3);display:block;}
+        .limitation{padding:40px 0;border-bottom:1px solid var(--border);}
+        .limitation .label{color:var(--muted);}
+        .limitation p{font-size:0.9rem;line-height:1.82;color:var(--muted);}
+        .why-matters{padding:40px 0;}
+        .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
+        .why-matters p:last-child{margin-bottom:0;}
+        footer{padding:48px 0 32px;border-top:1px solid var(--border);}
+        .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+        .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .footer-links a:hover{color:var(--text);}
+        .footer-copy{text-align:center;font-size:0.78rem;color:var(--muted);}
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+        </div>
+        <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+    </div>
+</nav>
+
+<div class="breadcrumb">
+    <div class="container"><a href="case-studies.html">← Case Studies</a></div>
+</div>
+
+<header class="study-intro">
+    <div class="container">
+        <div class="intro-top reveal">
+            <span class="intro-num">06</span>
+            <div>
+                <h1 class="intro-title">Allplan 2017 Test Bauteil-Oberflächen.ifc</h1>
+                <p class="intro-source">Allplan 2017 &nbsp;·&nbsp; IFC2X3 &nbsp;·&nbsp; Underground car park — mixed concrete and non-structural elements (TIEFGARAGE)</p>
+                <span class="intro-badge">German IFC2X3</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <div class="content-block reveal">
+            <span class="label">THE PROBLEM</span>
+            <div class="prose">
+                <p>A below-grade structure. An underground car park built to WU concrete specification — Wasserundurchlässig, AWF02-C25-30-WU-BIM. Waterproof concrete. Certified mix design. Specialist placement. Premium pricing.</p>
+                <p>It is also a mixed-authoring environment. Structural and non-structural systems coexist under identical IFC classes. Masonry walls. Plasterboard ceilings. Insulation systems. Natural stone finishes. Sanitary fixtures. All exported as IfcWallStandardCase and IfcSlab. No LoadBearing flags. No explicit structural separation anywhere in the file.</p>
+                <p>A standard extraction treats everything as potential concrete. Reported concrete volume — 94.074 m³. Correct concrete volume — 62.703 m³. Overstatement — 31.371 m³. Error — 50%. The required classification signals were present in the IFC. Not in standard fields.</p>
+            </div>
+            <div class="file-facts">
+                <span class="label">WHAT THE FILE CONTAINED</span>
+                <ul>
+                    <li>63 total IFC elements</li>
+                    <li>14 structural concrete elements</li>
+                    <li>62.703 m³ validated concrete volume</li>
+                    <li>4 concrete downstand beams — Unterzug</li>
+                    <li>2 concrete slabs — DEF04-C25-30-BIM, 250mm</li>
+                    <li>8 waterproof concrete walls — AWF02-C25-30-WU-BIM</li>
+                    <li>23 non-structural walls — masonry, plasterboard, insulation, finishes</li>
+                    <li>3 non-structural slabs — mineral wool, plasterboard</li>
+                    <li>4 sanitary fixture proxies — sink, toilet, washbasin, washing machine</li>
+                    <li>Zero IfcReinforcingBar — steel quantities ratio estimated</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">FINDINGS</span>
+            <div class="findings">
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 01</span>
+                        <span class="finding-title">31.371 m³ of Non-Structural Elements Passing as Concrete — The Answer Was in One Field</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>Every material layer in every Allplan wall carries a field called Gewerk. Construction trade assignment. It is stored in IfcComplexProperty Object Layer Attributes nodes — not in standard IFC property sets. Engines built around IfcPropertySingleValue and standard Psets do not read it.</p>
+                        <p>31.371 m³ of masonry, plasterboard, insulation, and stone finish entered the BOQ because this field was not read. The Gewerk values in this file are unambiguous author-assigned construction classification — the most authoritative classification signal in the file.</p>
+                        <table class="gewerk-table">
+                            <thead>
+                                <tr><th>Gewerk Value</th><th>Trade</th><th>Decision</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Betonarbeiten</td><td>Concrete works</td><td><span class="tag-include">Include</span></td></tr>
+                                <tr><td>Mauerarbeiten</td><td>Masonry works</td><td><span class="tag-exclude">Exclude</span></td></tr>
+                                <tr><td>Trockenbauarbeiten</td><td>Dry construction / plasterboard</td><td><span class="tag-exclude">Exclude</span></td></tr>
+                                <tr><td>Putz- und Stuckarbeiten</td><td>Plaster and stucco</td><td><span class="tag-exclude">Exclude</span></td></tr>
+                                <tr><td>Abdichtung gegen Wasser</td><td>Waterproofing</td><td><span class="tag-exclude">Exclude</span></td></tr>
+                                <tr><td>Wärmedämmung</td><td>Thermal insulation</td><td><span class="tag-exclude">Exclude</span></td></tr>
+                                <tr><td>Natursteinarbeiten</td><td>Natural stone finish</td><td><span class="tag-exclude">Exclude</span></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">Before Gewerk filtering</span><span class="dc-value">94.074 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">After Gewerk filtering</span><span class="dc-value gold">62.703 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">Non-structural removed</span><span class="dc-value">31.371 m³</span></div>
+                        </div>
+                        <p>After Gewerk-based filtering — 62.703 m³. Validated to 4 decimal places. The IFC did not fail. The extraction system simply did not read the part of the file that contained the classification truth.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 02</span>
+                        <span class="finding-title">Multi-Layer Walls Require Fractional Concrete Extraction</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>Eight concrete walls are multi-layer assemblies. One IFC element. Multiple material layers. One combined NetVolume that includes all of them. Extracting NetVolume directly and pricing it as concrete is incorrect.</p>
+                        <p>Wall 3 — the clearest example. Concrete layer AWF02-C25-30-WU-BIM at 300mm is the structural element. Waterproofing layer FAS2-DRW-DAE at 120mm is excluded by Gewerk. Total assembly build-up — 420mm.</p>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">IFC NetVolume (combined)</span><span class="dc-value">7.757400 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">Concrete fraction</span><span class="dc-value">300 / 420 = 0.714</span></div>
+                            <div class="data-cell"><span class="dc-label">Concrete volume</span><span class="dc-value gold">5.541000 m³</span></div>
+                        </div>
+                        <p>Extracting NetVolume directly overstates this element by 40%. This fractional decomposition was applied to all 7 multi-layer concrete walls. All confirmed against Bonsai to 4 decimal places. The IFC volume is the assembly total — not the structural concrete volume.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 03</span>
+                        <span class="finding-title">61.7% of a WU Concrete Wall Removed by an Opening</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>Wall 20 — AWF02-C25-30-WU-BIM — a waterproof external concrete wall. GrossVolume 3.433 m³. NetVolume 1.313 m³. Opening removal — 2.120 m³ — 61.7% of gross volume. More than half of this wall's gross volume does not exist.</p>
+                        <p>A GrossVolume-based workflow overstates concrete on this element by 161%. The commercial consequence is specific to this material. WU concrete is a regulated specification in German construction practice. It requires certified mix design, independent inspection, and specialist placement. It is priced at a premium. Pricing the gross volume of a WU concrete wall means paying premium rates for concrete that was never poured.</p>
+                        <p>NetVolume used throughout. Opening subtractions confirmed correct on all elements.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 04</span>
+                        <span class="finding-title">Four Sanitary Fixtures Classified as Structural Concrete</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>Four IfcBuildingElementProxy elements in the file. A sink. A washbasin. A toilet. A washing machine. Identified via Objektname: Sanitär in Allplan Attributes. Unit — St, pieces, not volume. Zero structural relevance.</p>
+                        <p>Without Objektname reading these appear in the BOQ labeled as Concrete (assumed). A washing machine labeled as a structural concrete element in an engineering report destroys trust in every number that follows it. All four correctly excluded after Objektname classification implemented.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">THE RESULT</span>
+            <p style="font-size:0.975rem;line-height:1.85;margin-bottom:16px;">14 concrete elements validated against IFC data in Bonsai/BlenderBIM. Gewerk extraction from IfcComplexProperty, fractional layer decomposition, and Objektname-based proxy detection combined to remove 31.371 m³ of non-structural contamination.</p>
+            <div class="result-bar">
+                <div class="result-item">
+                    <span class="r-label">Validated Concrete</span>
+                    <span class="r-value">62.703 m³</span>
+                    <span class="r-sub">14 elements — 4 dp precision</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Contamination Removed</span>
+                    <span class="r-value">31.371 m³</span>
+                    <span class="r-sub">50% overstatement corrected</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Delta vs Ground Truth</span>
+                    <span class="r-value">0.000034 m³</span>
+                    <span class="r-sub">Floating point precision only</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="limitation reveal">
+            <span class="label">ONE HONEST LIMITATION</span>
+            <p>Steel reinforcement is not modeled in this file. All steel quantities are ratio estimated from BS EN 1992. Uncertainty range ±50 to 300%. This is a waterproof concrete underground structure — actual reinforcement density in WU walls is project-specific and cannot be estimated reliably from ratios. Do not use for procurement, fabrication, or contractual pricing.</p>
+        </div>
+
+        <div class="why-matters reveal">
+            <span class="label">WHY THIS MATTERS</span>
+            <p>This is a German IFC model. Allplan. IFC2X3. Underground car park. WU concrete specification. The classification system is trade-based — Gewerk defines construction responsibility, Objektname defines semantic object intent, IfcComplexProperty carries authoritative layer-level meaning.</p>
+            <p>Standard IFC extraction engines built around Revit conventions miss this entirely. Without reading these signals — structural and non-structural systems collapse into one category, waterproof concrete is priced alongside insulation and masonry, and BOQ inflation reaches 50% in a 63-element file.</p>
+            <p>The IFC did not fail. The extraction system simply did not read the part of the file that contained the classification truth.</p>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+            <a href="submit-ifc.html">Submit IFC</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </div>
+</footer>
+
+<script>
+    const obs = new IntersectionObserver(
+        (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+        { threshold: 0.08 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

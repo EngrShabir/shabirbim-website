@@ -58,6 +58,9 @@
             text-decoration: none; transition: all 0.25s;
         }
         .nav-cta:hover { background: #FDE047; box-shadow: 0 0 20px var(--accent-glow); }
+        .nav-links { display: flex; gap: 28px; align-items: center; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-primary); }
 
         /* LAYOUT */
         .page-wrap { max-width: 1000px; margin: 0 auto; padding: 80px 20px 100px; }
@@ -353,6 +356,11 @@
     <header class="top-navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+            <div class="nav-links">
+                <a href="about.html">About</a>
+                <a href="case-studies.html">Case Studies</a>
+                <a href="demo.html">Demo</a>
+            </div>
             <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
         </div>
     </header>
@@ -532,11 +540,6 @@
 
         <div class="divider"></div>
 
-        <!-- BACK LINK -->
-        <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;color:var(--text-secondary);text-decoration:none;font-size:0.9rem;font-weight:600;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-secondary)'">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            Back to Home
-        </a>
 
     </div>
 
@@ -544,8 +547,10 @@
     <footer>
         <div class="footer-links">
             <a href="index.html">Home</a>
+            <a href="about.html">About</a>
             <a href="case-studies.html">Case Studies</a>
             <a href="demo.html">Demo</a>
+            <a href="submit-ifc.html">Submit IFC</a>
         </div>
         <p>&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
     </footer>

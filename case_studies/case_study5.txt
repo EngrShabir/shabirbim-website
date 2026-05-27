@@ -1,0 +1,94 @@
+CASE STUDY 05
+SampleBuilding.ifc
+Revit 2024 · IFC4 · Multi-storey commercial building — concrete shear wall core with steel perimeter frame
+
+THE PROBLEM
+This is a production-scale commercial building model.
+1,221 structural elements processed:
+Concrete shear wall core for lateral resistance
+Steel perimeter gravity frame
+Composite metal deck floors
+Deep foundation system
+At this scale, errors do not appear as obvious anomalies. They are embedded in classification, layering, and incomplete geometric representation.
+The question is not whether errors exist.
+The question is whether the extraction system detects them before they reach the BOQ.
+Four findings. Each with direct cost impact.
+
+WHAT THE FILE CONTAINED
+1,221 total structural elements
+218 concrete structural elements
+2,760.58 m³ total concrete volume
+58 concrete shear walls — lateral core system
+13 concrete columns — elevator pit transition zone
+35 concrete beams — five section types
+22 concrete floor slabs
+90 foundation elements — three subtypes
+484 steel bar joists — excluded
+41 steel W-columns — excluded
+907 steel beams — excluded
+0 IfcReinforcingBar — steel reinforcement ratio estimated
+
+FINDING 1 — FOUNDATION SYSTEM UNDERCOUNTED BY A FACTOR OF 6.4
+A class-only IFC extraction reads IfcFooting and returns 9 elements and 56.88 m³. This is incomplete.
+The model contains an additional foundation system encoded as IfcSlab with PredefinedType BASESLAB.
+SFD_Round drilled caissons — 30" and 24" diameter — 65 elements
+SFD_Pile_Cap rectangular caps — 13 elements
+FNDN-36 mat foundations — 4 elements
+Strip footings — 9 elements
+Total — 90 foundation elements. 361.62 m³.
+A class-only workflow excludes the majority of the foundation system. 304.74 m³ missed. On a real project that is not a rounding error. That is a full foundation system absent from procurement quantities.
+The correct signal is not class. It is PredefinedType.
+
+FINDING 2 — 51% OF A SHEAR WALL'S VOLUME DOES NOT EXIST
+Three shear walls contain major openings.
+Wall A — 51% of gross volume removed by openings
+Wall B — 47% removed
+Wall C — 26% removed
+GrossVolume is the solid wall before openings. NetVolume is the geometry after openings are subtracted. These are materially different quantities.
+In the most extreme case, more than half of the reported wall volume is void.
+Shear wall system — 58 walls. 1,164.94 m³ total. Using GrossVolume would systematically overstate concrete across every perforated wall in the lateral core.
+NetVolume used consistently and verified against Bonsai for all 58 elements.
+The distinction is not computational. It is commercial.
+
+FINDING 3 — €14,400 OF PHANTOM CONCRETE COST IN 12 COMPOSITE SLABS
+12 floor slabs are NW Concrete on Metal Deck — Vulcraft 2VLI system. Total IFC volume — 601.05 m³.
+At €120 per m³, rib displacement from the Vulcraft 2VLI deck profile overstates concrete by an estimated €10,800 to €14,400 on this element group alone.
+The cause — the 2" steel ribs displace concrete but the IFC geometry models these slabs as flat plates. Rib geometry was never modeled. The IFC volume includes the full depth as solid concrete.
+The engine correctly isolates the concrete layer and excludes the steel decking from quantities. But it cannot correct what the geometry does not model.
+This limitation is documented in the validation report with the correction range. The QS applies the rib displacement factor from structural drawings. The IFC volume is the starting point — not the final answer.
+
+FINDING 4 — STRUCTURAL AND NON-STRUCTURAL ELEMENTS AT THE CONCRETE-TO-STEEL TRANSITION
+At the elevator pit transition zone — 50 IfcBuildingElementProxy elements identified. Steel embed plates and headed anchor studs — SCN_Embed and SCN_HAS systems connecting the concrete core to the steel frame above.
+These are physical components. They are not structural concrete elements for BOQ purposes.
+Correctly excluded from concrete quantities. Zero volume contribution. No impact on structural totals.
+The concrete-to-steel interface is one of the most failure-prone classification zones in mixed-material buildings. No misclassification observed.
+
+VALIDATION PIPELINE
+BASESLAB detection across foundation subtypes — caissons, pile caps, mat foundations
+PredefinedType-driven foundation classification override
+Material and section-based steel exclusion — columns, beams, trusses
+IfcBuildingElementProxy filtering for embedded hardware
+NetVolume-first extraction for all shear wall elements
+Composite slab decomposition with metal deck layer exclusion
+Qto_ quantity set verification — standard IFC sets only
+Element-level reconciliation in Bonsai/BlenderBIM
+Full traceability per element and system
+
+THE RESULT
+218 concrete elements validated against IFC BaseQuantities.
+Bonsai total — 2,760.58 m³
+StructBOQ total — 2,760.58 m³
+Delta — 0.00 m³ — floating point tolerance only
+Classification accuracy — 99.6% across 1,221 elements
+Zero geometric fallback required
+
+ONE HONEST LIMITATION
+Steel reinforcement is not explicitly modeled. Total reinforcement — 221,040 kg — ratio estimated from BS EN 1992 and ACI 318. Uncertainty range ±30 to 50%. Not suitable for procurement or fabrication.
+Composite slab rib displacement — 90 to 120 m³ — is not resolved in IFC geometry and requires QS-level correction from structural drawings.
+
+WHY THIS MATTERS
+This is not an unusual building. It is a standard commercial typology.
+But at this scale — entire foundation systems are missed under class-only extraction. Shear wall volumes include physically removed geometry. Composite slabs embed unmodeled displacement errors. Steel hardware exists inside structural zones and must be excluded.
+IFC classes alone are insufficient for system-level interpretation.
+None of these trigger failures in conventional workflows. They produce valid-looking quantities that silently diverge from construction reality.
+At production scale, IFC validation is not about detecting errors. It is about correctly interpreting every quantity before it becomes a cost decision.

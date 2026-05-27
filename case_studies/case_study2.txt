@@ -1,0 +1,94 @@
+CASE STUDY 02
+SampleStructuralModel.ifc
+Revit 2025 · IFC4 · Autodesk structural sample model
+
+THE PROBLEM
+A benchmark model from a software vendor does not guarantee clean or analytically reliable IFC data. It reflects real authoring behavior, export configurations, and schema interpretation under production-like conditions.
+SampleStructuralModel.ifc is a publicly distributed Autodesk structural sample model exported from Revit 2025 using IFC4. It represents a mixed structural system consisting primarily of steel framing with secondary concrete elements.
+This distinction is critical for downstream quantity extraction, reinforcement assumptions, and classification logic.
+The model exported without errors.
+All quantities were present.
+Semantic consistency required validation across multiple layers.
+
+WHAT THE FILE CONTAINED
+816 total elements
+33 concrete structural elements
+232.1804 m³ total concrete volume
+346 reinforcing bar elements with incomplete or inconsistent metadata
+30 steel columns — excluded from concrete scope
+70 steel beams — excluded
+102 light-gauge steel joists — excluded
+198 timber secondary members — excluded
+17 steel pipe piles and 15 concrete pile caps exported under identical IFC class definitions
+
+FINDING 1 — STAIR VOLUME INCONSISTENCY IN IFC4 EXPORT
+The stair flight reported the following quantities:
+GrossVolume — 0.00604 m³
+NetVolume — 0.13724 m³
+GrossVolume represents pre-void geometry. NetVolume represents geometry after opening subtraction. In consistent quantity definitions, GrossVolume is expected to be greater than or equal to NetVolume.
+Here the relationship is inverted. GrossVolume is smaller by a factor of 22, indicating export-level inconsistency in Revit 2025 IFC4 stair quantity generation rather than a geometric modeling issue.
+A workflow relying on GrossVolume as the primary quantity source would understate stair concrete by approximately 95%. Silently.
+The validation pipeline prioritizes NetVolume for stair elements due to higher consistency across IFC exports.
+Final accepted quantity — 0.13724 m³
+
+FINDING 2 — IDENTICAL IFC CLASS FOR CONCRETE AND STEEL FOUNDATION ELEMENTS
+The foundation system contains 32 elements classified as IfcSlab with PredefinedType BASESLAB.
+This includes 15 concrete pile caps and 17 steel pipe piles.
+At IFC schema level, both element types are indistinguishable. Neither carries a material assignment. Both depend on naming and context for classification.
+Separation was achieved using element naming patterns and structural role inference.
+Concrete pile caps — Pile Cap-Rectangular, M_Pile Cap, Pile Cap-9 Pile — included.
+Steel pipe piles — M_Pile-Steel Pipe — excluded.
+One pile cap labeled 600 x 600 x 900mm shows a mismatch between naming and exported geometry.
+Name indicates 900mm depth.
+BaseQuantities indicates 300mm.
+Computed volume confirms 0.6 × 0.6 × 0.3 = 0.108 m³.
+This demonstrates divergence between modeled intent and exported IFC geometry. The pipeline evaluates quantities from IFC data, not naming strings.
+
+FINDING 3 — MISCLASSIFICATION RISK IN FLOOR SLAB PREDEFINED TYPES
+All five slab elements share PredefinedType FLOOR.
+Functional classification differs across elements.
+3 reinforced concrete slabs.
+1 plywood bracing element.
+1 rigid insulation element.
+PredefinedType alone is insufficient for structural classification in mixed-material models. Additional filtering using naming and contextual signals is required. Non-structural slabs were excluded from concrete quantity extraction.
+A workflow relying solely on PredefinedType would incorrectly include non-structural elements in every BOQ calculation, cost estimate, and reinforcement assumption that follows.
+
+FINDING 4 — REINFORCING BAR DATA INCOMPLETENESS ACROSS TWO REPRESENTATIONS
+The model contains 346 IfcReinforcingBar elements across two distinct data states.
+Type A — Structural Rebar 1 — 334 elements
+NominalDiameter not defined at instance, type, or Pset_ReinforcingBarCommon level. CrossSectionArea absent across all representations. No usable diameter metadata exists anywhere in the IFC. Ratio-based fallback estimation applied. Unavoidable.
+Type B — Structural Rebar 12mm — 12 elements
+NominalDiameter absent in all IFC attributes. Diameter inferred from the string 12mm embedded in the type name. Exact weight computed — 13.85 kg.
+One subset contains no usable quantitative reinforcement data. The other encodes critical parameters in naming conventions rather than structured IFC attributes.
+This reflects authoring-level inconsistency in reinforcement modeling rather than extraction limitations. No downstream system can recover parameters that are not present in the IFC data structure.
+
+VALIDATION PIPELINE
+IFC entity classification using PredefinedType and naming heuristics
+Material signal hierarchy — BaseQuantities, material field, name, geometry context
+Stair extraction prioritizing NetVolume consistency
+Foundation separation — pile caps vs steel piles via naming patterns
+Slab classification refinement for mixed structural and non-structural elements
+Reinforcement extraction using multi-level fallback hierarchy
+Element-level validation in Bonsai/BlenderBIM
+Full quantity reconciliation with IFC source traceability per element
+
+THE RESULT
+All 33 concrete elements validated against raw IFC quantities in Bonsai/BlenderBIM.
+Bonsai total — 232.1800 m³
+StructBOQ total — 232.1804 m³
+Delta — 0.0004 m³ — floating point precision only
+Real discrepancies — zero
+All concrete quantities derived directly from IFC BaseQuantities. Zero geometric fallback. Every value traceable to its original IFC source definition.
+
+ONE HONEST LIMITATION
+This model represents a steel-dominant structural system. Concrete elements are secondary to the primary steel frame.
+Reinforcement quantities were estimated using BS EN 1992 ratio-based assumptions where explicit IFC reinforcement geometry was unavailable.
+Of 346 reinforcing bars — 12 contained usable diameter information via type-level naming. 334 contained no usable geometric or parametric reinforcement data at any level of the IFC.
+Total steel reinforcement estimate for concrete elements — 18,545 kg — indicative only. Not suitable for procurement, fabrication, or contractual pricing.
+
+WHY THIS MATTERS
+IFC data rarely fails through absence. It fails through fragmentation and inconsistent semantic representation across multiple layers.
+In this model — stair quantities depended on NetVolume interpretation. Foundation classification depended on naming and context. Slab classification depended on inference beyond PredefinedType. Reinforcement quantities depended on whether metadata was structurally defined or encoded in a name string.
+The challenge in IFC-based quantity extraction is not computation. It is establishing a reliable hierarchy of trust across inconsistent data sources.
+Small authoring decisions in Revit directly affect downstream extraction reliability. Missing parameters or inconsistent family definitions determine whether reinforcement is computed, estimated, or absent entirely.
+IFC should be treated as structured representation with variable semantic reliability depending on authoring discipline and export configuration.

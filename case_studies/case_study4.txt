@@ -1,0 +1,201 @@
+CASE STUDY 04
+SampleBimModelWebinar.ifc
+Revit 2025 · IFC4 · Autodesk publicly distributed structural sample
+
+THE PROBLEM
+
+This is a production-scale model containing a mixed RC frame, steel roof trusses, and a piled foundation system.
+
+905 elements were processed:
+
+641 concrete structural elements
+263 non-concrete elements excluded
+
+At this scale, errors no longer appear as obvious outliers. They are embedded in:
+
+composite material definitions
+mixed structural systems
+naming conventions that appear consistent but diverge from geometry
+partial or implicit quantity definitions
+
+Four findings from this file. Each one silent without validation.
+
+WHAT THE FILE CONTAINED
+905 total elements processed
+641 concrete structural elements
+2290.912 m³ total concrete volume
+196 concrete columns (189 at 450mm diameter, 7 at 750mm)
+357 concrete beams (multiple section sizes)
+4 concrete floor slabs
+78 concrete pile caps (48 two-pile, 30 four-pile)
+6 perimeter concrete walls
+11 IfcReinforcingBar elements — 176.1 kg exact
+216 steel pipe piles — excluded
+7 UC steel columns — excluded
+14 UB steel beams — excluded
+26 HSS truss members — excluded
+1 composite slab — 828.272 m³ — excluded (flagged for QS review)
+FINDING 1 — COMPOSITE SLAB WITH UNSEPARATED MATERIALS
+
+One floor slab carried the name:
+
+Floor — Concrete Deck — Tapered Insulation
+
+The element contains an IfcMaterialConstituentSet with:
+
+rigid insulation
+cast-in-place concrete (28 MPa)
+
+No material fractions are defined for either constituent. The IFC therefore provides no deterministic split between materials.
+
+Quantity evaluation:
+
+NetVolume: 828.272 m³
+NetArea: 1622.195 m²
+Implied average thickness: 0.511 m
+
+This thickness is not consistent with standard structural concrete deck behavior and indicates insulation-dominated geometry within a composite system.
+
+The element cannot be reliably decomposed into concrete vs insulation portions from IFC data alone. It is therefore excluded from the concrete BOQ and flagged for QS review.
+
+The IFC does not contain incorrect data — it contains inseparable combined material representation.
+
+FINDING 2 — STRUCTURAL STEEL COLUMNS WITHOUT MATERIAL ASSIGNMENT
+
+Seven UC356x368x129 columns contain no explicit material definition:
+
+no material name
+no material assignment
+no reference Pset classification
+
+Classification was derived from geometric signal:
+
+UC356x368x129 CrossSectionArea: 0.016235 m²
+450mm concrete column CrossSectionArea: 0.159020 m²
+
+The order-of-magnitude difference provides a reliable structural classification signal even in the absence of material metadata.
+
+All seven elements were correctly excluded from the concrete BOQ.
+
+Without this signal-based filtering, approximately 0.414 m³ of steel geometry would have been incorrectly included in concrete quantities.
+
+FINDING 3 — BEAM VOLUME MODIFIED BY EXPORT BEHAVIOR
+
+One 300 × 600 mm concrete beam spanning 7.3 m:
+
+Theoretical solid volume: 1.317 m³
+IFC NetVolume: 0.621 m³
+Difference: 0.696 m³ (53%)
+
+This reduction is caused by slab-beam intersection handling during export. Revit removes intersecting volumes from beam elements and retains them in slab elements to prevent double counting.
+
+The IFC therefore represents net constructible volume rather than theoretical solid extrusion.
+
+The pipeline uses NetVolume directly for all beam calculations without additional correction.
+
+FINDING 4 — NAMING VS GEOMETRY DISCREPANCY IN PILE CAPS
+
+One pile cap labeled:
+
+800 × 1800 × 900 mm
+
+Observed data:
+
+Name: 900 mm depth
+BaseQuantities Depth: 1200 mm
+IFC NetVolume confirms 1200 mm geometry
+
+Additionally, four four-pile caps at perimeter locations are trimmed by site boundary conditions. Their actual modeled volumes differ from nominal naming dimensions.
+
+A name-based takeoff would overestimate pile cap concrete by 1.137 m³ across the set.
+
+The pipeline relies exclusively on BaseQuantities-derived geometry. Naming conventions are not used for quantity derivation.
+
+MATERIAL OBSERVATION — MULTI-GRADE CONCRETE DETECTION
+
+Two concrete grades were detected from material names:
+
+C28
+C35
+
+Cost multipliers were applied per element:
+
+C28 baseline: €120/m³
+C35: €130.80/m³
+
+Grade detection is based on material name parsing where explicit classification data is not present in structured properties.
+
+REINFORCEMENT EXTRACTION — DESIGNATION-BASED RESOLUTION
+
+11 IfcReinforcingBar elements containing ASTM A615M designations:
+
+13M
+16M
+19M
+
+Observed limitations:
+
+NominalDiameter absent on all instances
+CrossSectionArea absent on all instances
+Bar lengths stored in Pset_ReinforcingBarCommon only
+
+Cross-sectional properties were resolved using designation lookup mapping.
+
+Total reinforcement:
+
+176.1 kg (exact)
+
+Breakdown:
+
+13M — 68.6 kg
+16M — 81.2 kg
+19M — 26.3 kg
+VALIDATION PIPELINE
+IfcMaterialConstituentSet detection for composite exclusion logic
+CrossSectionArea-based structural classification (steel vs concrete)
+NetVolume-first extraction for all structural elements
+Beam-slab intersection handling via export-aware interpretation
+BaseQuantities-driven geometry validation for pile caps
+ASTM designation lookup for reinforcement cross-section resolution
+Bar length extraction from Pset_ReinforcingBarCommon
+Concrete grade detection from material naming conventions
+Element-level reconciliation in Bonsai / BlenderBIM
+Full traceability per element
+THE RESULT
+641 concrete elements validated against IFC BaseQuantities
+Bonsai total: 2290.905 m³
+StructBOQ total: 2290.912 m³
+Delta: 0.007 m³ (floating-point precision only)
+
+No structural quantity discrepancies identified.
+
+All quantities derived directly from IFC data sources. No geometric fallback required.
+
+ONE HONEST LIMITATION
+
+The composite slab containing insulation and concrete cannot be decomposed into individual material quantities due to missing fraction data in the IfcMaterialConstituentSet.
+
+The combined volume is 828.272 m³.
+Estimated concrete portion (engineering assumption based on typical deck thickness): 200–245 m³.
+
+This must be confirmed via structural drawings and QS interpretation.
+
+Wall reinforcement is not modeled in this file. Only explicitly defined rebar elements are included in quantities.
+
+WHY THIS MATTERS
+
+At production scale, IFC errors do not appear as failures. They appear as plausible outputs.
+
+insulation behaves like concrete in composite slabs
+steel elements appear structurally identical without material tags
+beam volumes reflect export logic rather than geometry intent
+pile cap names diverge from modeled geometry
+reinforcement exists only partially in structured attributes
+
+None of these trigger extraction errors.
+
+They propagate silently into BOQs, cost plans, and reinforcement schedules.
+
+IFC quantity extraction at scale is not a calculation problem. It is a validation problem across inconsistent and partially defined semantic layers.
+
+The critical skill is not reading IFC data — it is distinguishing between what is explicitly defined, what is inferred, and what is structurally absent.

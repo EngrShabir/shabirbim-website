@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IfcReinforcingBar | Case Studies | Shabir Ahmad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <style>
+        :root { --accent:#D4AF37; --accent-glow:rgba(212,175,55,0.25); --border:rgba(0,0,0,0.09); --bg:#F5F4F0; --bg2:#EDECEA; --bg3:#E8E6E1; --text:#0F0E0A; --muted:#6B6859; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:70px;}
+        .navbar{position:fixed;top:0;left:0;width:100%;height:70px;background:rgba(245,244,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;}
+        .nav-inner{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:space-between;align-items:center;}
+        .nav-logo{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.01em;}
+        .nav-cta{background:var(--accent);color:#000;padding:9px 20px;border-radius:4px;font-size:0.875rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
+        .nav-cta:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
+        .nav-links{display:flex;gap:28px;align-items:center;}
+        .nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .nav-links a:hover{color:var(--text);}
+        .container{max-width:900px;margin:0 auto;padding:0 32px;}
+        .label{display:block;font-size:0.72rem;font-weight:700;color:var(--accent);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:16px;}
+        .reveal{opacity:0;transform:translateY(24px);transition:all 0.7s cubic-bezier(0.16,1,0.3,1);}
+        .reveal.in{opacity:1;transform:none;}
+        .breadcrumb{padding:14px 0;border-bottom:1px solid var(--border);}
+        .breadcrumb a{font-size:0.8rem;font-weight:600;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .breadcrumb a:hover{color:var(--text);}
+        .study-intro{padding:64px 0 48px;border-bottom:1px solid var(--border);}
+        .intro-top{display:flex;align-items:flex-start;gap:28px;}
+        .intro-num{font-size:4.5rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-0.04em;flex-shrink:0;width:88px;padding-top:4px;}
+        .intro-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-0.025em;line-height:1.05;margin-bottom:12px;}
+        .intro-source{font-size:0.82rem;color:var(--muted);font-weight:500;margin-bottom:14px;line-height:1.6;}
+        .intro-badge{display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(212,175,55,0.4);padding:4px 10px;border-radius:2px;}
+        .content-block{padding:56px 0;border-bottom:1px solid var(--border);}
+        .prose p{font-size:0.975rem;line-height:1.85;color:var(--text);margin-bottom:14px;}
+        .prose p:last-child{margin-bottom:0;}
+        .file-facts{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);padding:28px 32px;margin-top:32px;}
+        .file-facts ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:9px 40px;}
+        .file-facts ul li{font-size:0.85rem;color:var(--text);font-weight:500;padding-left:18px;position:relative;line-height:1.5;}
+        .file-facts ul li::before{content:'—';position:absolute;left:0;color:var(--muted);}
+        .data-row{display:flex;flex-wrap:wrap;border:1px solid var(--border);margin:20px 0;background:var(--bg);}
+        .data-cell{flex:1;min-width:150px;padding:14px 18px;border-right:1px solid var(--border);}
+        .data-cell:last-child{border-right:none;}
+        .dc-label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.09em;display:block;margin-bottom:5px;}
+        .dc-value{font-size:0.9rem;font-weight:700;color:var(--text);}
+        .dc-value.gold{color:var(--accent);}
+        .findings{margin-top:32px;}
+        .finding{border-top:1px solid var(--border);padding:28px 0;}
+        .finding:last-child{border-bottom:1px solid var(--border);}
+        .finding-header{display:flex;align-items:baseline;gap:18px;margin-bottom:14px;flex-wrap:wrap;}
+        .finding-num{font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;flex-shrink:0;}
+        .finding-title{font-size:0.875rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.03em;line-height:1.4;}
+        .finding-body p{font-size:0.95rem;line-height:1.82;color:var(--text);margin-bottom:12px;}
+        .finding-body p:last-child{margin-bottom:0;}
+        .rebar-schedule{border:1px solid var(--border);margin:20px 0;}
+        .rebar-row{display:flex;border-bottom:1px solid var(--border);}
+        .rebar-row:last-child{border-bottom:none;}
+        .rebar-cell{flex:1;padding:12px 16px;font-size:0.85rem;font-weight:600;border-right:1px solid var(--border);}
+        .rebar-cell:last-child{border-right:none;}
+        .rebar-cell.head{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.09em;background:var(--bg2);}
+        .result-bar{background:var(--text);display:flex;margin-top:32px;}
+        .result-item{flex:1;padding:28px 32px;border-right:1px solid rgba(255,255,255,0.07);}
+        .result-item:last-child{border-right:none;}
+        .r-label{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:block;margin-bottom:10px;}
+        .r-value{font-size:1.45rem;font-weight:800;color:var(--accent);letter-spacing:-0.02em;line-height:1;display:block;margin-bottom:6px;}
+        .r-sub{font-size:0.72rem;color:rgba(255,255,255,0.3);display:block;}
+        .limitation{padding:40px 0;border-bottom:1px solid var(--border);}
+        .limitation .label{color:var(--muted);}
+        .limitation p{font-size:0.9rem;line-height:1.82;color:var(--muted);}
+        .why-matters{padding:40px 0;}
+        .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
+        .why-matters p:last-child{margin-bottom:0;}
+        footer{padding:48px 0 32px;border-top:1px solid var(--border);}
+        .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+        .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .footer-links a:hover{color:var(--text);}
+        .footer-copy{text-align:center;font-size:0.78rem;color:var(--muted);}
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+        </div>
+        <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+    </div>
+</nav>
+
+<div class="breadcrumb">
+    <div class="container"><a href="case-studies.html">← Case Studies</a></div>
+</div>
+
+<header class="study-intro">
+    <div class="container">
+        <div class="intro-top reveal">
+            <span class="intro-num">03</span>
+            <div>
+                <h1 class="intro-title">IfcReinforcingBar.ifc</h1>
+                <p class="intro-source">Allplan 2014 &nbsp;·&nbsp; IFC2X3 &nbsp;·&nbsp; buildingSMART public test model</p>
+                <span class="intro-badge">Public Test Model</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <div class="content-block reveal">
+            <span class="label">THE PROBLEM</span>
+            <div class="prose">
+                <p>Small files are not safe files.</p>
+                <p>This is a buildingSMART public test model representing a reinforced concrete lift shaft wall exported from Allplan 2014. Four walls, one footing, thirteen rebar groups. Eighteen structural elements. On paper — a straightforward extraction scenario.</p>
+            </div>
+            <div class="data-row">
+                <div class="data-cell"><span class="dc-label">Initial result</span><span class="dc-value">204 kg</span></div>
+                <div class="data-cell"><span class="dc-label">Validated reference</span><span class="dc-value gold">404.83 kg</span></div>
+                <div class="data-cell"><span class="dc-label">Deviation</span><span class="dc-value">~98%</span></div>
+            </div>
+            <div class="prose">
+                <p>Geometry was present. The model was complete. The extraction logic was incomplete.</p>
+            </div>
+            <div class="file-facts">
+                <span class="label">WHAT THE FILE CONTAINED</span>
+                <ul>
+                    <li>18 structural elements</li>
+                    <li>4 reinforced concrete walls</li>
+                    <li>1 concrete footing</li>
+                    <li>13 rebar groups — 189 individual bars</li>
+                    <li>520 IfcAnnotation entities</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">FINDINGS</span>
+            <div class="findings">
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 01</span>
+                        <span class="finding-title">Quantity Data Stored in Non-Standard Property Sets</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>Allplan does not rely on standard IFC quantity set names. It exports proprietary sets: WallQuantities, FootingQuantities. A parser restricted to standard set names defaults to geometric estimation — even when valid quantities are fully present in the file.</p>
+                        <p>This is not missing data. It is non-standard placement of valid data. Once proprietary quantity sets were mapped, all concrete volumes were extracted directly. No geometric fallback required.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 02</span>
+                        <span class="finding-title">Cross-Section Area Unit Deviation</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>The IFC schema defines CrossSectionArea in m². Allplan exports this value in cm². No metadata flag indicates the unit deviation. The value is syntactically valid but semantically incorrect under IFC assumptions.</p>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">If read as m²</span><span class="dc-value">6,162 kg/m</span></div>
+                            <div class="data-cell"><span class="dc-label">Correct (cm² → m²)</span><span class="dc-value gold">0.616 kg/m</span></div>
+                            <div class="data-cell"><span class="dc-label">Error magnitude</span><span class="dc-value">10,000×</span></div>
+                        </div>
+                        <p>The pipeline applies explicit cm² → m² conversion for Allplan-derived reinforcement data prior to all calculations.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 03</span>
+                        <span class="finding-title">Geometry-Contained Data Not Utilized in Initial Run</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>The initial extraction assumed bar length was unavailable and applied ratio-based estimation. This assumption was incorrect. Each IfcReinforcingBar contains a geometric representation defined by an IfcPolyline directrix describing the full bar centerline, including bends and hooks. Bar length is directly derivable from geometry.</p>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">First run (estimated)</span><span class="dc-value">204 kg</span></div>
+                            <div class="data-cell"><span class="dc-label">Second run (geometry)</span><span class="dc-value gold">404.83 kg</span></div>
+                            <div class="data-cell"><span class="dc-label">Reference delta</span><span class="dc-value">0.00 kg</span></div>
+                        </div>
+                        <p>The data was present. It was not initially traversed.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 04</span>
+                        <span class="finding-title">Large-Scale Non-Structural Annotation Overlay</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>The model contains 520 IfcAnnotation entities — reinforcement drawings, dimension lines, labels, symbolic geometry — alongside 18 structural elements. Without explicit filtering, annotation entities distort element counts, classification logic, and downstream aggregation. At scale, this pattern introduces thousands of non-structural objects into structural datasets. All annotations must be excluded prior to extraction.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">CORRECTED REBAR SCHEDULE</span>
+            <p style="font-size:0.875rem;color:var(--muted);margin-bottom:20px;">Derived from geometric extraction and Allplan quantity sets. Confirmed against Bonsai. Steel grade B500B — confirmed via IfcMaterial association through HasAssociations relationship.</p>
+            <div class="rebar-schedule">
+                <div class="rebar-row">
+                    <div class="rebar-cell head">Diameter</div>
+                    <div class="rebar-cell head">Groups</div>
+                    <div class="rebar-cell head">Bars</div>
+                    <div class="rebar-cell head">Mass</div>
+                </div>
+                <div class="rebar-row">
+                    <div class="rebar-cell">Ø10 mm</div>
+                    <div class="rebar-cell">8</div>
+                    <div class="rebar-cell">115</div>
+                    <div class="rebar-cell">150.19 kg</div>
+                </div>
+                <div class="rebar-row">
+                    <div class="rebar-cell">Ø12 mm</div>
+                    <div class="rebar-cell">4</div>
+                    <div class="rebar-cell">58</div>
+                    <div class="rebar-cell">190.64 kg</div>
+                </div>
+                <div class="rebar-row">
+                    <div class="rebar-cell">Ø18 mm</div>
+                    <div class="rebar-cell">1</div>
+                    <div class="rebar-cell">16</div>
+                    <div class="rebar-cell">64.00 kg</div>
+                </div>
+                <div class="rebar-row">
+                    <div class="rebar-cell" style="font-weight:700;">Total</div>
+                    <div class="rebar-cell" style="font-weight:700;">13</div>
+                    <div class="rebar-cell" style="font-weight:700;">189</div>
+                    <div class="rebar-cell" style="font-weight:700;color:var(--accent);">404.83 kg</div>
+                </div>
+            </div>
+            <div class="result-bar">
+                <div class="result-item">
+                    <span class="r-label">Total Rebar</span>
+                    <span class="r-value">404.83 kg</span>
+                    <span class="r-sub">189 bars — B500B</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Bonsai Reference</span>
+                    <span class="r-value">404.83 kg</span>
+                    <span class="r-sub">BlenderBIM cross-check</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Quantity Delta</span>
+                    <span class="r-value">0.00 kg</span>
+                    <span class="r-sub">Exact match</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="limitation reveal">
+            <span class="label">ONE HONEST LIMITATION</span>
+            <p>Concrete grade is not present in the IFC export — not in property sets, material definitions, naming conventions, or classification metadata. This is an upstream authoring omission in Allplan 2014 and cannot be reconstructed downstream. A default rate is applied and reported explicitly.</p>
+        </div>
+
+        <div class="why-matters reveal">
+            <span class="label">WHY THIS MATTERS</span>
+            <p>The initial failure was not computational. It was structural. Key information existed across multiple non-standard locations: proprietary quantity sets, geometric representations, material association paths, naming layers. None aligned with standard IFC extraction assumptions.</p>
+            <p>IFC information is rarely absent. It is fragmented across schema layers, encoded inconsistently across authoring tools, and often recoverable only through geometry rather than property sets. Most extraction pipelines fail at discovery, not calculation. The correction was not a model fix — it was a shift in assumption hierarchy.</p>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+            <a href="submit-ifc.html">Submit IFC</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </div>
+</footer>
+
+<script>
+    const obs = new IntersectionObserver(
+        (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+        { threshold: 0.08 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

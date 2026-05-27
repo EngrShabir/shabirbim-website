@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SampleStructuralModel | Case Studies | Shabir Ahmad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <style>
+        :root { --accent:#D4AF37; --accent-glow:rgba(212,175,55,0.25); --border:rgba(0,0,0,0.09); --bg:#F5F4F0; --bg2:#EDECEA; --bg3:#E8E6E1; --text:#0F0E0A; --muted:#6B6859; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:70px;}
+        .navbar{position:fixed;top:0;left:0;width:100%;height:70px;background:rgba(245,244,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;}
+        .nav-inner{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:space-between;align-items:center;}
+        .nav-logo{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.01em;}
+        .nav-cta{background:var(--accent);color:#000;padding:9px 20px;border-radius:4px;font-size:0.875rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
+        .nav-cta:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
+        .nav-links{display:flex;gap:28px;align-items:center;}
+        .nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .nav-links a:hover{color:var(--text);}
+        .container{max-width:900px;margin:0 auto;padding:0 32px;}
+        .label{display:block;font-size:0.72rem;font-weight:700;color:var(--accent);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:16px;}
+        .reveal{opacity:0;transform:translateY(24px);transition:all 0.7s cubic-bezier(0.16,1,0.3,1);}
+        .reveal.in{opacity:1;transform:none;}
+        .d1{transition-delay:0.1s;} .d2{transition-delay:0.2s;}
+        .breadcrumb{padding:14px 0;border-bottom:1px solid var(--border);}
+        .breadcrumb a{font-size:0.8rem;font-weight:600;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .breadcrumb a:hover{color:var(--text);}
+        .study-intro{padding:64px 0 48px;border-bottom:1px solid var(--border);}
+        .intro-top{display:flex;align-items:flex-start;gap:28px;}
+        .intro-num{font-size:4.5rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-0.04em;flex-shrink:0;width:88px;padding-top:4px;}
+        .intro-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-0.025em;line-height:1.05;margin-bottom:12px;}
+        .intro-source{font-size:0.82rem;color:var(--muted);font-weight:500;margin-bottom:14px;line-height:1.6;}
+        .intro-badge{display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(212,175,55,0.4);padding:4px 10px;border-radius:2px;}
+        .content-block{padding:56px 0;border-bottom:1px solid var(--border);}
+        .prose p{font-size:0.975rem;line-height:1.85;color:var(--text);margin-bottom:14px;}
+        .prose p:last-child{margin-bottom:0;}
+        .file-facts{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);padding:28px 32px;margin-top:32px;}
+        .file-facts ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:9px 40px;}
+        .file-facts ul li{font-size:0.85rem;color:var(--text);font-weight:500;padding-left:18px;position:relative;line-height:1.5;}
+        .file-facts ul li::before{content:'—';position:absolute;left:0;color:var(--muted);}
+        .data-row{display:flex;flex-wrap:wrap;border:1px solid var(--border);margin:20px 0;background:var(--bg);}
+        .data-cell{flex:1;min-width:150px;padding:14px 18px;border-right:1px solid var(--border);}
+        .data-cell:last-child{border-right:none;}
+        .dc-label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.09em;display:block;margin-bottom:5px;}
+        .dc-value{font-size:0.9rem;font-weight:700;color:var(--text);}
+        .dc-value.gold{color:var(--accent);}
+        .findings{margin-top:32px;}
+        .finding{border-top:1px solid var(--border);padding:28px 0;}
+        .finding:last-child{border-bottom:1px solid var(--border);}
+        .finding-header{display:flex;align-items:baseline;gap:18px;margin-bottom:14px;flex-wrap:wrap;}
+        .finding-num{font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;flex-shrink:0;}
+        .finding-title{font-size:0.875rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.03em;line-height:1.4;}
+        .finding-body p{font-size:0.95rem;line-height:1.82;color:var(--text);margin-bottom:12px;}
+        .finding-body p:last-child{margin-bottom:0;}
+        .result-bar{background:var(--text);display:flex;margin-top:32px;}
+        .result-item{flex:1;padding:28px 32px;border-right:1px solid rgba(255,255,255,0.07);}
+        .result-item:last-child{border-right:none;}
+        .r-label{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:block;margin-bottom:10px;}
+        .r-value{font-size:1.45rem;font-weight:800;color:var(--accent);letter-spacing:-0.02em;line-height:1;display:block;margin-bottom:6px;}
+        .r-sub{font-size:0.72rem;color:rgba(255,255,255,0.3);display:block;}
+        .limitation{padding:40px 0;border-bottom:1px solid var(--border);}
+        .limitation .label{color:var(--muted);}
+        .limitation p{font-size:0.9rem;line-height:1.82;color:var(--muted);}
+        .why-matters{padding:40px 0;}
+        .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
+        .why-matters p:last-child{margin-bottom:0;}
+        footer{padding:48px 0 32px;border-top:1px solid var(--border);}
+        .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+        .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .footer-links a:hover{color:var(--text);}
+        .footer-copy{text-align:center;font-size:0.78rem;color:var(--muted);}
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+        </div>
+        <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+    </div>
+</nav>
+
+<div class="breadcrumb">
+    <div class="container"><a href="case-studies.html">← Case Studies</a></div>
+</div>
+
+<header class="study-intro">
+    <div class="container">
+        <div class="intro-top reveal">
+            <span class="intro-num">02</span>
+            <div>
+                <h1 class="intro-title">SampleStructuralModel.ifc</h1>
+                <p class="intro-source">Revit 2025 &nbsp;·&nbsp; IFC4 &nbsp;·&nbsp; Autodesk structural sample model</p>
+                <span class="intro-badge">Vendor Sample</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <div class="content-block reveal">
+            <span class="label">THE PROBLEM</span>
+            <div class="prose">
+                <p>A benchmark model from a software vendor does not guarantee clean or analytically reliable IFC data. It reflects real authoring behavior, export configurations, and schema interpretation under production-like conditions.</p>
+                <p>SampleStructuralModel.ifc is a publicly distributed Autodesk structural sample model exported from Revit 2025 using IFC4. It represents a mixed structural system consisting primarily of steel framing with secondary concrete elements. The model exported without errors. All quantities were present. Semantic consistency required validation across multiple layers.</p>
+            </div>
+            <div class="file-facts">
+                <span class="label">WHAT THE FILE CONTAINED</span>
+                <ul>
+                    <li>816 total elements</li>
+                    <li>33 concrete structural elements</li>
+                    <li>232.1804 m³ total concrete volume</li>
+                    <li>346 reinforcing bar elements</li>
+                    <li>30 steel columns — excluded</li>
+                    <li>70 steel beams — excluded</li>
+                    <li>102 light-gauge steel joists — excluded</li>
+                    <li>198 timber secondary members — excluded</li>
+                    <li>17 steel pipe piles + 15 concrete pile caps — identical IFC class</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">FINDINGS</span>
+            <div class="findings">
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 01</span>
+                        <span class="finding-title">Stair Volume Inconsistency in IFC4 Export</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>GrossVolume is expected to be greater than or equal to NetVolume. Here the relationship is inverted — a factor of 22. A workflow relying on GrossVolume would understate stair concrete by approximately 95%.</p>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">GrossVolume (incorrect)</span><span class="dc-value">0.00604 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">NetVolume (accepted)</span><span class="dc-value gold">0.13724 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">Factor difference</span><span class="dc-value">22×</span></div>
+                        </div>
+                        <p>This indicates export-level inconsistency in Revit 2025 IFC4 stair quantity generation — not a modeling issue. The pipeline prioritizes NetVolume for stair elements due to higher consistency across IFC exports.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 02</span>
+                        <span class="finding-title">Identical IFC Class for Concrete and Steel Foundation Elements</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>32 foundation elements are classified as IfcSlab with PredefinedType BASESLAB — including both 15 concrete pile caps and 17 steel pipe piles. At IFC schema level, both are indistinguishable. Neither carries a material assignment. Separation was achieved using element naming patterns: concrete pile caps included; steel pipe piles (M_Pile-Steel Pipe) excluded.</p>
+                        <p>One pile cap labeled 600 × 600 × 900mm shows name-to-geometry divergence: name indicates 900mm depth, BaseQuantities indicates 300mm. Computed volume confirms 0.6 × 0.6 × 0.3 = 0.108 m³. The pipeline evaluates quantities from IFC geometry, not naming strings.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 03</span>
+                        <span class="finding-title">Misclassification Risk in Floor Slab Predefined Types</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>All five slab elements share PredefinedType FLOOR. Functional classification differs: 3 reinforced concrete slabs, 1 plywood bracing element, 1 rigid insulation element. PredefinedType alone is insufficient for structural classification in mixed-material models. A workflow relying solely on PredefinedType would incorrectly include non-structural elements in every BOQ calculation, cost estimate, and reinforcement assumption that follows.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 04</span>
+                        <span class="finding-title">Reinforcing Bar Data Incompleteness Across Two Representations</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>346 IfcReinforcingBar elements exist across two distinct data states. Type A — 334 elements — NominalDiameter not defined at instance, type, or Pset_ReinforcingBarCommon level. CrossSectionArea absent across all representations. No usable diameter metadata anywhere in the IFC. Ratio-based fallback applied.</p>
+                        <p>Type B — 12 elements, "Structural Rebar 12mm" — diameter inferred from the string 12mm embedded in the type name rather than a structured IFC attribute. No downstream system can recover parameters that are not present in the IFC data structure.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">THE RESULT</span>
+            <p style="font-size:0.975rem;line-height:1.85;margin-bottom:16px;">All 33 concrete elements validated against raw IFC quantities in Bonsai/BlenderBIM. All quantities derived directly from IFC BaseQuantities. Zero geometric fallback. Every value traceable to its original IFC source definition.</p>
+            <div class="result-bar">
+                <div class="result-item">
+                    <span class="r-label">Total Concrete</span>
+                    <span class="r-value">232.1804 m³</span>
+                    <span class="r-sub">33 elements validated</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Bonsai Reference</span>
+                    <span class="r-value">232.1800 m³</span>
+                    <span class="r-sub">BlenderBIM cross-check</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Quantity Delta</span>
+                    <span class="r-value">0.0004 m³</span>
+                    <span class="r-sub">Floating-point only</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="limitation reveal">
+            <span class="label">ONE HONEST LIMITATION</span>
+            <p>334 of 346 reinforcing bars contained no usable geometric or parametric data at any level of the IFC. Total steel estimate of 18,545 kg is indicative only — derived from ratio-based assumptions. Not suitable for procurement, fabrication, or contractual pricing.</p>
+        </div>
+
+        <div class="why-matters reveal">
+            <span class="label">WHY THIS MATTERS</span>
+            <p>IFC data rarely fails through absence. It fails through fragmentation and inconsistent semantic representation across multiple layers. The challenge in IFC-based quantity extraction is not computation — it is establishing a reliable hierarchy of trust across inconsistent data sources.</p>
+            <p>Small authoring decisions in Revit directly affect downstream extraction reliability. Missing parameters or inconsistent family definitions determine whether reinforcement is computed, estimated, or absent entirely. IFC should be treated as structured representation with variable semantic reliability depending on authoring discipline and export configuration.</p>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+            <a href="submit-ifc.html">Submit IFC</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </div>
+</footer>
+
+<script>
+    const obs = new IntersectionObserver(
+        (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+        { threshold: 0.08 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Case Studies | StructBOQ</title>
-
-    <!-- Google Fonts: Inter -->
+    <title>Case Studies | Shabir Ahmad</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,66 +12,43 @@
 
     <style>
         :root {
-            --bg-solid: #242424;
-            --border-color: rgba(255, 255, 255, 0.08);
-
-            /* Premium Light Golden Accent */
             --accent: #D4AF37;
-            --accent-glow: rgba(212, 175, 55, 0.3);
-
-            --text-primary: #F1F5F9;
-            --text-secondary: #E2E8F0;
+            --accent-glow: rgba(212, 175, 55, 0.25);
+            --border: rgba(0, 0, 0, 0.09);
+            --bg: #F5F4F0;
+            --bg2: #EDECEA;
+            --bg3: #E8E6E1;
+            --text: #0F0E0A;
+            --muted: #6B6859;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a1a1a;
-            color: var(--text-primary);
+            background: var(--bg);
+            color: var(--text);
             overflow-x: hidden;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            padding-top: 70px; /* Space for fixed navbar */
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            padding-top: 70px;
         }
 
-        /* ------------------------------------- */
-        /* HEADER NAVIGATION BAR & DROPDOWN      */
-        /* ------------------------------------- */
-        .top-navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 70px;
-            background-color: #1a1a1a;
-            border-bottom: 1px solid var(--border-color);
+        /* NAV */
+        .navbar {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 70px;
+            background: rgba(245, 244, 240, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
             z-index: 1000;
         }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            height: 100%;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            height: 100%; padding: 0 32px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
         .nav-logo {
             font-size: 1.1rem; font-weight: 700;
             color: var(--accent); text-decoration: none;
@@ -85,355 +60,367 @@
             font-size: 0.875rem; font-weight: 700;
             text-decoration: none; transition: all 0.25s;
         }
-        .nav-cta:hover { background: #FDE047; }
+        .nav-cta:hover { background: #FDE047; box-shadow: 0 0 20px var(--accent-glow); }
+        .nav-links { display: flex; gap: 28px; align-items: center; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text); }
 
-        .dropdown-menu-container {
-            position: relative;
-            display: inline-block;
+        /* SHARED */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+        .label {
+            display: block; font-size: 0.72rem; font-weight: 700;
+            color: var(--accent); letter-spacing: 0.13em;
+            text-transform: uppercase; margin-bottom: 16px;
         }
+        .reveal { opacity: 0; transform: translateY(24px); transition: all 0.7s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.in { opacity: 1; transform: none; }
+        .d1 { transition-delay: 0.1s; }
+        .d2 { transition-delay: 0.2s; }
+        .d3 { transition-delay: 0.3s; }
 
-        .dropdown-trigger-btn {
-            background: transparent;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-            outline: none;
+        /* PAGE HEADER */
+        .page-header {
+            padding: 80px 0 64px;
+            border-bottom: 1px solid var(--border);
         }
-
-        .dropdown-trigger-btn:hover {
-            background: var(--accent);
-            color: #1a1a1a;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .dropdown-chevron {
-            transition: transform 0.3s ease;
-        }
-
-        .dropdown-menu-container.active .dropdown-chevron {
-            transform: rotate(180deg);
-        }
-
-        .dropdown-menu-content {
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 0;
-            background-color: #242424;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            min-width: 180px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 1100;
-            animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes dropdownFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .dropdown-menu-container.active .dropdown-menu-content {
-            display: flex;
-        }
-
-        .dropdown-menu-content a {
-            color: var(--text-primary);
-            padding: 12px 18px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.2s ease;
-            text-align: left;
-        }
-
-        .dropdown-menu-content a:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-menu-content a:hover {
-            background-color: rgba(212, 175, 55, 0.1);
-            color: var(--accent);
-            padding-left: 22px;
-        }
-
-        /* ------------------------------------- */
-        /* LAYOUT & PANEL STYLING                */
-        /* ------------------------------------- */
-        .main-content {
-            flex-grow: 1;
-            padding: 80px 20px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .section-label {
-            font-size: 0.875rem;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            display: block;
-        }
-
-        .section-heading {
-            font-size: clamp(2rem, 4vw, 2.5rem);
+        .page-header h1 {
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
             font-weight: 800;
-            margin-bottom: 15px;
+            line-height: 1.08;
+            letter-spacing: -0.025em;
+            margin-bottom: 20px;
+        }
+        .page-header p {
+            font-size: 1.05rem;
+            color: var(--muted);
+            max-width: 520px;
+            line-height: 1.75;
         }
 
-        .section-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 50px;
-            max-width: 700px;
+        /* GRID */
+        .grid-section { padding: 64px 0 80px; }
+
+        .cs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
         }
 
-        /* Case Studies Grid */
-        .cases-list {
+        .cs-card {
             display: flex;
             flex-direction: column;
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .case-card {
-            background: var(--bg-solid);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 40px;
-            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            border-top: 4px solid transparent;
+            padding: 36px 32px;
+            text-decoration: none;
+            color: var(--text);
+            background: #fff;
+            transition: background 0.2s;
             position: relative;
         }
+        .cs-card:hover { background: var(--bg2); }
+        .cs-card:hover .card-arrow { color: var(--accent); transform: translateX(4px); }
+        .cs-card:nth-child(1) { border-top-color: #D4AF37; }
+        .cs-card:nth-child(2) { border-top-color: #C8924A; }
+        .cs-card:nth-child(3) { border-top-color: #B5714E; }
+        .cs-card:nth-child(4) { border-top-color: #936355; }
+        .cs-card:nth-child(5) { border-top-color: #7A8569; }
+        .cs-card:nth-child(6) { border-top-color: #6B7D8A; }
+        .cs-card:nth-child(7) { border-top-color: #4A5C6B; }
 
-        .case-card:hover {
-            border-color: rgba(212, 175, 55, 0.4);
-            transform: translateY(-3px);
-            background: #2a2a2a;
-        }
+        .cs-card.featured { grid-column: 1 / -1; }
+        .cs-card.featured .card-main { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: end; }
 
-        .case-header {
+        /* CARD INTERIOR */
+        .card-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
         }
-
-        .case-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-        }
-
-        .badge {
-            background: rgba(212, 175, 55, 0.15);
-            color: var(--accent);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+        .card-num {
+            font-size: 0.72rem;
             font-weight: 700;
-            letter-spacing: 0.05em;
-        }
-
-        .case-body {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.7;
-            margin-bottom: 24px;
-        }
-
-        .case-metrics {
-            display: flex;
-            gap: 40px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .metric-item h5 {
-            font-size: 0.8rem;
-            color: #64748b;
+            color: var(--accent);
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+        }
+        .card-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            padding: 3px 9px;
+            border-radius: 2px;
+        }
+        .card-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .card-source {
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .card-hook {
+            font-size: 0.875rem;
+            color: var(--muted);
+            line-height: 1.7;
+            flex: 1;
+            margin-bottom: 28px;
+        }
+        .card-rule {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        .card-metrics {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+        }
+        .card-metric {
+            flex: 1;
+            padding-right: 16px;
+            border-right: 1px solid var(--border);
+            margin-right: 16px;
+        }
+        .card-metric:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+        .cm-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            display: block;
             margin-bottom: 4px;
         }
-
-        .metric-item p {
-            font-size: 1.15rem;
+        .cm-value {
+            font-size: 0.95rem;
             font-weight: 700;
-            color: var(--accent);
+            color: var(--text);
         }
-
-        .btn-gold {
-            display: inline-flex;
+        .card-cta {
+            display: flex;
+            justify-content: flex-end;
             align-items: center;
-            justify-content: center;
-            background-color: var(--accent);
-            color: #000;
-            padding: 16px 32px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 1rem;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--muted);
+            letter-spacing: 0.02em;
+        }
+        .card-arrow {
+            transition: all 0.2s;
+            display: inline-block;
         }
 
-        .btn-gold:hover {
-            box-shadow: 0 0 20px var(--accent-glow);
-            background-color: #FDE047;
-            transform: translateY(-2px);
-        }
+        /* FEATURED CARD extras */
+        .featured .card-hook { margin-bottom: 0; }
+        .featured .card-bottom { display: flex; flex-direction: column; justify-content: flex-end; }
 
-        /* Footer */
-        footer {
-            background: transparent;
-            color: white;
-            padding: 40px 20px 20px;
-            position: relative;
-            z-index: 10;
+        /* FOOTER */
+        footer { padding: 48px 0 32px; border-top: 1px solid var(--border); }
+        .footer-links { display: flex; justify-content: center; gap: 32px; margin-bottom: 20px; }
+        .footer-links a {
+            font-size: 0.83rem; font-weight: 500;
+            color: var(--muted); text-decoration: none; transition: color 0.2s;
         }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 0.85rem;
-            color: #64748b;
-        }
+        .footer-links a:hover { color: var(--text); }
+        .footer-copy { text-align: center; font-size: 0.78rem; color: var(--muted); }
     </style>
 </head>
 
 <body>
 
-    <!-- Top Navigation Bar -->
-    <header class="top-navbar">
-        <div class="nav-container">
+    <nav class="navbar">
+        <div class="nav-inner">
             <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+            <div class="nav-links">
+                <a href="about.html">About</a>
+                <a href="case-studies.html">Case Studies</a>
+                <a href="demo.html">Demo</a>
+            </div>
             <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <span class="label reveal">CASE STUDIES</span>
+            <h1 class="reveal d1">Seven IFC Models.<br>Seven Validation Reports.</h1>
+            <p class="reveal d2">Benchmarks, vendor samples, and one real project. Each file processed, validated, and documented with full quantity traceability.</p>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <div class="main-content">
+    <main class="grid-section">
         <div class="container">
-            <span class="section-label">CASE STUDIES</span>
-            <h2 class="section-heading">Data Audits & Takeoff Automation</h2>
-            <p class="section-subtitle">Real-world examples of quantity verification, schema auditing, and processing pipelines executed via StructBOQ.</p>
+            <div class="cs-grid reveal">
 
-            <div class="cases-list">
-                <!-- Case 1 -->
-                <div class="case-card">
-                    <div class="case-header">
-                        <h3 class="case-title">Office Complex Quantity Takeoff Audit</h3>
-                        <span class="badge">Quantity Discrepancy</span>
+                <!-- 01 -->
+                <a href="case-study-01.html" class="cs-card">
+                    <div class="card-top">
+                        <span class="card-num">01</span>
+                        <span class="card-badge">Benchmark Model</span>
                     </div>
-                    <p class="case-body">
-                        Audited a 12-story commercial office building model. StructBOQ identified 42 instances of load-bearing structural columns misclassified as generic slabs, along with missing properties in the base quantity set. Discrepancies were automatically compiled into a validation report, preventing a $64,000 procurement error.
-                    </p>
-                    <div class="case-metrics">
-                        <div class="metric-item">
-                            <h5>IFC Size</h5>
-                            <p>184 MB</p>
-                        </div>
-                        <div class="metric-item">
-                            <h5>Turnaround</h5>
-                            <p>18 Hours</p>
-                        </div>
-                        <div class="metric-item">
-                            <h5>Accuracy Delta</h5>
-                            <p>0.0001 m³</p>
-                        </div>
+                    <h2 class="card-title">AC20-FZK-Haus</h2>
+                    <p class="card-source">ArchiCAD IFC4 &nbsp;·&nbsp; Karlsruhe Institute of Technology &nbsp;·&nbsp; buildingSMART</p>
+                    <p class="card-hook">The file exported without error. The quantities existed. The semantics still required verification.</p>
+                    <hr class="card-rule">
+                    <div class="card-metrics">
+                        <div class="card-metric"><span class="cm-label">Elements</span><span class="cm-value">18</span></div>
+                        <div class="card-metric"><span class="cm-label">Concrete</span><span class="cm-value">131.67 m³</span></div>
+                        <div class="card-metric"><span class="cm-label">Delta</span><span class="cm-value">0.0001 m³</span></div>
                     </div>
-                </div>
+                    <div class="card-cta">Read study <span class="card-arrow">→</span></div>
+                </a>
 
-                <!-- Case 2 -->
-                <div class="case-card">
-                    <div class="case-header">
-                        <h3 class="case-title">Residential High-Rise Concrete Takeoff</h3>
-                        <span class="badge">Full Extraction</span>
+                <!-- 02 -->
+                <a href="case-study-02.html" class="cs-card">
+                    <div class="card-top">
+                        <span class="card-num">02</span>
+                        <span class="card-badge">Vendor Sample</span>
                     </div>
-                    <p class="case-body">
-                        Processed the structural design model for a residential tower to extract total concrete volumes. Overcame missing BaseQuantities parameters by executing a geometric fallback calculation on the boundary representations of slab shapes, cross-referencing results with model structural components.
-                    </p>
-                    <div class="case-metrics">
-                        <div class="metric-item">
-                            <h5>IFC Size</h5>
-                            <p>320 MB</p>
-                        </div>
-                        <div class="metric-item">
-                            <h5>Turnaround</h5>
-                            <p>22 Hours</p>
-                        </div>
-                        <div class="metric-item">
-                            <h5>Elements Checked</h5>
-                            <p>8,421</p>
-                        </div>
+                    <h2 class="card-title">SampleStructuralModel.ifc</h2>
+                    <p class="card-source">Revit 2025 &nbsp;·&nbsp; IFC4 &nbsp;·&nbsp; Autodesk structural sample</p>
+                    <p class="card-hook">A software vendor benchmark does not guarantee clean or analytically reliable IFC data.</p>
+                    <hr class="card-rule">
+                    <div class="card-metrics">
+                        <div class="card-metric"><span class="cm-label">Elements</span><span class="cm-value">33</span></div>
+                        <div class="card-metric"><span class="cm-label">Concrete</span><span class="cm-value">232.18 m³</span></div>
+                        <div class="card-metric"><span class="cm-label">Delta</span><span class="cm-value">0.0004 m³</span></div>
                     </div>
-                </div>
-            </div>
+                    <div class="card-cta">Read study <span class="card-arrow">→</span></div>
+                </a>
 
-            <div style="text-align: center;">
-                <a href="submit-ifc.html" class="btn-gold">Audit Your IFC File Now</a>
+                <!-- 03 -->
+                <a href="case-study-03.html" class="cs-card">
+                    <div class="card-top">
+                        <span class="card-num">03</span>
+                        <span class="card-badge">Public Test Model</span>
+                    </div>
+                    <h2 class="card-title">IfcReinforcingBar.ifc</h2>
+                    <p class="card-source">Allplan 2014 &nbsp;·&nbsp; IFC2X3 &nbsp;·&nbsp; buildingSMART public test model</p>
+                    <p class="card-hook">Small files are not safe files. Initial result: 204 kg. Validated reference: 404.83 kg.</p>
+                    <hr class="card-rule">
+                    <div class="card-metrics">
+                        <div class="card-metric"><span class="cm-label">Elements</span><span class="cm-value">18</span></div>
+                        <div class="card-metric"><span class="cm-label">Rebar</span><span class="cm-value">404.83 kg</span></div>
+                        <div class="card-metric"><span class="cm-label">Delta</span><span class="cm-value">0.00 kg</span></div>
+                    </div>
+                    <div class="card-cta">Read study <span class="card-arrow">→</span></div>
+                </a>
+
+                <!-- 04 -->
+                <a href="case-study-04.html" class="cs-card">
+                    <div class="card-top">
+                        <span class="card-num">04</span>
+                        <span class="card-badge">Production Scale</span>
+                    </div>
+                    <h2 class="card-title">SampleBimModelWebinar.ifc</h2>
+                    <p class="card-source">Revit 2025 &nbsp;·&nbsp; IFC4 &nbsp;·&nbsp; Autodesk structural sample</p>
+                    <p class="card-hook">641 concrete elements. At this scale, errors do not appear as failures — they appear as plausible outputs.</p>
+                    <hr class="card-rule">
+                    <div class="card-metrics">
+                        <div class="card-metric"><span class="cm-label">Elements</span><span class="cm-value">641</span></div>
+                        <div class="card-metric"><span class="cm-label">Concrete</span><span class="cm-value">2,290.91 m³</span></div>
+                        <div class="card-metric"><span class="cm-label">Delta</span><span class="cm-value">0.007 m³</span></div>
+                    </div>
+                    <div class="card-cta">Read study <span class="card-arrow">→</span></div>
+                </a>
+
+                <!-- 05 -->
+                <a href="case-study-05.html" class="cs-card">
+                    <div class="card-top">
+                        <span class="card-num">05</span>
+                        <span class="card-badge">Commercial Scale</span>
+                    </div>
+                    <h2 class="card-title">SampleBuilding.ifc</h2>
+                    <p class="card-source">Revit 2024 &nbsp;·&nbsp; IFC4 &nbsp;·&nbsp; Multi-storey commercial building</p>
+                    <p class="card-hook">A class-only extraction returns 9 foundation elements and 56.88 m³. The correct count is 90 elements and 361.62 m³.</p>
+                    <hr class="card-rule">
+                    <div class="card-metrics">
+                        <div class="card-metric"><span class="cm-label">Elements</span><span class="cm-value">218</span></div>
+                        <div class="card-metric"><span class="cm-label">Concrete</span><span class="cm-value">2,760.58 m³</span></div>
+                        <div class="card-metric"><span class="cm-label">Accuracy</span><span class="cm-value">99.6%</span></div>
+                    </div>
+                    <div class="card-cta">Read study <span class="card-arrow">→</span></div>
+                </a>
+
+                <!-- 06 -->
+                <a href="case-study-06.html" class="cs-card">
+                    <div class="card-top">
+                        <span class="card-num">06</span>
+                        <span class="card-badge">German IFC2X3</span>
+                    </div>
+                    <h2 class="card-title">Bauteil-Oberflächen.ifc</h2>
+                    <p class="card-source">Allplan 2017 &nbsp;·&nbsp; IFC2X3 &nbsp;·&nbsp; Underground car park</p>
+                    <p class="card-hook">50% of reported concrete was non-structural. The answer was in one field the extractor did not read.</p>
+                    <hr class="card-rule">
+                    <div class="card-metrics">
+                        <div class="card-metric"><span class="cm-label">Elements</span><span class="cm-value">14</span></div>
+                        <div class="card-metric"><span class="cm-label">Corrected</span><span class="cm-value">62.703 m³</span></div>
+                        <div class="card-metric"><span class="cm-label">Removed</span><span class="cm-value">31.371 m³</span></div>
+                    </div>
+                    <div class="card-cta">Read study <span class="card-arrow">→</span></div>
+                </a>
+
+                <!-- 07 — featured full-width -->
+                <a href="case-study-07.html" class="cs-card featured">
+                    <div class="card-main">
+                        <div class="card-left">
+                            <div class="card-top">
+                                <span class="card-num">07</span>
+                                <span class="card-badge">Live Project</span>
+                            </div>
+                            <h2 class="card-title">CPS-026/270 — Residential RC Frame</h2>
+                            <p class="card-source">Revit 2021 &nbsp;·&nbsp; IFC2X3 &nbsp;·&nbsp; Real project &nbsp;·&nbsp; Kenya</p>
+                            <p class="card-hook">This is not a benchmark model. The first delivery failed.<br>Initial result: 20,906 kg steel. Correct: 2,409 kg. The data was fully present in the IFC. The system did not read it.</p>
+                        </div>
+                        <div class="card-bottom">
+                            <hr class="card-rule">
+                            <div class="card-metrics">
+                                <div class="card-metric"><span class="cm-label">Modeled Bars</span><span class="cm-value">1,252</span></div>
+                                <div class="card-metric"><span class="cm-label">Corrected Steel</span><span class="cm-value">2,409.84 kg</span></div>
+                                <div class="card-metric"><span class="cm-label">Cost Delta</span><span class="cm-value">€8,615</span></div>
+                            </div>
+                            <div class="card-cta">Read study <span class="card-arrow">→</span></div>
+                        </div>
+                    </div>
+                </a>
+
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Footer -->
     <footer>
-        <div class="footer-bottom">
-            <div style="display:flex;justify-content:center;gap:32px;margin-bottom:16px;">
-                <a href="index.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Home</a>
-                <a href="about.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">About</a>
-                <a href="demo.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Demo</a>
-                <a href="submit-ifc.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Submit IFC</a>
+        <div class="container">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="case-studies.html">Case Studies</a>
+                <a href="demo.html">Demo</a>
+                <a href="submit-ifc.html">Submit IFC</a>
             </div>
-            &copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com
+            <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script>
-        function toggleDropdown(event) {
-            event.stopPropagation();
-            const container = document.getElementById('navDropdownContainer');
-            container.classList.toggle('active');
-        }
-
-        document.addEventListener('click', (event) => {
-            const container = document.getElementById('navDropdownContainer');
-            if (container && !container.contains(event.target)) {
-                container.classList.remove('active');
-            }
-        });
+        const obs = new IntersectionObserver(
+            (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+            { threshold: 0.08 }
+        );
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
     </script>
-</body>
 
+</body>
 </html>

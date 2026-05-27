@@ -1,0 +1,125 @@
+CASE STUDY 01
+
+AC20-FZK-Haus
+ArchiCAD IFC4 · Karlsruhe Institute of Technology · buildingSMART benchmark model
+
+THE PROBLEM
+
+Most automated quantity extraction workflows assume IFC semantics are reliable enough for direct interpretation. A property is read, mapped to a category, and transferred into a BOQ with minimal validation.
+
+In practice, IFC data is a product of modeling decisions, export behavior, drafting conventions, and software-specific interpretation layers — not a dataset explicitly structured for downstream quantity takeoff.
+
+FZK-Haus is one of the most widely used IFC benchmark models in the industry. Developed by researchers at KIT and distributed through buildingSMART, it is used globally by software vendors, universities, and BIM researchers to test interoperability and quantity extraction behavior.
+
+The file exported without error.
+The quantities existed.
+The semantics still required verification.
+
+WHAT THE FILE CONTAINED
+18 concrete structural elements
+131.669 m³ total concrete volume
+42 timber roof members
+1 foundation slab
+2 sloped roof slabs
+1 concrete beam with inconsistent material metadata
+FINDING 1 — NON-DIMENSIONAL PROPERTY MISINTERPRETED AS GEOMETRY INPUT
+
+The roof rafters were exported as IfcMember elements. No explicit material identifiers such as timber, wood, or holz were present in naming or material assignments.
+
+Each element contained a property named Slope with a value of 1718.873 under Pset_BeamCommon.
+
+In naive extraction logic, non-geometric properties within common Psets can be incorrectly interpreted as dimensional inputs depending on mapping rules. Under such a mapping, this value can propagate into a derived depth calculation of approximately 37.65 m, which is not physically meaningful.
+
+The actual rafter depth is 0.16 m.
+
+The validation pipeline explicitly excludes non-dimensional attributes (including Slope, FireRating, ThermalTransmittance, LoadBearing) from geometry inference.
+
+All 42 rafters were correctly classified as non-concrete elements and excluded from reinforced concrete quantity extraction.
+
+FINDING 2 — STRUCTURAL ELEMENT WITH NON-SEMANTIC MATERIAL METADATA
+
+The only concrete beam in the model carried the exported material identifier:
+
+“Radial Gradient Fill 1515460218”
+
+This originates from an ArchiCAD 2D section fill definition rather than a structural material assignment. Additional surface metadata referenced Kiefer glänzend (pine glossy), which is inconsistent with concrete classification.
+
+Element classification as structural concrete was derived from combined evidence:
+
+structural naming convention (“Unterzug”)
+full BaseQuantities availability
+geometric placement beneath the primary slab system at ground floor level
+contextual consistency within the structural grid
+
+Material metadata alone was not sufficient for reliable classification.
+
+The validation process did not accept material assignment as a primary source of truth and instead relied on multi-signal classification logic.
+
+FINDING 3 — MISCLASSIFICATION OF FOUNDATION ELEMENT TYPE
+
+The foundation slab “Bodenplatte” was exported as IfcSlab with PredefinedType = BASESLAB.
+
+In standard workflows, slabs are often processed under uniform reinforcement assumptions. However, foundation elements typically require distinct structural and reinforcement logic.
+
+The pipeline detected the predefined type and reclassified the element into a foundation category prior to quantity and reinforcement logic assignment.
+
+Cross-validation results:
+
+Bonsai NetVolume: 24.0000 m³
+StructBOQ output: 24.0000 m³
+Difference: 0.0000 m³
+
+No deviation observed.
+
+FINDING 4 — NET VS GROSS VOLUME ERROR DUE TO VOID GEOMETRY
+
+One floor slab contained a circular opening for a staircase core.
+
+Quantity comparison:
+
+GrossVolume: 23.128 m³
+NetVolume: 19.967 m³
+Difference: 3.161 m³
+
+This represents concrete physically removed by void geometry.
+
+If GrossVolume is used for estimation workflows, the slab is over-quantified by 13.7% on this element.
+
+The pipeline consistently uses NetVolume for all quantity calculations. This distinction ensures that BOQs reflect constructed geometry rather than pre-void mass representation.
+
+VALIDATION PIPELINE
+IFC entity classification
+Property-level semantic filtering
+BaseQuantities extraction with full source traceability
+Element type verification against predefined IFC schema
+Cross-checking in Bonsai / BlenderBIM
+Element-level quantity reconciliation
+BOQ generation with complete audit trail per element
+THE RESULT
+
+All 18 concrete elements were independently validated against raw IFC quantities using Bonsai / BlenderBIM.
+
+Bonsai total: 131.6685 m³
+StructBOQ total: 131.6686 m³
+Delta: 0.0001 m³ (floating-point rounding only)
+
+No material quantity discrepancies were identified.
+
+All final concrete quantities were derived exclusively from IFC BaseQuantities. No geometric fallback was required at any stage. Every value remains traceable to its original IFC source definition.
+
+ONE LIMITATION
+
+This benchmark model does not contain modeled reinforcement geometry.
+
+Steel quantities were therefore derived using rule-based estimation based on BS EN 1992 design assumptions rather than explicit IFC reinforcement objects.
+
+Concrete quantities are fully validated at the data-source level.
+Steel outputs remain indicative and are not suitable for procurement or contractual use.
+
+WHY THIS MATTERS
+
+IFC is not a deterministic representation of construction reality. It is an exported model whose semantics are shaped by authoring decisions, software interpretation layers, and exchange configurations.
+
+In quantity workflows, failures rarely originate from incorrect mathematics. They originate from unvalidated semantic assumptions that propagate silently through estimation, procurement, reinforcement planning, and cost control processes.
+
+The role of validation is not to override engineering judgment, but to surface ambiguity before it becomes a financial or contractual error downstream.

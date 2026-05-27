@@ -1,269 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Demo | StructBOQ</title>
-
-    <!-- Google Fonts: Inter -->
+    <title>Demo | StructBOQ | Shabir Ahmad</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/logo.png">
-
     <style>
-        :root {
-            --bg-solid: #E8E6E1;
-            --border-color: rgba(0, 0, 0, 0.09);
-            --accent: #D4AF37;
-            --accent-glow: rgba(212, 175, 55, 0.3);
-            --text-primary: #0F0E0A;
-            --text-secondary: #6B6859;
-        }
+        :root{--accent:#D4AF37;--accent-glow:rgba(212,175,55,0.25);--border:rgba(0,0,0,0.09);--bg:#F5F4F0;--bg2:#EDECEA;--bg3:#E8E6E1;--text:#0F0E0A;--muted:#6B6859;}
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:70px;}
+        .top-navbar{position:fixed;top:0;left:0;width:100%;height:70px;background:rgba(245,244,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;}
+        .nav-container{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:space-between;align-items:center;}
+        .nav-logo{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.01em;}
+        .nav-cta{background:var(--accent);color:#000;padding:9px 20px;border-radius:4px;font-size:0.875rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
+        .nav-cta:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
+        .nav-links{display:flex;gap:28px;align-items:center;}
+        .nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .nav-links a:hover{color:var(--text);}
+        .container{max-width:900px;margin:0 auto;padding:0 32px;}
+        .label{display:block;font-size:0.72rem;font-weight:700;color:var(--accent);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:16px;}
+        .reveal{opacity:0;transform:translateY(24px);transition:all 0.7s cubic-bezier(0.16,1,0.3,1);}
+        .reveal.in{opacity:1;transform:none;}
+        .d1{transition-delay:0.1s;} .d2{transition-delay:0.2s;} .d3{transition-delay:0.3s;}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        .page-intro{padding:64px 0 48px;border-bottom:1px solid var(--border);}
+        .page-intro h1{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:16px;}
+        .page-intro p{font-size:1rem;color:var(--muted);max-width:600px;line-height:1.75;}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F5F4F0;
-            color: var(--text-primary);
-            overflow-x: hidden;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            padding-top: 70px; /* Space for fixed navbar */
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+        .video-section{padding:56px 0;border-bottom:1px solid var(--border);}
+        .video-frame{border:1px solid var(--border);position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:var(--bg3);}
+        .video-frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+        .loom-overlay{position:absolute;inset:0;z-index:10;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(15,14,10,0.35);transition:background 0.25s;}
+        .loom-overlay:hover{background:rgba(15,14,10,0.18);}
+        .play-btn{display:flex;align-items:center;gap:10px;background:var(--accent);color:#000;padding:14px 28px;font-size:0.875rem;font-weight:700;letter-spacing:0.02em;transition:all 0.2s;}
+        .loom-overlay:hover .play-btn{background:#FDE047;box-shadow:0 0 24px var(--accent-glow);}
+        .play-icon{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid #000;flex-shrink:0;}
 
-        /* NAV */
-        .top-navbar {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 70px;
-            background-color: #F5F4F0;
-            border-bottom: 1px solid var(--border-color);
-            z-index: 1000;
-        }
-        .nav-container {
-            max-width: 1200px; margin: 0 auto;
-            height: 100%; padding: 0 32px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .nav-logo {
-            font-size: 1.1rem; font-weight: 700;
-            color: var(--accent); text-decoration: none;
-            letter-spacing: -0.01em;
-        }
-        .nav-cta {
-            background: var(--accent); color: #000;
-            padding: 9px 20px; border-radius: 4px;
-            font-size: 0.875rem; font-weight: 700;
-            text-decoration: none; transition: all 0.25s;
-        }
-        .nav-cta:hover { background: #FDE047; box-shadow: 0 0 20px var(--accent-glow); }
+        .watch-for{margin-top:36px;}
+        .watch-for-label{font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px;display:block;}
+        .watch-list{list-style:none;display:flex;flex-direction:column;gap:0;}
+        .watch-list li{font-size:0.9rem;line-height:1.6;color:var(--text);padding:13px 0;border-bottom:1px solid var(--border);padding-left:22px;position:relative;}
+        .watch-list li:first-child{border-top:1px solid var(--border);}
+        .watch-list li::before{content:'→';position:absolute;left:0;color:var(--accent);font-weight:700;}
 
-        /* ------------------------------------- */
-        /* LAYOUT & PANEL STYLING                */
-        /* ------------------------------------- */
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px;
-        }
+        .highlights{display:flex;flex-wrap:wrap;border:1px solid var(--border);background:var(--text);margin-top:0;}
+        .hl-item{flex:1;min-width:160px;padding:28px 32px;border-right:1px solid rgba(255,255,255,0.07);}
+        .hl-item:last-child{border-right:none;}
+        .hl-label{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:block;margin-bottom:8px;}
+        .hl-value{font-size:1.35rem;font-weight:800;color:var(--accent);letter-spacing:-0.02em;display:block;margin-bottom:4px;}
+        .hl-sub{font-size:0.72rem;color:rgba(255,255,255,0.3);display:block;}
 
-        .container {
-            max-width: 1000px;
-            width: 100%;
-        }
+        .cta-section{padding:64px 0;}
+        .cta-section h2{font-size:clamp(1.6rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.025em;margin-bottom:14px;}
+        .cta-section p{font-size:0.95rem;color:var(--muted);margin-bottom:32px;max-width:520px;line-height:1.75;}
+        .btn-gold{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#000;padding:16px 32px;text-decoration:none;font-weight:800;font-size:0.95rem;transition:all 0.25s;}
+        .btn-gold:hover{background:#FDE047;box-shadow:0 0 24px var(--accent-glow);}
+        .btn-arrow{font-size:1rem;line-height:1;}
 
-        .glass-panel {
-            background: var(--bg-solid);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .section-label {
-            font-size: 0.875rem;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            display: block;
-        }
-
-        .section-heading {
-            font-size: clamp(2rem, 4vw, 2.5rem);
-            font-weight: 800;
-            margin-bottom: 24px;
-        }
-
-        .section-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-        }
-
-        /* Loom Interaction Fix */
-        .loom-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
-            height: 0;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 40px;
-            border: 1px solid var(--border-color);
-        }
-        .loom-overlay {
-            position: absolute;
-            inset: 0;
-            z-index: 10;
-            cursor: pointer;
-            background: rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .loom-overlay span {
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-            background: rgba(0,0,0,0.75);
-            padding: 10px 20px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        .loom-overlay:hover span {
-            background: var(--accent);
-            color: #000;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .actions-row {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .btn-gold {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--accent);
-            color: #000;
-            padding: 16px 32px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 1rem;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-gold:hover {
-            box-shadow: 0 0 20px var(--accent-glow);
-            background-color: #FDE047;
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(24, 24, 24, 0.6);
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            padding: 14px 30px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1rem;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .btn-outline:hover {
-            background-color: var(--accent);
-            color: #000;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid rgba(0,0,0,0.09);
-            padding: 40px 32px 28px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #64748b;
-        }
+        footer{padding:48px 0 32px;border-top:1px solid var(--border);}
+        .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+        .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .footer-links a:hover{color:var(--text);}
+        .footer-copy{text-align:center;font-size:0.78rem;color:var(--muted);}
     </style>
 </head>
-
 <body>
 
-    <!-- Top Navigation Bar -->
-    <header class="top-navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">Shabir Ahmad</a>
-            <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+<header class="top-navbar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
         </div>
-    </header>
+        <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+    </div>
+</header>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="container">
-            <div class="glass-panel">
-                <span class="section-label">DEMO VIDEO</span>
-                <h2 class="section-heading">StructBOQ in Action</h2>
-                <p class="section-subtitle">Watch how StructBOQ reads an IFC file, processes quantities with base checks, audits discrepancies, and compiles an automated Excel BOQ.</p>
-                
-                <div class="loom-wrapper" id="loomWrapper">
-                    <iframe id="loomIframe"
-                        src=""
-                        data-src="https://www.loom.com/embed/74cdf4da3261456aa44773ee61696386?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
-                        loading="lazy"
-                        frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen
-                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
-                    </iframe>
-                    <!-- Overlay that blocks pointer events until clicked -->
-                    <div class="loom-overlay" id="loomOverlay" onclick="activateLoom()">
-                        <span>▶ Click to watch video</span>
-                    </div>
+<section class="page-intro">
+    <div class="container">
+        <div class="reveal">
+            <span class="label">Demo Video</span>
+            <h1>StructBOQ in Action</h1>
+            <p>A complete walkthrough from raw IFC file to audited BOQ — extraction, validation, flagging, and Excel output, unedited.</p>
+        </div>
+    </div>
+</section>
+
+<section class="video-section">
+    <div class="container">
+        <div class="reveal d1">
+            <div class="video-frame" id="videoFrame">
+                <iframe id="loomIframe"
+                    src=""
+                    data-src="https://www.loom.com/embed/74cdf4da3261456aa44773ee61696386?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
+                    loading="lazy"
+                    frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
+                </iframe>
+                <div class="loom-overlay" id="loomOverlay" onclick="activateLoom()">
+                    <div class="play-btn"><span class="play-icon"></span> Watch Demo</div>
                 </div>
+            </div>
 
+            <div class="watch-for">
+                <span class="watch-for-label">What to watch for</span>
+                <ul class="watch-list">
+                    <li>How the pipeline distinguishes IfcQuantityVolume from geometric fallback — and when each is used</li>
+                    <li>Where misclassified elements are caught before quantities are committed to the BOQ</li>
+                    <li>The final Excel structure: element list, audit flags, and summary sheet in one file</li>
+                </ul>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-links" style="display:flex;justify-content:center;gap:32px;margin-bottom:16px;">
-            <a href="index.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Home</a>
-            <a href="about.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">About</a>
-            <a href="case-studies.html" style="color:#94A3B8;text-decoration:none;font-size:0.85rem;font-weight:500;">Case Studies</a>
+<section style="padding:0 0 56px;">
+    <div class="container">
+        <div class="highlights reveal d2">
+            <div class="hl-item">
+                <span class="hl-label">Runtime</span>
+                <span class="hl-value">~6 min</span>
+                <span class="hl-sub">Unedited walkthrough</span>
+            </div>
+            <div class="hl-item">
+                <span class="hl-label">IFC versions</span>
+                <span class="hl-value">IFC4 + IFC2X3</span>
+                <span class="hl-sub">Both schemas validated</span>
+            </div>
+            <div class="hl-item">
+                <span class="hl-label">Output</span>
+                <span class="hl-value">Excel BOQ</span>
+                <span class="hl-sub">Audit trail included</span>
+            </div>
+            <div class="hl-item">
+                <span class="hl-label">Setup required</span>
+                <span class="hl-value">Zero</span>
+                <span class="hl-sub">Upload, receive report</span>
+            </div>
         </div>
-        <p>&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
-    </footer>
+    </div>
+</section>
 
-    <!-- Scripts -->
-    <script>
-        function activateLoom() {
-            const iframe = document.getElementById('loomIframe');
-            if (!iframe.src) iframe.src = iframe.dataset.src;
-            document.getElementById('loomOverlay').style.display = 'none';
-            iframe.style.pointerEvents = 'auto';
-        }
-    </script>
+<section class="cta-section" style="border-top:1px solid var(--border);">
+    <div class="container">
+        <div class="reveal d3">
+            <span class="label">Next Step</span>
+            <h2>Ready to run this on your file?</h2>
+            <p>Submit your IFC file and receive a validated, audited BOQ within 48 hours. No software to install. No per-seat license.</p>
+            <a href="submit-ifc.html" class="btn-gold">Submit IFC File <span class="btn-arrow">→</span></a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+            <a href="submit-ifc.html">Submit IFC File</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </div>
+</footer>
+
+<script>
+    function activateLoom() {
+        const iframe = document.getElementById('loomIframe');
+        if (!iframe.src) iframe.src = iframe.dataset.src;
+        document.getElementById('loomOverlay').style.display = 'none';
+        iframe.style.pointerEvents = 'auto';
+    }
+
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
 </body>
-
 </html>

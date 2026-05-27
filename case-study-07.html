@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPS-026/270 Kenya | Case Studies | Shabir Ahmad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <style>
+        :root { --accent:#D4AF37; --accent-glow:rgba(212,175,55,0.25); --border:rgba(0,0,0,0.09); --bg:#F5F4F0; --bg2:#EDECEA; --bg3:#E8E6E1; --text:#0F0E0A; --muted:#6B6859; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:70px;}
+        .navbar{position:fixed;top:0;left:0;width:100%;height:70px;background:rgba(245,244,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;}
+        .nav-inner{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:space-between;align-items:center;}
+        .nav-logo{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.01em;}
+        .nav-cta{background:var(--accent);color:#000;padding:9px 20px;border-radius:4px;font-size:0.875rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
+        .nav-cta:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
+        .nav-links{display:flex;gap:28px;align-items:center;}
+        .nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .nav-links a:hover{color:var(--text);}
+        .container{max-width:900px;margin:0 auto;padding:0 32px;}
+        .label{display:block;font-size:0.72rem;font-weight:700;color:var(--accent);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:16px;}
+        .reveal{opacity:0;transform:translateY(24px);transition:all 0.7s cubic-bezier(0.16,1,0.3,1);}
+        .reveal.in{opacity:1;transform:none;}
+        .breadcrumb{padding:14px 0;border-bottom:1px solid var(--border);}
+        .breadcrumb a{font-size:0.8rem;font-weight:600;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .breadcrumb a:hover{color:var(--text);}
+        .study-intro{padding:64px 0 48px;border-bottom:1px solid var(--border);}
+        .intro-top{display:flex;align-items:flex-start;gap:28px;}
+        .intro-num{font-size:4.5rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-0.04em;flex-shrink:0;width:88px;padding-top:4px;}
+        .intro-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-0.025em;line-height:1.05;margin-bottom:12px;}
+        .intro-source{font-size:0.82rem;color:var(--muted);font-weight:500;margin-bottom:14px;line-height:1.6;}
+        .intro-badge{display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(212,175,55,0.4);padding:4px 10px;border-radius:2px;}
+        .content-block{padding:56px 0;border-bottom:1px solid var(--border);}
+        .prose p{font-size:0.975rem;line-height:1.85;color:var(--text);margin-bottom:14px;}
+        .prose p:last-child{margin-bottom:0;}
+        .failure-callout{background:var(--text);padding:28px 32px;margin-bottom:32px;}
+        .failure-callout p{font-size:0.95rem;line-height:1.75;color:rgba(255,255,255,0.7);margin-bottom:0;}
+        .failure-callout strong{color:var(--accent);}
+        .file-facts{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);padding:28px 32px;margin-top:32px;}
+        .file-facts ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:9px 40px;}
+        .file-facts ul li{font-size:0.85rem;color:var(--text);font-weight:500;padding-left:18px;position:relative;line-height:1.5;}
+        .file-facts ul li::before{content:'—';position:absolute;left:0;color:var(--muted);}
+        .data-row{display:flex;flex-wrap:wrap;border:1px solid var(--border);margin:20px 0;background:var(--bg);}
+        .data-cell{flex:1;min-width:150px;padding:14px 18px;border-right:1px solid var(--border);}
+        .data-cell:last-child{border-right:none;}
+        .dc-label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.09em;display:block;margin-bottom:5px;}
+        .dc-value{font-size:0.9rem;font-weight:700;color:var(--text);}
+        .dc-value.gold{color:var(--accent);}
+        .dc-value.red{color:#C0392B;}
+        .findings{margin-top:32px;}
+        .finding{border-top:1px solid var(--border);padding:28px 0;}
+        .finding:last-child{border-bottom:1px solid var(--border);}
+        .finding-header{display:flex;align-items:baseline;gap:18px;margin-bottom:14px;flex-wrap:wrap;}
+        .finding-num{font-size:0.68rem;font-weight:700;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;flex-shrink:0;}
+        .finding-title{font-size:0.875rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.03em;line-height:1.4;}
+        .finding-body p{font-size:0.95rem;line-height:1.82;color:var(--text);margin-bottom:12px;}
+        .finding-body p:last-child{margin-bottom:0;}
+        .rebar-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.85rem;}
+        .rebar-table th{text-align:left;font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.09em;padding:10px 14px;border-bottom:2px solid var(--border);}
+        .rebar-table td{padding:10px 14px;border-bottom:1px solid var(--border);}
+        .rebar-table tr:last-child td{border-bottom:none;}
+        .rebar-table .total-row td{font-weight:700;border-top:2px solid var(--border);color:var(--accent);}
+        .result-bar{background:var(--text);display:flex;margin-top:32px;flex-wrap:wrap;}
+        .result-item{flex:1;min-width:160px;padding:28px 32px;border-right:1px solid rgba(255,255,255,0.07);}
+        .result-item:last-child{border-right:none;}
+        .r-label{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:block;margin-bottom:10px;}
+        .r-value{font-size:1.45rem;font-weight:800;color:var(--accent);letter-spacing:-0.02em;line-height:1;display:block;margin-bottom:6px;}
+        .r-sub{font-size:0.72rem;color:rgba(255,255,255,0.3);display:block;}
+        .cost-impact{background:var(--bg2);border:1px solid var(--border);padding:24px 28px;margin-top:24px;display:flex;gap:40px;flex-wrap:wrap;}
+        .cost-item .ci-label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.09em;display:block;margin-bottom:6px;}
+        .cost-item .ci-value{font-size:1.1rem;font-weight:800;color:var(--text);}
+        .cost-item .ci-value.gold{color:var(--accent);}
+        .limitation{padding:40px 0;border-bottom:1px solid var(--border);}
+        .limitation .label{color:var(--muted);}
+        .limitation p{font-size:0.9rem;line-height:1.82;color:var(--muted);margin-bottom:10px;}
+        .limitation p:last-child{margin-bottom:0;}
+        .why-matters{padding:40px 0;}
+        .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
+        .why-matters p:last-child{margin-bottom:0;}
+        footer{padding:48px 0 32px;border-top:1px solid var(--border);}
+        .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+        .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .footer-links a:hover{color:var(--text);}
+        .footer-copy{text-align:center;font-size:0.78rem;color:var(--muted);}
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">Shabir Ahmad</a>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+        </div>
+        <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+    </div>
+</nav>
+
+<div class="breadcrumb">
+    <div class="container"><a href="case-studies.html">← Case Studies</a></div>
+</div>
+
+<header class="study-intro">
+    <div class="container">
+        <div class="intro-top reveal">
+            <span class="intro-num">07</span>
+            <div>
+                <h1 class="intro-title">CPS-026/270 — Residential RC Frame</h1>
+                <p class="intro-source">Revit 2021 &nbsp;·&nbsp; IFC2X3 &nbsp;·&nbsp; Real project file &nbsp;·&nbsp; Kenya</p>
+                <span class="intro-badge">Live Project</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <div class="content-block reveal">
+            <span class="label">THE PROBLEM</span>
+            <div class="failure-callout">
+                <p><strong>This file came first.</strong> Before the benchmark series. Before the validation pipeline was complete. A real residential reinforced concrete frame in Kenya — submitted while the extraction engine was still being built.<br><br>
+                The first delivery failed.<br><br>
+                StructBOQ steel — <strong>20,906 kg</strong> &nbsp;·&nbsp; Correct steel — <strong>2,409 kg</strong> &nbsp;·&nbsp; Error — <strong>767%</strong><br><br>
+                The issue was not missing data. The data was fully present in the IFC. The system simply did not read it. Every validation method documented in studies 01–06 — rebar geometry extraction, layer decomposition, BASESLAB reclassification, NetVolume policy — was built in direct response to what went wrong here.</p>
+            </div>
+            <div class="file-facts">
+                <span class="label">WHAT THE FILE CONTAINED</span>
+                <ul>
+                    <li>1,484 total IFC elements</li>
+                    <li>209 concrete structural elements</li>
+                    <li>122.801 m³ validated concrete volume</li>
+                    <li>91 columns — 2 section types, 2 height variants</li>
+                    <li>52 beams — 3 types</li>
+                    <li>41 pad footings — IfcSlab exported as BASESLAB</li>
+                    <li>18 strip footings — no BaseQuantities</li>
+                    <li>4 concrete slabs — incl. 3-layer ground floor</li>
+                    <li>2 stair flights with landings</li>
+                    <li>18 masonry walls — excluded</li>
+                    <li>1,252 IfcReinforcingBar — fully modeled rebar system</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">FINDINGS</span>
+            <div class="findings">
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 01</span>
+                        <span class="finding-title">Complete Rebar Model Not Extracted in Initial Run — 767% Steel Error</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>The rebar model was complete. Every bar individually modeled. Not one diameter missing. Not one length absent. 1,252 IfcReinforcingBar elements. NominalDiameter present. BarLength present. CrossSectionArea present on all 1,252.</p>
+                        <p>The initial engine defaulted to concrete volume ratio method because rebar extraction was not implemented. The data was present. The extraction path was not. Correct computation — CrossSectionArea × BarLength × 7850 kg/m³ per bar.</p>
+                        <table class="rebar-table">
+                            <thead>
+                                <tr><th>Bar Type</th><th>Count</th><th>Mass</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>T8</td><td>457 bars</td><td>348.47 kg</td></tr>
+                                <tr><td>T10</td><td>657 bars</td><td>1,572.51 kg</td></tr>
+                                <tr><td>T12</td><td>114 bars</td><td>242.33 kg</td></tr>
+                                <tr><td>T16</td><td>24 bars</td><td>246.54 kg</td></tr>
+                                <tr class="total-row"><td>Total — all 1,252 bars</td><td></td><td>2,409.84 kg</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">First delivery (ratio)</span><span class="dc-value red">20,906 kg</span></div>
+                            <div class="data-cell"><span class="dc-label">Correct result (geometry)</span><span class="dc-value gold">2,409.84 kg</span></div>
+                            <div class="data-cell"><span class="dc-label">Error factor</span><span class="dc-value">767%</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 02</span>
+                        <span class="finding-title">Multi-Layer Slab Misinterpreted as Full Concrete Volume — €5,621 from One Slab</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>Ground floor slab — Floor: 150mm Solid Slab With A142 Mesh. IFC NetVolume — 60.2249 m³. Actual build-up — 100mm concrete structural, 50mm sand blinding, 300mm earth subgrade. Total modeled thickness — 450mm. The entire 450mm was interpreted as concrete.</p>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">IFC NetVolume (full build-up)</span><span class="dc-value red">60.2249 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">Concrete layer only</span><span class="dc-value gold">13.383 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">Cost impact at €120/m³</span><span class="dc-value">€5,621</span></div>
+                        </div>
+                        <p>46.842 m³ of sand and earth incorrectly priced as concrete from one slab. One family. One unchecked assumption. This pattern appears in residential construction worldwide. Any ground floor family modeled with blinding, sand, or subgrade layers carries this risk. The engine now detects IfcMaterialLayerSetUsage, identifies the structural concrete layer, and extracts only that layer's volume.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 03</span>
+                        <span class="finding-title">Strip Footings Without BaseQuantities Required Geometric Extraction</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>18 strip footings. No BaseQuantities exported. This is a known Revit IFC exporter limitation — foundation elements do not receive BaseQuantities regardless of export settings. Initial engine applied uniform defaults — 4.00m length, 0.60m width, 0.30m depth — to all 18 elements identically.</p>
+                        <p>The geometry was in the file. It was being ignored entirely. IfcExtrudedAreaSolid representations present on every footing. Lengths ranging from 0.049m connector pieces to 18.275m perimeter runs. Some footings with up to 11 separate extrusion segments. Element name says 600×200mm Strip Footing — engine was applying default depth of 300mm. Wrong by 50%.</p>
+                        <div class="data-row">
+                            <div class="data-cell"><span class="dc-label">Default-based result</span><span class="dc-value red">12.960 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">Geometry-derived result</span><span class="dc-value gold">16.591 m³</span></div>
+                            <div class="data-cell"><span class="dc-label">Volume range per element</span><span class="dc-value">0.048 — 2.384 m³</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 04</span>
+                        <span class="finding-title">Pad Footings Misclassified as Floor Slabs</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>41 pad footings exported as IfcSlab with PredefinedType BASESLAB. The Revit modeler used the Floor category instead of the Footing category. When exported, Revit assigned the slab class.</p>
+                        <p>Two distinct sizes confirmed by script. B1 — 9 elements — 1200×1200×300mm — 0.432 m³ each. B2 — 32 elements — 1000×1000×300mm — 0.300 m³ each. PredefinedType combined with name-based override reclassified all 41 to footing before any steel ratio or cost logic was applied. This pattern repeats across multiple Revit datasets. It is not a Revit bug. It is a modeling practice. The detection must be in the engine.</p>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-num">FINDING 05</span>
+                        <span class="finding-title">GrossVolume Unit Inconsistency in IFC2X3 Export — Factor of 1000</span>
+                    </div>
+                    <div class="finding-body">
+                        <p>Multiple elements show corrupted GrossVolume. BASESLAB B1 — GrossVolume 432.0 m³, NetVolume 0.432 m³ — factor of 1000. Spandrel beams — GrossVolume mismatch approximately 260×. NetVolume is consistent across all affected elements. GrossVolume is unreliable in specific IFC2X3 Revit exports.</p>
+                        <p>This is a systematic export bug, not a modeling error. NetVolume used exclusively throughout. GrossVolume ignored unless cross-validated against geometry. Any workflow that defaults to GrossVolume on IFC2X3 Revit files carries this risk silently — no warning is issued and the corrupted number looks plausible.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-block reveal">
+            <span class="label">THE RESULT</span>
+            <p style="font-size:0.975rem;line-height:1.85;margin-bottom:16px;">Full re-analysis after first delivery failure. Every element, assumption, and extraction path reviewed. 209 concrete elements validated in Bonsai/BlenderBIM. 1,252 bars extracted by individual geometry.</p>
+            <div class="result-bar">
+                <div class="result-item">
+                    <span class="r-label">Validated Concrete</span>
+                    <span class="r-value">122.801 m³</span>
+                    <span class="r-sub">Delta 0.603 m³ — strip footing geometry</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Validated Steel</span>
+                    <span class="r-value">2,409.84 kg</span>
+                    <span class="r-sub">1,252 bars — zero estimation</span>
+                </div>
+                <div class="result-item">
+                    <span class="r-label">Cost Correction</span>
+                    <span class="r-value">€8,615</span>
+                    <span class="r-sub">€38,104 → €29,489</span>
+                </div>
+            </div>
+            <div class="cost-impact">
+                <div class="cost-item">
+                    <span class="ci-label">First Delivery</span>
+                    <span class="ci-value">€38,104</span>
+                </div>
+                <div class="cost-item">
+                    <span class="ci-label">Corrected Total</span>
+                    <span class="ci-value gold">€29,489</span>
+                </div>
+                <div class="cost-item">
+                    <span class="ci-label">Steel error (original)</span>
+                    <span class="ci-value">20,906 kg</span>
+                </div>
+                <div class="cost-item">
+                    <span class="ci-label">Steel (corrected)</span>
+                    <span class="ci-value gold">2,409.84 kg</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="limitation reveal">
+            <span class="label">ONE HONEST LIMITATION</span>
+            <p>18 strip footings extracted from IFC geometry due to missing BaseQuantities. Confidence 85%. Verify against structural drawings before procurement.</p>
+            <p>One ground beam — GBM:1818908 — had NetVolume = 0.0. Volume reconstructed from Pset length and name-parsed dimensions. Confidence 70%. Verify against structural drawings.</p>
+            <p>Steel quantities are exact for all 1,252 modeled bars. No estimation applied.</p>
+        </div>
+
+        <div class="why-matters reveal">
+            <span class="label">WHY THIS MATTERS</span>
+            <p>The failure was not data absence. It was unread data. 1,252 bars fully modeled but ignored. 46.842 m³ of non-structural layers counted as concrete. Strip footings replaced by uniform assumptions. Pad footings accepted under the wrong IFC class. GrossVolume trusted where it should not have been.</p>
+            <p>Nothing failed visibly. Everything looked correct. The BOQ was wrong anyway.</p>
+            <p>IFC errors are rarely missing data problems. They are detection and interpretation failures. And in real delivery environments, speed of correction matters as much as correctness itself — because wrong numbers that arrive confidently still become decisions.</p>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="demo.html">Demo</a>
+            <a href="submit-ifc.html">Submit IFC</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </div>
+</footer>
+
+<script>
+    const obs = new IntersectionObserver(
+        (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+        { threshold: 0.08 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

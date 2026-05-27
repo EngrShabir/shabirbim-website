@@ -1,0 +1,169 @@
+CASE STUDY 03
+IfcReinforcingBar.ifc
+Allplan 2014 · IFC2X3 · buildingSMART public test model
+
+THE PROBLEM
+
+Small files are not safe files.
+
+IfcReinforcingBar.ifc is a public buildingSMART test model representing a reinforced concrete lift shaft wall exported from Allplan 2014. The model contains four walls, one footing, and thirteen rebar groups across a total of eighteen structural elements.
+
+On paper, this is a straightforward extraction scenario.
+
+The initial run produced a steel quantity of 204 kg.
+The validated reference value is 404.83 kg.
+Deviation: ~98%.
+
+Geometry was present.
+The model was complete.
+The extraction logic was incomplete.
+
+WHAT THE FILE CONTAINED
+18 structural elements
+4 reinforced concrete walls
+1 concrete footing
+13 rebar groups — 189 individual bars
+520 IfcAnnotation entities (reinforcement drawings, dimension lines, symbols embedded in IFC)
+FINDING 1 — QUANTITY DATA STORED IN NON-STANDARD PROPERTY SETS
+
+Allplan does not rely on standard IFC quantity sets. Instead, it exports proprietary sets such as:
+
+WallQuantities
+FootingQuantities
+
+A parser restricted to standard IFC quantity set names will not detect these values and will default to geometric estimation, even when valid quantities are present in the file.
+
+This is not missing data. It is non-standard placement of valid data.
+
+Once proprietary quantity sets were mapped, all concrete volumes were extracted directly from Allplan-defined properties. No geometric fallback was required.
+
+FINDING 2 — CROSS-SECTION AREA UNIT DEVIATION
+
+The IFC schema defines CrossSectionArea in m².
+Allplan exports this value in cm².
+
+For a 10 mm diameter bar, the raw exported value is:
+
+0.785
+
+If interpreted as m², this produces a physically invalid mass scale of:
+
+6,162 kg/m
+
+Correct interpretation (cm² → m² conversion):
+
+0.616 kg/m
+
+Error magnitude: 10,000×
+
+No metadata flag indicates the unit deviation. The value is syntactically valid but semantically incorrect under IFC assumptions.
+
+The pipeline applies explicit cm² → m² conversion for Allplan-derived reinforcement data prior to all calculations.
+
+FINDING 3 — GEOMETRY-CONTAINED DATA NOT UTILIZED IN INITIAL RUN
+
+The initial extraction assumed bar length was unavailable in IFC properties and applied ratio-based estimation.
+
+This assumption was incorrect.
+
+Each IfcReinforcingBar contains a geometric representation defined by an IfcPolyline directrix describing the full bar centerline, including bends and hooks.
+
+Bar length is therefore directly derivable from geometry.
+
+Additional consistent signals:
+
+IfcMappedItem count corresponds to bar quantities per group
+geometry-derived lengths match Allplan quantity sets across all groups
+
+First run result: 204 kg (estimated)
+Second run result: 404.83 kg (geometry-based)
+Validated against Bonsai reference.
+
+The data was present. It was not initially traversed.
+
+FINDING 4 — LARGE-SCALE NON-STRUCTURAL ANNOTATION OVERLAY
+
+The model contains:
+
+520 IfcAnnotation entities
+18 structural elements
+
+Annotations include reinforcement drawings, dimension lines, labels, and symbolic geometry.
+
+These entities are non-structural and do not represent physical construction components.
+
+Without explicit filtering, annotation entities can distort:
+
+element counts
+classification logic
+downstream aggregation and cost logic
+
+At scale, this pattern introduces thousands of non-structural objects into structural datasets.
+
+All annotations must be excluded prior to extraction.
+
+CORRECTED REBAR SCHEDULE
+
+Derived from geometric extraction and Allplan quantity sets. Confirmed against Bonsai.
+
+Ø10 mm — 8 groups — 115 bars — 150.19 kg
+Ø12 mm — 4 groups — 58 bars — 190.64 kg
+Ø18 mm — 1 group — 16 bars — 64.00 kg
+
+Total — 189 bars — 404.83 kg
+
+Steel grade: B500B
+Confirmed via IfcMaterial association through HasAssociations relationship (not exposed in standard quantity sets).
+
+VALIDATION PIPELINE
+Detection of Allplan proprietary quantity sets (WallQuantities, FootingQuantities)
+Explicit unit normalization for CrossSectionArea (cm² → m²)
+Geometric bar length extraction from IfcPolyline directrix
+Bar count validation via IfcMappedItem instances
+Steel grade resolution via material association graph traversal
+IfcAnnotation filtering prior to structural processing
+Element-level reconciliation in Bonsai / BlenderBIM
+Full quantity traceability per element and rebar group
+THE RESULT
+Concrete quantities fully extracted from Allplan proprietary quantity sets
+Rebar quantities fully derived from IFC geometry and validated against reference model
+Total rebar mass: 404.83 kg
+Reference deviation: 0.00 kg
+
+No quantitative discrepancies observed against Bonsai ground truth.
+
+ONE HONEST LIMITATION
+
+Concrete grade is not present in the IFC export.
+
+No representation exists in:
+
+property sets
+material definitions
+naming conventions
+classification metadata
+
+This is an upstream authoring omission in Allplan 2014 and cannot be reconstructed downstream.
+
+A default rate is applied where required and reported explicitly.
+
+WHY THIS MATTERS
+
+The initial failure was not computational. It was structural.
+
+Key information existed across multiple non-standard locations:
+
+proprietary quantity sets
+geometric representations
+material association paths
+naming and classification layers
+
+None aligned with standard IFC extraction assumptions.
+
+This is not missing data. It is distributed data.
+
+IFC information is rarely absent. It is fragmented across schema layers, encoded inconsistently across authoring tools, and often recoverable only through geometry rather than property sets.
+
+Most extraction pipelines fail at discovery, not calculation.
+
+The correction was not a model fix. It was a shift in assumption hierarchy — from expected schema behavior to observed file behavior.
