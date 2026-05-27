@@ -54,13 +54,6 @@
         .hl-value{font-size:1.35rem;font-weight:800;color:var(--accent);letter-spacing:-0.02em;display:block;margin-bottom:4px;}
         .hl-sub{font-size:0.72rem;color:rgba(255,255,255,0.3);display:block;}
 
-        .cta-section{padding:64px 0;}
-        .cta-section h2{font-size:clamp(1.6rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.025em;margin-bottom:14px;}
-        .cta-section p{font-size:0.95rem;color:var(--muted);margin-bottom:32px;max-width:520px;line-height:1.75;}
-        .btn-gold{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#000;padding:16px 32px;text-decoration:none;font-weight:800;font-size:0.95rem;transition:all 0.25s;}
-        .btn-gold:hover{background:#FDE047;box-shadow:0 0 24px var(--accent-glow);}
-        .btn-arrow{font-size:1rem;line-height:1;}
-
         footer{padding:48px 0 32px;border-top:1px solid var(--border);}
         .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
         .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
@@ -124,7 +117,7 @@
         <div class="highlights reveal d2">
             <div class="hl-item">
                 <span class="hl-label">Runtime</span>
-                <span class="hl-value">~6 min</span>
+                <span class="hl-value">~1 min</span>
                 <span class="hl-sub">Unedited walkthrough</span>
             </div>
             <div class="hl-item">
@@ -146,17 +139,6 @@
     </div>
 </section>
 
-<section class="cta-section" style="border-top:1px solid var(--border);">
-    <div class="container">
-        <div class="reveal d3">
-            <span class="label">Next Step</span>
-            <h2>Ready to run this on your file?</h2>
-            <p>Submit your IFC file and receive a validated, audited BOQ within 48 hours. No software to install. No per-seat license.</p>
-            <a href="submit-ifc.html" class="btn-gold">Submit IFC File <span class="btn-arrow">→</span></a>
-        </div>
-    </div>
-</section>
-
 <footer>
     <div class="container">
         <div class="footer-links">
@@ -173,7 +155,7 @@
 <script>
     function activateLoom() {
         const iframe = document.getElementById('loomIframe');
-        if (!iframe.src) iframe.src = iframe.dataset.src;
+        iframe.src = iframe.dataset.src;
         document.getElementById('loomOverlay').style.display = 'none';
         iframe.style.pointerEvents = 'auto';
     }
