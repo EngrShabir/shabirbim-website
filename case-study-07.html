@@ -83,7 +83,12 @@
         .why-matters p:last-child{margin-bottom:0;}
         .finding-imgs{margin-top:20px;display:grid;gap:10px;}
         .finding-imgs.cols-2{grid-template-columns:1fr 1fr;}
-        .finding-imgs img{width:100%;border:1px solid var(--border);display:block;}
+        .finding-imgs img{width:100%;height:240px;object-fit:contain;background:var(--bg2);border:1px solid var(--border);display:block;cursor:zoom-in;}
+        .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;}
+        .lightbox.open{display:flex;}
+        .lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;}
+        .lightbox-close{position:fixed;top:20px;right:24px;background:none;border:none;color:rgba(255,255,255,0.7);font-size:2rem;line-height:1;cursor:pointer;padding:4px 8px;transition:color 0.2s;z-index:10000;}
+        .lightbox-close:hover{color:#fff;}
         footer{padding:48px 0 32px;border-top:1px solid var(--border);}
         .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
         .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
@@ -329,6 +334,12 @@
         { threshold: 0.08 }
     );
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()"><button class="lightbox-close" onclick="event.stopPropagation();closeLightbox()">×</button><img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()"></div>
+<script>
+document.querySelectorAll(".finding-imgs img").forEach(img=>{img.addEventListener("click",()=>{document.getElementById("lightboxImg").src=img.src;document.getElementById("lightbox").classList.add("open");});});
+function closeLightbox(){document.getElementById("lightbox").classList.remove("open");}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeLightbox();});
 </script>
 </body>
 </html>
