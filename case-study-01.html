@@ -68,6 +68,9 @@
         .why-matters{padding:40px 0;}
         .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
         .why-matters p:last-child{margin-bottom:0;}
+        .finding-imgs{margin-top:20px;display:grid;gap:10px;}
+        .finding-imgs.cols-2{grid-template-columns:1fr 1fr;}
+        .finding-imgs img{width:100%;border:1px solid var(--border);display:block;}
         footer{padding:48px 0 32px;border-top:1px solid var(--border);}
         .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
         .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
@@ -152,6 +155,13 @@
                         </div>
                         <p>The validation pipeline explicitly excludes non-dimensional attributes — Slope, FireRating, ThermalTransmittance, LoadBearing — from geometry inference. All 42 rafters were correctly classified as non-concrete and excluded from RC quantity extraction.</p>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study1/finding1.1.png" alt="">
+                        <img src="case_studies/case_study1/finding1.2.png" alt="">
+                    </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study1/finding1.3.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -162,6 +172,13 @@
                     <div class="finding-body">
                         <p>The only concrete beam in the model carried the exported material identifier: "Radial Gradient Fill 1515460218" — originating from an ArchiCAD 2D section fill definition rather than a structural material assignment. Additional surface metadata referenced Kiefer glänzend (pine glossy), inconsistent with concrete classification.</p>
                         <p>Element classification was derived from combined evidence: structural naming convention ("Unterzug"), full BaseQuantities availability, geometric placement beneath the primary slab system at ground floor level, and contextual consistency within the structural grid. Material metadata alone was not sufficient for reliable classification.</p>
+                    </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study1/finding2.1.png" alt="">
+                        <img src="case_studies/case_study1/finding2.2.png" alt="">
+                    </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study1/finding2.3.png" alt="">
                     </div>
                 </div>
 
@@ -178,6 +195,10 @@
                             <div class="data-cell"><span class="dc-label">Difference</span><span class="dc-value">0.0000 m³</span></div>
                         </div>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study1/finding3.1.png" alt="">
+                        <img src="case_studies/case_study1/finding3.2.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -193,6 +214,9 @@
                             <div class="data-cell"><span class="dc-label">Void removed</span><span class="dc-value">3.161 m³ — 13.7%</span></div>
                         </div>
                         <p>The pipeline consistently uses NetVolume for all quantity calculations. BOQs reflect constructed geometry rather than pre-void mass representation.</p>
+                    </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study1/finding4.1.png" alt="">
                     </div>
                 </div>
 

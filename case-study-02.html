@@ -68,6 +68,9 @@
         .why-matters{padding:40px 0;}
         .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
         .why-matters p:last-child{margin-bottom:0;}
+        .finding-imgs{margin-top:20px;display:grid;gap:10px;}
+        .finding-imgs.cols-2{grid-template-columns:1fr 1fr;}
+        .finding-imgs img{width:100%;border:1px solid var(--border);display:block;}
         footer{padding:48px 0 32px;border-top:1px solid var(--border);}
         .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
         .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
@@ -149,6 +152,9 @@
                         </div>
                         <p>This indicates export-level inconsistency in Revit 2025 IFC4 stair quantity generation — not a modeling issue. The pipeline prioritizes NetVolume for stair elements due to higher consistency across IFC exports.</p>
                     </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study2/finding1.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -160,6 +166,10 @@
                         <p>32 foundation elements are classified as IfcSlab with PredefinedType BASESLAB — including both 15 concrete pile caps and 17 steel pipe piles. At IFC schema level, both are indistinguishable. Neither carries a material assignment. Separation was achieved using element naming patterns: concrete pile caps included; steel pipe piles (M_Pile-Steel Pipe) excluded.</p>
                         <p>One pile cap labeled 600 × 600 × 900mm shows name-to-geometry divergence: name indicates 900mm depth, BaseQuantities indicates 300mm. Computed volume confirms 0.6 × 0.6 × 0.3 = 0.108 m³. The pipeline evaluates quantities from IFC geometry, not naming strings.</p>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study2/finding2.1.png" alt="">
+                        <img src="case_studies/case_study2/finding2.2.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -169,6 +179,10 @@
                     </div>
                     <div class="finding-body">
                         <p>All five slab elements share PredefinedType FLOOR. Functional classification differs: 3 reinforced concrete slabs, 1 plywood bracing element, 1 rigid insulation element. PredefinedType alone is insufficient for structural classification in mixed-material models. A workflow relying solely on PredefinedType would incorrectly include non-structural elements in every BOQ calculation, cost estimate, and reinforcement assumption that follows.</p>
+                    </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study2/finding3.1.png" alt="">
+                        <img src="case_studies/case_study2/finding3.2.png" alt="">
                     </div>
                 </div>
 
@@ -180,6 +194,10 @@
                     <div class="finding-body">
                         <p>346 IfcReinforcingBar elements exist across two distinct data states. Type A — 334 elements — NominalDiameter not defined at instance, type, or Pset_ReinforcingBarCommon level. CrossSectionArea absent across all representations. No usable diameter metadata anywhere in the IFC. Ratio-based fallback applied.</p>
                         <p>Type B — 12 elements, "Structural Rebar 12mm" — diameter inferred from the string 12mm embedded in the type name rather than a structured IFC attribute. No downstream system can recover parameters that are not present in the IFC data structure.</p>
+                    </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study2/finding4.1.png" alt="">
+                        <img src="case_studies/case_study2/finding4.2.png" alt="">
                     </div>
                 </div>
 

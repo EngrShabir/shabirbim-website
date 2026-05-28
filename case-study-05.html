@@ -67,6 +67,9 @@
         .why-matters{padding:40px 0;}
         .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
         .why-matters p:last-child{margin-bottom:0;}
+        .finding-imgs{margin-top:20px;display:grid;gap:10px;}
+        .finding-imgs.cols-2{grid-template-columns:1fr 1fr;}
+        .finding-imgs img{width:100%;border:1px solid var(--border);display:block;}
         footer{padding:48px 0 32px;border-top:1px solid var(--border);}
         .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
         .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
@@ -148,6 +151,10 @@
                         </div>
                         <p>On a real project, 304.74 m³ is not a rounding error — that is a full foundation system absent from procurement quantities. The correct signal is not class. It is PredefinedType.</p>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study5/finding1.1.png" alt="">
+                        <img src="case_studies/case_study5/finding1.2.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -158,6 +165,9 @@
                     <div class="finding-body">
                         <p>Three shear walls contain major openings: Wall A — 51% of gross volume removed; Wall B — 47%; Wall C — 26%. GrossVolume is the solid wall before openings. NetVolume is after subtractions. These are materially different quantities.</p>
                         <p>Shear wall system — 58 walls, 1,164.94 m³ total. Using GrossVolume systematically overstates concrete across every perforated wall in the lateral core. NetVolume verified against Bonsai for all 58 elements. The distinction is not computational. It is commercial.</p>
+                    </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study5/finding2.1.png" alt="">
                     </div>
                 </div>
 
@@ -170,6 +180,10 @@
                         <p>12 floor slabs are NW Concrete on Metal Deck — Vulcraft 2VLI system. Total IFC volume 601.05 m³. The 2" steel ribs displace concrete but IFC geometry models these slabs as flat plates — rib geometry was never modeled. At €120 per m³, rib displacement overstates concrete by an estimated €10,800 to €14,400 on this element group alone.</p>
                         <p>The engine isolates the concrete layer and excludes steel decking from quantities. But it cannot correct what the geometry does not model. Documented in the validation report with correction range. The QS applies the rib displacement factor from structural drawings.</p>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study5/finding3.1.png" alt="">
+                        <img src="case_studies/case_study5/finding3.2.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -179,6 +193,9 @@
                     </div>
                     <div class="finding-body">
                         <p>50 IfcBuildingElementProxy elements at the elevator pit transition zone — steel embed plates and headed anchor studs (SCN_Embed and SCN_HAS systems) connecting the concrete core to the steel frame above. Physical components but not structural concrete for BOQ purposes. Correctly excluded. Zero volume contribution. The concrete-to-steel interface is one of the most failure-prone classification zones in mixed-material buildings. No misclassification observed.</p>
+                    </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study5/finding4.1.png" alt="">
                     </div>
                 </div>
 

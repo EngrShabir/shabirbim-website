@@ -73,6 +73,9 @@
         .why-matters{padding:40px 0;}
         .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
         .why-matters p:last-child{margin-bottom:0;}
+        .finding-imgs{margin-top:20px;display:grid;gap:10px;}
+        .finding-imgs.cols-2{grid-template-columns:1fr 1fr;}
+        .finding-imgs img{width:100%;border:1px solid var(--border);display:block;}
         footer{padding:48px 0 32px;border-top:1px solid var(--border);}
         .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
         .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
@@ -171,6 +174,10 @@
                         </div>
                         <p>After Gewerk-based filtering — 62.703 m³. Validated to 4 decimal places. The IFC did not fail. The extraction system simply did not read the part of the file that contained the classification truth.</p>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study6/finding1.1.png" alt="">
+                        <img src="case_studies/case_study6/finding1.2.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -188,6 +195,10 @@
                         </div>
                         <p>Extracting NetVolume directly overstates this element by 40%. This fractional decomposition was applied to all 7 multi-layer concrete walls. All confirmed against Bonsai to 4 decimal places. The IFC volume is the assembly total — not the structural concrete volume.</p>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study6/finding2.1.png" alt="">
+                        <img src="case_studies/case_study6/finding2.2.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -200,6 +211,10 @@
                         <p>A GrossVolume-based workflow overstates concrete on this element by 161%. The commercial consequence is specific to this material. WU concrete is a regulated specification in German construction practice. It requires certified mix design, independent inspection, and specialist placement. It is priced at a premium. Pricing the gross volume of a WU concrete wall means paying premium rates for concrete that was never poured.</p>
                         <p>NetVolume used throughout. Opening subtractions confirmed correct on all elements.</p>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study6/finding3.1.png" alt="">
+                        <img src="case_studies/case_study6/finding3.2.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -210,6 +225,9 @@
                     <div class="finding-body">
                         <p>Four IfcBuildingElementProxy elements in the file. A sink. A washbasin. A toilet. A washing machine. Identified via Objektname: Sanitär in Allplan Attributes. Unit — St, pieces, not volume. Zero structural relevance.</p>
                         <p>Without Objektname reading these appear in the BOQ labeled as Concrete (assumed). A washing machine labeled as a structural concrete element in an engineering report destroys trust in every number that follows it. All four correctly excluded after Objektname classification implemented.</p>
+                    </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study6/finding4.1.png" alt="">
                     </div>
                 </div>
 

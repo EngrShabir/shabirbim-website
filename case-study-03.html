@@ -73,6 +73,9 @@
         .why-matters{padding:40px 0;}
         .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
         .why-matters p:last-child{margin-bottom:0;}
+        .finding-imgs{margin-top:20px;display:grid;gap:10px;}
+        .finding-imgs.cols-2{grid-template-columns:1fr 1fr;}
+        .finding-imgs img{width:100%;border:1px solid var(--border);display:block;}
         footer{padding:48px 0 32px;border-top:1px solid var(--border);}
         .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
         .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
@@ -153,6 +156,10 @@
                         <p>Allplan does not rely on standard IFC quantity set names. It exports proprietary sets: WallQuantities, FootingQuantities. A parser restricted to standard set names defaults to geometric estimation — even when valid quantities are fully present in the file.</p>
                         <p>This is not missing data. It is non-standard placement of valid data. Once proprietary quantity sets were mapped, all concrete volumes were extracted directly. No geometric fallback required.</p>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study3/finding1.1.png" alt="">
+                        <img src="case_studies/case_study3/finding1.2.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -168,6 +175,10 @@
                             <div class="data-cell"><span class="dc-label">Error magnitude</span><span class="dc-value">10,000×</span></div>
                         </div>
                         <p>The pipeline applies explicit cm² → m² conversion for Allplan-derived reinforcement data prior to all calculations.</p>
+                    </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study3/finding2.1.png" alt="">
+                        <img src="case_studies/case_study3/finding2.2.png" alt="">
                     </div>
                 </div>
 
@@ -185,6 +196,9 @@
                         </div>
                         <p>The data was present. It was not initially traversed.</p>
                     </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study3/finding3.1.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -194,6 +208,10 @@
                     </div>
                     <div class="finding-body">
                         <p>The model contains 520 IfcAnnotation entities — reinforcement drawings, dimension lines, labels, symbolic geometry — alongside 18 structural elements. Without explicit filtering, annotation entities distort element counts, classification logic, and downstream aggregation. At scale, this pattern introduces thousands of non-structural objects into structural datasets. All annotations must be excluded prior to extraction.</p>
+                    </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study3/finding4.1.png" alt="">
+                        <img src="case_studies/case_study3/finding4.2.png" alt="">
                     </div>
                 </div>
 

@@ -81,6 +81,9 @@
         .why-matters{padding:40px 0;}
         .why-matters p{font-size:0.95rem;line-height:1.85;color:var(--text);margin-bottom:12px;}
         .why-matters p:last-child{margin-bottom:0;}
+        .finding-imgs{margin-top:20px;display:grid;gap:10px;}
+        .finding-imgs.cols-2{grid-template-columns:1fr 1fr;}
+        .finding-imgs img{width:100%;border:1px solid var(--border);display:block;}
         footer{padding:48px 0 32px;border-top:1px solid var(--border);}
         .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
         .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
@@ -178,6 +181,10 @@
                             <div class="data-cell"><span class="dc-label">Error factor</span><span class="dc-value">767%</span></div>
                         </div>
                     </div>
+                    <div class="finding-imgs cols-2">
+                        <img src="case_studies/case_study7/finding1.1.png" alt="">
+                        <img src="case_studies/case_study7/finding1.2.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -193,6 +200,9 @@
                             <div class="data-cell"><span class="dc-label">Cost impact at €120/m³</span><span class="dc-value">€5,621</span></div>
                         </div>
                         <p>46.842 m³ of sand and earth incorrectly priced as concrete from one slab. One family. One unchecked assumption. This pattern appears in residential construction worldwide. Any ground floor family modeled with blinding, sand, or subgrade layers carries this risk. The engine now detects IfcMaterialLayerSetUsage, identifies the structural concrete layer, and extracts only that layer's volume.</p>
+                    </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study7/finding2.1.png" alt="">
                     </div>
                 </div>
 
@@ -210,6 +220,9 @@
                             <div class="data-cell"><span class="dc-label">Volume range per element</span><span class="dc-value">0.048 — 2.384 m³</span></div>
                         </div>
                     </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study7/finding3.1.png" alt="">
+                    </div>
                 </div>
 
                 <div class="finding">
@@ -220,6 +233,9 @@
                     <div class="finding-body">
                         <p>41 pad footings exported as IfcSlab with PredefinedType BASESLAB. The Revit modeler used the Floor category instead of the Footing category. When exported, Revit assigned the slab class.</p>
                         <p>Two distinct sizes confirmed by script. B1 — 9 elements — 1200×1200×300mm — 0.432 m³ each. B2 — 32 elements — 1000×1000×300mm — 0.300 m³ each. PredefinedType combined with name-based override reclassified all 41 to footing before any steel ratio or cost logic was applied. This pattern repeats across multiple Revit datasets. It is not a Revit bug. It is a modeling practice. The detection must be in the engine.</p>
+                    </div>
+                    <div class="finding-imgs">
+                        <img src="case_studies/case_study7/finding4.1.png" alt="">
                     </div>
                 </div>
 
