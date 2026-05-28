@@ -347,6 +347,26 @@
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.2s; }
         .delay-3 { transition-delay: 0.3s; }
+
+        .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:1001;}
+        .hamburger span{display:block;width:22px;height:2px;background:var(--accent);transition:transform 0.3s,opacity 0.3s;}
+        .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+        .hamburger.active span:nth-child(2){opacity:0;}
+        .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+        .nav-mobile-cta{display:none;}
+        @media(max-width:768px){
+            .hamburger{display:flex;}
+            .nav-cta{display:none;}
+            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);flex-direction:column;padding:0;gap:0;z-index:999;}
+            .nav-links.open{display:flex;}
+            .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border-color);font-size:0.95rem;color:var(--text-secondary) !important;font-weight:500;}
+            .nav-links a:last-child{border-bottom:none;}
+            .nav-mobile-cta{display:block;color:var(--accent) !important;font-weight:700;}
+            .page-wrap{padding:48px 16px 64px;}
+            .cta-block{padding:32px 20px;}
+            footer{padding:32px 16px 20px;}
+            .footer-links{gap:16px;flex-wrap:wrap;}
+        }
     </style>
 </head>
 
@@ -360,8 +380,10 @@
                 <a href="about.html">About</a>
                 <a href="case-studies.html">Case Studies</a>
                 <a href="demo.html">Demo</a>
+                <a class="nav-mobile-cta" href="submit-ifc.html">Submit IFC File →</a>
             </div>
             <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
         </div>
     </header>
 
@@ -560,6 +582,12 @@
             entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        const hamburger=document.getElementById('hamburger');
+        const navMenu=document.querySelector('.nav-links');
+        hamburger.addEventListener('click',()=>{navMenu.classList.toggle('open');hamburger.classList.toggle('active');});
+        document.addEventListener('click',e=>{if(!hamburger.contains(e.target)&&!navMenu.contains(e.target)){navMenu.classList.remove('open');hamburger.classList.remove('active');}});
+        navMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{navMenu.classList.remove('open');hamburger.classList.remove('active');}));
     </script>
 </body>
 </html>
