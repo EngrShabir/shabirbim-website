@@ -5,7 +5,7 @@ Allplan 2017 · IFC2X3 · Underground car park — mixed concrete and non-struct
 THE PROBLEM
 This file represents a below-grade structure — an underground car park (TIEFGARAGE) built using waterproof concrete to WU standard (AWF02-C25-30-WU-BIM).
 It is also a mixed-authoring environment where structural and non-structural systems coexist under identical IFC classes.
-Masonry walls. Plasterboard ceilings. Insulation systems. Natural stone finishes. Sanitary fixtures. All exported as IfcWallStandardCase and IfcSlab. No LoadBearing flags. No explicit structural separation anywhere in the file.
+Masonry walls. Plasterboard ceilings. Insulation systems. Natural stone finishes. All exported as IfcWallStandardCase and IfcSlab. Sanitary fixtures exported as IfcBuildingElementProxy. No LoadBearing flags. No explicit structural separation anywhere in the file.
 A standard extraction treats everything as potential concrete.
 Reported concrete volume — 94.074 m³.
 Correct concrete volume — 62.703 m³.
@@ -19,7 +19,7 @@ WHAT THE FILE CONTAINED
 62.703 m³ validated concrete volume
 4 concrete downstand beams — Unterzug
 2 concrete slabs — DEF04-C25-30-BIM, 250mm
-8 waterproof concrete walls — AWF02-C25-30-WU-BIM
+8 structural concrete walls — 7 external WU specification (AWF02-C25-30-WU-BIM), 1 internal (IWF02-C25-30-BIM)
 23 non-structural walls — masonry, plasterboard, insulation, finishes
 3 non-structural slabs — mineral wool, plasterboard
 4 sanitary fixture proxies — sink, toilet, washbasin, washing machine

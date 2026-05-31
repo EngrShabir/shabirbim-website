@@ -159,7 +159,7 @@
             <span class="label">THE PROBLEM</span>
             <div class="prose">
                 <p>A below-grade structure. An underground car park built to WU concrete specification — Wasserundurchlässig, AWF02-C25-30-WU-BIM. Waterproof concrete. Certified mix design. Specialist placement. Premium pricing.</p>
-                <p>It is also a mixed-authoring environment. Structural and non-structural systems coexist under identical IFC classes. Masonry walls. Plasterboard ceilings. Insulation systems. Natural stone finishes. Sanitary fixtures. All exported as IfcWallStandardCase and IfcSlab. No LoadBearing flags. No explicit structural separation anywhere in the file.</p>
+                <p>It is also a mixed-authoring environment. Structural and non-structural systems coexist under identical IFC classes. Masonry walls. Plasterboard ceilings. Insulation systems. Natural stone finishes. All exported as IfcWallStandardCase and IfcSlab. Sanitary fixtures exported as IfcBuildingElementProxy. No LoadBearing flags. No explicit structural separation anywhere in the file.</p>
                 <p>A standard extraction treats everything as potential concrete. Reported concrete volume — 94.074 m³. Correct concrete volume — 62.703 m³. Overstatement — 31.371 m³. Error — 50%. The required classification signals were present in the IFC. Not in standard fields.</p>
             </div>
             <div class="file-facts">
@@ -170,7 +170,7 @@
                     <li>62.703 m³ validated concrete volume</li>
                     <li>4 concrete downstand beams — Unterzug</li>
                     <li>2 concrete slabs — DEF04-C25-30-BIM, 250mm</li>
-                    <li>8 waterproof concrete walls — AWF02-C25-30-WU-BIM</li>
+                    <li>8 structural concrete walls — 7 external WU specification (AWF02-C25-30-WU-BIM), 1 internal (IWF02-C25-30-BIM)</li>
                     <li>23 non-structural walls — masonry, plasterboard, insulation, finishes</li>
                     <li>3 non-structural slabs — mineral wool, plasterboard</li>
                     <li>4 sanitary fixture proxies — sink, toilet, washbasin, washing machine</li>
