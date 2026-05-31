@@ -12,6 +12,8 @@ This repository is the source for [shabirbim.com](https://shabirbim.com) — a p
 
 The work demonstrates one thing: **IFC data is semantically unreliable without validation**. Errors are not missing data problems. They are detection and interpretation failures that propagate silently into BOQs, cost plans, and procurement decisions.
 
+StructBOQ — the engine behind this work — processes IFC files from any of four authoring tools, extracts quantities at element level, assigns confidence scores, flags semantic anomalies, and generates PDF validation reports and Excel BOQs automatically. The engine is private. The outputs and methodology are fully documented here.
+
 ---
 
 ## Case Studies
