@@ -441,6 +441,66 @@
             footer{padding:32px 16px 20px;}
             .footer-links{gap:16px;flex-wrap:wrap;}
         }
+
+        /* ── PROOF ROW ── */
+        .proof-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            margin-top: 72px;
+            padding-top: 56px;
+            border-top: 1px solid var(--border);
+        }
+        .proof-item { display: flex; flex-direction: column; gap: 8px; }
+        .proof-num {
+            font-size: 2.2rem; font-weight: 800;
+            color: var(--accent); letter-spacing: -0.04em;
+            line-height: 1;
+        }
+        .proof-label { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+        @media (max-width: 768px) {
+            .proof-row { grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+        }
+
+        /* ── VALIDATES BLOCK ── */
+        .validates-block { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
+        .validates-label {
+            display: block; font-size: 0.7rem; font-weight: 700;
+            color: var(--accent); letter-spacing: 0.12em;
+            text-transform: uppercase; margin-bottom: 14px;
+        }
+        .validates-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+        .validates-list li {
+            font-size: 0.82rem; color: var(--muted);
+            padding-left: 16px; position: relative; line-height: 1.5;
+        }
+        .validates-list li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+        /* ── DELTA ROWS ── */
+        .delta-rows { margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; }
+        .delta-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem;
+        }
+        .delta-file { color: var(--muted); }
+        .delta-val { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
+        .snum-label { display: block; font-size: 1rem; font-weight: 800; color: var(--accent); letter-spacing: -0.01em; line-height: 1; margin-bottom: 8px; }
+
+        /* ── SOFTWARE COVERAGE ── */
+        .sw-coverage { margin-top: 48px; margin-bottom: 48px; }
+        .sw-grid { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px; }
+        .sw-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 20px; border: 1px solid var(--border);
+            border-radius: 4px; background: var(--bg);
+        }
+        .sw-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+        .sw-status { font-size: 0.78rem; font-weight: 700; }
+        .sw-status.ok { color: var(--accent); }
+        .sw-status.pending { color: var(--muted); }
+
+        /* ── RESEARCH LINE ── */
+        .research-line { margin-top: 16px; font-size: 0.85rem; color: var(--muted); font-style: italic; line-height: 1.6; }
     </style>
 </head>
 
@@ -490,8 +550,26 @@
                 </div>
                 <div class="pain-card reveal d2">
                     <span class="pain-num">03</span>
-                    <h3>Manual Extraction Is Slow</h3>
-                    <p>Hours spent on takeoff that could be done in minutes — with full validation, automatically.</p>
+                    <h3>Hidden Quantity Failures</h3>
+                    <p>Unit deviations, missing reinforcement data, composite assemblies, and export anomalies can silently distort quantities by hundreds of percent — undetected.</p>
+                </div>
+            </div>
+            <div class="proof-row reveal d3">
+                <div class="proof-item">
+                    <span class="proof-num">767%</span>
+                    <span class="proof-label">Reinforcement error detected and corrected — Revit IFC2X3</span>
+                </div>
+                <div class="proof-item">
+                    <span class="proof-num">×1000</span>
+                    <span class="proof-label">GrossVolume corruption identified — BASESLAB element, Revit IFC4</span>
+                </div>
+                <div class="proof-item">
+                    <span class="proof-num">31.37 m³</span>
+                    <span class="proof-label">Non-structural volume removed via Gewerk trade classification — Allplan IFC2X3</span>
+                </div>
+                <div class="proof-item">
+                    <span class="proof-num">90</span>
+                    <span class="proof-label">Foundations recovered from misclassified slab exports — Revit IFC4</span>
                 </div>
             </div>
         </div>
@@ -502,7 +580,7 @@
         <div class="svc-featured reveal">
             <div class="svc-content">
                 <span class="svc-num">Service</span>
-                <h3>IFC Validation → Audited Quantities</h3>
+                <h3>IFC Validation → Trusted Quantities</h3>
                 <p>Your IFC file returned as a validated Bill of Quantities with full data source audit per element. Every quantity traced to its source — BaseQuantities, Pset, or geometric fallback. Every anomaly flagged with severity level and confidence score.</p>
                 <ul class="svc-list">
                     <li>Revit · ArchiCAD · Tekla · Allplan</li>
@@ -510,6 +588,16 @@
                     <li>Excel BOQ + narrative PDF</li>
                     <li>24-hour turnaround</li>
                 </ul>
+                <div class="validates-block">
+                    <span class="validates-label">What Gets Validated</span>
+                    <ul class="validates-list">
+                        <li>Element classification — footings, slabs, columns, beams, proxies</li>
+                        <li>Quantity source — BaseQuantities, Pset, or geometric fallback per element</li>
+                        <li>Unit consistency — cm², mm², m² conversion traps across all software</li>
+                        <li>Reinforcement extraction — bar geometry, designation lookup, ratio fallback</li>
+                        <li>Semantic anomalies — GrossVolume corruption, void relationships, composite assemblies</li>
+                    </ul>
+                </div>
             </div>
             <div class="svc-img">
                 <img class="active" src="assets/4.jpg" alt="Construction site">
@@ -527,13 +615,29 @@
                 <div class="solution-text">
                     <h2>StructBOQ — IFC Validation System</h2>
                     <p>StructBOQ is not a BOQ generator. It is a quality gate between your model and downstream engineering decisions. It reads your IFC file directly — Revit, ArchiCAD, Tekla, Allplan — and audits every element for classification errors, unit inconsistencies, volume anomalies, and quantity source failures before generating a validated BOQ. Supports IFC2x3, IFC4, IFC4x3.</p>
+                    <p class="research-line">StructBOQ investigates IFC semantic reliability, quantity traceability, and model assurance across open BIM workflows.</p>
                 </div>
                 <div class="solution-stat">
                     <div class="stat-inline">
-                        <span class="snum">0.0001 m³</span>
-                        <span class="sdesc">Verified delta across 131.669 m³ concrete volume — buildingSMART FZK-Haus benchmark (ArchiCAD IFC4)</span>
+                        <span class="snum-label">Validation Accuracy</span>
+                        <span class="sdesc">Cross-checked against raw IFC data in Bonsai / BlenderBIM across three software platforms.</span>
+                    </div>
+                    <div class="delta-rows">
+                        <div class="delta-row"><span class="delta-file">FZK-Haus (ArchiCAD IFC4)</span><span class="delta-val">0.0001 m³ delta</span></div>
+                        <div class="delta-row"><span class="delta-file">TIEFGARAGE (Allplan IFC2X3)</span><span class="delta-val">0.000165 m³ delta</span></div>
+                        <div class="delta-row"><span class="delta-file">CPS-026/270 (Revit IFC2X3)</span><span class="delta-val">0.066 m³ delta</span></div>
                     </div>
                     <a href="case-studies.html" class="solution-link">Read the case studies →</a>
+                </div>
+            </div>
+
+            <div class="sw-coverage reveal d1">
+                <span class="label">Validated Software Coverage</span>
+                <div class="sw-grid">
+                    <div class="sw-item"><span class="sw-name">Revit</span><span class="sw-status ok">✓ Validated</span></div>
+                    <div class="sw-item"><span class="sw-name">ArchiCAD</span><span class="sw-status ok">✓ Validated</span></div>
+                    <div class="sw-item"><span class="sw-name">Allplan</span><span class="sw-status ok">✓ Validated</span></div>
+                    <div class="sw-item"><span class="sw-name">Tekla</span><span class="sw-status pending">In Testing</span></div>
                 </div>
             </div>
 
@@ -575,7 +679,7 @@
             <div class="contact-grid">
                 <div class="contact-left reveal">
                     <h2>Send Your IFC File for a Free Validation Audit.</h2>
-                    <p>No engagement required. IFC file in — validation report and audited BOQ out. 24-hour turnaround.</p>
+                    <p>No engagement required. Send your IFC file — receive a full validation report and audited BOQ.</p>
                     <a href="mailto:engrshabir@shabirbim.com" class="contact-detail">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                         engrshabir@shabirbim.com
