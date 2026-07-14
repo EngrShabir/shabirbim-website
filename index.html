@@ -48,7 +48,7 @@
         .nav-inner {
             max-width: 1200px; margin: 0 auto;
             height: 100%; padding: 0 32px;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: flex-end; align-items: center; position: relative;
         }
         .nav-logo {
             font-size: 1.1rem; font-weight: 700;
@@ -62,7 +62,7 @@
             text-decoration: none; transition: all 0.25s;
         }
         .nav-cta:hover { background: #FDE047; box-shadow: 0 0 20px var(--accent-glow); }
-        .nav-links { display: flex; gap: 28px; align-items: center; }
+        .nav-links { display: flex; gap: 28px; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
         .nav-links a { font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.2s; }
         .nav-links a:hover { color: #fff; }
         .nav-links.scrolled a { color: var(--muted); }
@@ -209,161 +209,49 @@
             .pain-cards { grid-template-columns: 1fr; gap: 32px; }
         }
 
-        /* ── SERVICE FEATURED ── */
-        #services { padding: 0; background: var(--bg); }
-        .svc-featured {
+        /* ── EXPLORE ── */
+        #explore { padding: 96px 0; background: var(--bg2); }
+        .explore-header { max-width: 680px; margin-bottom: 48px; }
+        .explore-header h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 800; letter-spacing: -0.03em; line-height: 1.2;
+        }
+        .explore-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            min-height: 580px;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 20px;
         }
-        .svc-img {
-            overflow: hidden;
-            position: relative;
-        }
-        .svc-img img {
-            width: 100%; height: 100%;
-            object-fit: cover; object-position: calc(50% - 96px) center;
-            display: block;
-            filter: brightness(0.65);
-            position: absolute; inset: 0;
-            opacity: 0;
-            transition: opacity 1.2s ease, filter 0.6s ease;
-        }
-        .svc-img img.active { opacity: 1; }
-        .svc-featured:hover .svc-img img.active { filter: brightness(0.75); }
-        .svc-content {
-            padding: 80px 64px;
-            display: flex; flex-direction: column; justify-content: center;
-            border-right: 1px solid var(--border);
-        }
-        .svc-num {
-            font-size: 0.7rem; font-weight: 700;
-            color: var(--accent); letter-spacing: 0.14em;
-            text-transform: uppercase; margin-bottom: 20px;
-            display: block;
-        }
-        .svc-content h3 {
-            font-size: clamp(1.6rem, 2.5vw, 2.2rem);
-            font-weight: 800; letter-spacing: -0.03em;
-            line-height: 1.15; margin-bottom: 24px;
-        }
-        .svc-content p {
-            color: var(--muted); font-size: 1rem;
-            line-height: 1.75; margin-bottom: 32px;
-        }
-        .svc-list {
-            list-style: none; padding: 0;
-            border-top: 1px solid var(--border);
-            padding-top: 24px;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        .svc-list li {
-            font-size: 0.85rem; color: var(--muted);
-            padding-left: 16px; position: relative;
-        }
-        .svc-list li::before {
-            content: '—';
-            position: absolute; left: 0;
-            color: var(--accent);
-        }
-        @media (max-width: 768px) {
-            .svc-featured { grid-template-columns: 1fr; }
-            .svc-img { height: 280px; }
-            .svc-content { padding: 48px 32px; border-left: none; border-top: 1px solid var(--border); }
-        }
-
-        /* ── STRUCTBOQ ── */
-        #solution { padding: 120px 0; background: var(--bg2); }
-        .solution-top {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: start;
-            margin-bottom: 0;
-        }
-        .solution-text h2 {
-            font-size: clamp(1.8rem, 3vw, 2.4rem);
-            font-weight: 800; letter-spacing: -0.03em;
-            line-height: 1.2; margin-bottom: 24px;
-        }
-        .solution-text p {
-            color: var(--muted); font-size: 1rem;
-            line-height: 1.75;
-        }
-        @media (max-width: 900px) {
-            .solution-top { grid-template-columns: 1fr; gap: 40px; }
-        }
-        .stat-inline {
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-            margin-bottom: 32px;
-        }
-        .stat-inline .snum {
-            display: block;
-            font-size: 2rem; font-weight: 800;
-            color: var(--accent); letter-spacing: -0.04em;
-            line-height: 1; margin-bottom: 6px;
-        }
-        .stat-inline .sdesc {
-            display: block;
-            font-size: 0.8rem; color: var(--muted);
-            line-height: 1.5;
-        }
-        .solution-link {
-            color: var(--accent); text-decoration: none;
-            font-size: 0.9rem; font-weight: 600;
-            transition: opacity 0.2s; display: inline-block;
-        }
-        .solution-link:hover { opacity: 0.7; }
-
-        /* Landscape comparison table */
-        .compare-landscape {
-            margin-top: 56px;
+        .explore-card {
+            display: flex; flex-direction: column;
+            padding: 28px 24px;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow-x: auto;
+            border-top: 2px solid var(--accent);
+            background: var(--bg);
+            text-decoration: none; color: var(--text);
+            transition: background 0.2s;
         }
-        .cl-row {
-            display: grid;
-            grid-template-columns: 140px repeat(6, 1fr);
-            border-bottom: 1px solid var(--border);
-        }
-        .cl-row:last-child { border-bottom: none; }
-        .cl-head-row {
-            display: grid;
-            grid-template-columns: 140px repeat(6, 1fr);
-            border-bottom: 1px solid var(--border);
-            background: rgba(0,0,0,0.03);
-        }
-        .cl-corner { padding: 12px 16px; }
-        .cl-attr {
-            padding: 12px 16px;
+        .explore-card:hover { background: #fff; }
+        .explore-card:hover .explore-arrow { color: var(--accent); }
+        .explore-num {
             font-size: 0.68rem; font-weight: 700;
-            letter-spacing: 0.1em; text-transform: uppercase;
-            color: var(--muted);
-            border-left: 1px solid var(--border);
+            color: var(--accent); letter-spacing: 0.12em;
+            text-transform: uppercase; margin-bottom: 16px;
         }
-        .cl-label {
-            padding: 16px;
-            font-size: 0.78rem; font-weight: 700;
-            letter-spacing: 0.06em; text-transform: uppercase;
-            display: flex; align-items: center;
+        .explore-card h3 {
+            font-size: 1.15rem; font-weight: 800;
+            letter-spacing: -0.02em; margin-bottom: 10px;
         }
-        .cl-row.manual .cl-label { color: var(--muted); }
-        .cl-row.structboq .cl-label { color: var(--accent); }
-        .cl-cell {
-            padding: 16px;
-            font-size: 0.85rem; line-height: 1.4;
-            border-left: 1px solid var(--border);
-            display: flex; align-items: center;
+        .explore-card p {
+            color: var(--muted); font-size: 0.85rem;
+            line-height: 1.6; flex: 1; margin-bottom: 20px;
         }
-        .cl-row.manual { background: rgba(0,0,0,0.02); }
-        .cl-row.manual .cl-cell { color: var(--muted); }
-        .cl-row.structboq { background: rgba(212,175,55,0.03); }
-        .cl-row.structboq .cl-cell { color: var(--text); }
-        .tick { color: var(--accent); font-weight: 700; margin-right: 4px; }
+        .explore-arrow {
+            font-size: 0.8rem; font-weight: 700; color: var(--muted);
+            transition: color 0.2s;
+        }
+        @media (max-width: 480px) {
+            .explore-grid { grid-template-columns: 1fr; }
+        }
 
         /* ── CONTACT ── */
         #contact { padding: 120px 0; background: #936355; position: relative; overflow: hidden; }
@@ -439,78 +327,19 @@
             .navbar{background:rgba(245,244,240,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
             .hamburger{display:flex;}
             .nav-cta{display:none;}
-            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);flex-direction:column;padding:0;gap:0;z-index:999;}
+            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);flex-direction:column;padding:0;gap:0;z-index:999;position:fixed;transform:none;}
             .nav-links.open{display:flex;}
             .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border);font-size:0.95rem;color:var(--muted) !important;font-weight:500;}
             .nav-links a:last-child{border-bottom:none;}
             .nav-mobile-cta{display:block;color:var(--accent) !important;font-weight:700;}
             .container{padding:0 16px;}
             .hero-body{padding:0 16px 60px;}
-            #problem,#solution,#contact{padding:72px 0;}
+            #problem,#explore,#contact{padding:72px 0;}
             footer{padding:32px 16px 20px;}
             .footer-links{gap:16px;flex-wrap:wrap;}
         }
-
-        /* ── PROOF ROW ── */
-        .proof-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 32px;
-            margin-top: 72px;
-            padding-top: 56px;
-            border-top: 1px solid var(--border);
-        }
-        .proof-item { display: flex; flex-direction: column; gap: 8px; }
-        .proof-num {
-            font-size: 2.2rem; font-weight: 800;
-            color: var(--accent); letter-spacing: -0.04em;
-            line-height: 1;
-        }
-        .proof-label { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
-        @media (max-width: 768px) {
-            .proof-row { grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
-        }
-
-        /* ── VALIDATES BLOCK ── */
-        .validates-block { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
-        .validates-label {
-            display: block; font-size: 0.7rem; font-weight: 700;
-            color: var(--accent); letter-spacing: 0.12em;
-            text-transform: uppercase; margin-bottom: 14px;
-        }
-        .validates-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-        .validates-list li {
-            font-size: 0.82rem; color: var(--muted);
-            padding-left: 16px; position: relative; line-height: 1.5;
-        }
-        .validates-list li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
-
-        /* ── DELTA ROWS ── */
-        .delta-rows { margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; }
-        .delta-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem;
-        }
-        .delta-file { color: var(--muted); }
-        .delta-val { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
-        .snum-label { display: block; font-size: 1rem; font-weight: 800; color: var(--accent); letter-spacing: -0.01em; line-height: 1; margin-bottom: 8px; }
-
-        /* ── SOFTWARE COVERAGE ── */
-        .sw-coverage { margin-top: 48px; margin-bottom: 48px; }
-        .sw-grid { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px; }
-        .sw-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 20px; border: 1px solid var(--border);
-            border-radius: 4px; background: var(--bg);
-        }
-        .sw-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
-        .sw-status { font-size: 0.78rem; font-weight: 700; }
-        .sw-status.ok { color: var(--accent); }
-        .sw-status.pending { color: var(--muted); }
-
-        /* ── RESEARCH LINE ── */
-        .research-line { margin-top: 16px; font-size: 0.85rem; color: var(--muted); font-style: italic; line-height: 1.6; }
     </style>
+    <script data-goatcounter="https://shabir.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 
 <body>
@@ -518,14 +347,16 @@
     <!-- NAV -->
     <header class="navbar">
         <div class="nav-inner">
-            <a href="index.html" class="nav-logo">Shabir Ahmad</a>
             <div class="nav-links" id="navLinks">
-                <a href="about.html">About</a>
+                <a href="index.html">Home</a>
+                <a href="knowledge-hub.html">Knowledge Hub</a>
                 <a href="case-studies.html">Case Studies</a>
-                <a href="demo.html">Demo</a>
-                <a class="nav-mobile-cta" href="submit-ifc.html">Submit IFC File →</a>
+                <a href="structboq.html">StructBOQ</a>
+                <a href="about.html">About</a>
+                <a href="services.html">Services</a>
+                <a class="nav-mobile-cta" href="submit-ifc.html">Get In Touch →</a>
             </div>
-            <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+            <a href="submit-ifc.html" class="nav-cta">Get In Touch</a>
             <button class="hamburger" id="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
         </div>
     </header>
@@ -535,150 +366,75 @@
         <div class="hero-body reveal in">
             <span class="label">IFC Validation · Model Assurance · BIM Automation</span>
             <h1>Your IFC Model<br>Is <em>Lying To You.</em></h1>
-            <p class="hero-subtitle">IFC validation and quantity takeoff automation for Revit, ArchiCAD, and Allplan models.</p>
-            <p class="hero-sub">StructBOQ audits your IFC file for misclassified elements, unit deviations, quantity source failures, and semantic anomalies — before anything reaches your estimates. Every finding traced. Every quantity confidence-scored. Validated BOQ delivered in 24 hours.</p>
+            <p class="hero-subtitle">Trustworthy BIM data — verified from requirements to quantities.</p>
             <p class="hero-verify">Verified against buildingSMART reference benchmark</p>
         </div>
     </section>
 
-    <!-- PROBLEM -->
+    <!-- WHAT I DO -->
     <section id="problem">
         <div class="container">
             <div class="problem-header reveal">
-                <h2>Every IFC model has data quality issues. Most engineers never find them.</h2>
+                <h2>Trustworthy BIM data, from the model's first requirement to its last audit.</h2>
             </div>
             <div class="pain-cards">
                 <div class="pain-card reveal">
                     <span class="pain-num">01</span>
-                    <h3>Misclassified Elements</h3>
-                    <p>Footings exported as slabs. Roof slabs counted as floors. Your BOQ is wrong before you open Excel.</p>
+                    <h3>Information Requirements &amp; IDS</h3>
+                    <p>Define what "correct" means before a model is built — as an IDS file a machine can check, not a spec buried in a PDF.</p>
                 </div>
                 <div class="pain-card reveal d1">
                     <span class="pain-num">02</span>
-                    <h3>No Data Source Audit</h3>
-                    <p>You don't know if a quantity came from BaseQuantities, a Pset, or a geometric fallback. Neither does your QS.</p>
+                    <h3>Schema &amp; Standards Validation</h3>
+                    <p>Verify models against IFC schema, IDS, and ISO 19650 delivery requirements — not just that the file opens, but that it means what it claims.</p>
                 </div>
                 <div class="pain-card reveal d2">
                     <span class="pain-num">03</span>
-                    <h3>Hidden Quantity Failures</h3>
-                    <p>Unit deviations, missing reinforcement data, composite assemblies, and export anomalies can silently distort quantities by hundreds of percent — undetected.</p>
-                </div>
-            </div>
-            <div class="proof-row reveal d3">
-                <div class="proof-item">
-                    <span class="proof-num">767%</span>
-                    <span class="proof-label">Reinforcement error detected and corrected — Revit IFC2X3</span>
-                </div>
-                <div class="proof-item">
-                    <span class="proof-num">×1000</span>
-                    <span class="proof-label">GrossVolume corruption identified — BASESLAB element, Revit IFC4</span>
-                </div>
-                <div class="proof-item">
-                    <span class="proof-num">31.37 m³</span>
-                    <span class="proof-label">Non-structural volume removed via Gewerk trade classification — Allplan IFC2X3</span>
-                </div>
-                <div class="proof-item">
-                    <span class="proof-num">90</span>
-                    <span class="proof-label">Foundations recovered from misclassified slab exports — Revit IFC4</span>
+                    <h3>Independent Quantity Verification</h3>
+                    <p>Audit IFC quantities directly against source data with StructBOQ — catching what software and manual takeoff both miss.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SERVICE -->
-    <section id="services">
-        <div class="svc-featured reveal">
-            <div class="svc-content">
-                <span class="svc-num">Service</span>
-                <h3>IFC Validation → Trusted Quantities</h3>
-                <p>Your IFC file returned as a validated Bill of Quantities with full data source audit per element. Every quantity traced to its source — BaseQuantities, Pset, or geometric fallback. Every anomaly flagged with severity level and confidence score.</p>
-                <ul class="svc-list">
-                    <li>Revit · ArchiCAD · Tekla · Allplan</li>
-                    <li>IFC2x3, IFC4, IFC4x3</li>
-                    <li>Excel BOQ + narrative PDF</li>
-                    <li>24-hour turnaround</li>
-                </ul>
-                <div class="validates-block">
-                    <span class="validates-label">What Gets Validated</span>
-                    <ul class="validates-list">
-                        <li>Element classification — footings, slabs, columns, beams, proxies</li>
-                        <li>Quantity source — BaseQuantities, Pset, or geometric fallback per element</li>
-                        <li>Unit consistency — cm², mm², m² conversion traps across all software</li>
-                        <li>Reinforcement extraction — bar geometry, designation lookup, ratio fallback</li>
-                        <li>Semantic anomalies — GrossVolume corruption, void relationships, composite assemblies</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="svc-img">
-                <img class="active" src="assets/4.jpg" alt="Construction site">
-                <img src="assets/5.jpg" alt="Construction site">
-                <img src="assets/6.jpg" alt="Construction site">
-                <img src="assets/7.jpg" alt="Construction site">
-            </div>
-        </div>
-    </section>
-
-    <!-- STRUCTBOQ -->
-    <section id="solution">
+    <!-- EXPLORE -->
+    <section id="explore">
         <div class="container">
-            <div class="solution-top reveal">
-                <div class="solution-text">
-                    <h2>StructBOQ — IFC Validation System</h2>
-                    <p>StructBOQ is not a BOQ generator. It is a quality gate between your model and downstream engineering decisions. It reads your IFC file directly — Revit, ArchiCAD, Tekla, Allplan — and audits every element for classification errors, unit inconsistencies, volume anomalies, and quantity source failures before generating a validated BOQ. Supports IFC2x3, IFC4, IFC4x3.</p>
-                    <p class="research-line">StructBOQ investigates IFC semantic reliability, quantity traceability, and model assurance across open BIM workflows.</p>
-                </div>
-                <div class="solution-stat">
-                    <div class="stat-inline">
-                        <span class="snum-label">Validation Accuracy</span>
-                        <span class="sdesc">Cross-checked against raw IFC data in Bonsai / BlenderBIM across three software platforms.</span>
-                    </div>
-                    <div class="delta-rows">
-                        <div class="delta-row"><span class="delta-file">FZK-Haus (ArchiCAD IFC4)</span><span class="delta-val">0.0001 m³ delta</span></div>
-                        <div class="delta-row"><span class="delta-file">TIEFGARAGE (Allplan IFC2X3)</span><span class="delta-val">0.000165 m³ delta</span></div>
-                        <div class="delta-row"><span class="delta-file">CPS-026/270 (Revit IFC2X3)</span><span class="delta-val">0.066 m³ delta</span></div>
-                    </div>
-                    <a href="case-studies.html" class="solution-link">Read the case studies →</a>
-                </div>
+            <div class="explore-header reveal">
+                <span class="label">Explore</span>
+                <h2>Start Here</h2>
             </div>
-
-            <div class="sw-coverage reveal d1">
-                <span class="label">Validated Software Coverage</span>
-                <div class="sw-grid">
-                    <div class="sw-item"><span class="sw-name">Revit</span><span class="sw-status ok">✓ Validated</span></div>
-                    <div class="sw-item"><span class="sw-name">ArchiCAD</span><span class="sw-status ok">✓ Validated</span></div>
-                    <div class="sw-item"><span class="sw-name">Allplan</span><span class="sw-status ok">✓ Validated</span></div>
-                    <div class="sw-item"><span class="sw-name">Tekla</span><span class="sw-status pending">In Testing</span></div>
-                </div>
-            </div>
-
-            <div class="compare-landscape reveal d1">
-                <div class="cl-head-row">
-                    <div class="cl-corner"></div>
-                    <div class="cl-attr">Quantity Source</div>
-                    <div class="cl-attr">Classification</div>
-                    <div class="cl-attr">Error Detection</div>
-                    <div class="cl-attr">Confidence</div>
-                    <div class="cl-attr">Turnaround</div>
-                    <div class="cl-attr">Audit Trail</div>
-                </div>
-                <div class="cl-row manual">
-                    <div class="cl-label">Manual</div>
-                    <div class="cl-cell">Unknown</div>
-                    <div class="cl-cell">Unverified</div>
-                    <div class="cl-cell">Undetected</div>
-                    <div class="cl-cell">None</div>
-                    <div class="cl-cell">Days</div>
-                    <div class="cl-cell">None</div>
-                </div>
-                <div class="cl-row structboq">
-                    <div class="cl-label">StructBOQ</div>
-                    <div class="cl-cell"><span class="tick">✓</span>Per element</div>
-                    <div class="cl-cell"><span class="tick">✓</span>Auto-verified</div>
-                    <div class="cl-cell"><span class="tick">✓</span>Flagged + severity</div>
-                    <div class="cl-cell"><span class="tick">✓</span>Scored per element</div>
-                    <div class="cl-cell"><span class="tick">✓</span>24 hours</div>
-                    <div class="cl-cell"><span class="tick">✓</span>Excel + PDF</div>
-                </div>
+            <div class="explore-grid reveal d1">
+                <a href="structboq.html" class="explore-card">
+                    <span class="explore-num">Product</span>
+                    <h3>StructBOQ</h3>
+                    <p>The audit engine — validated Bill of Quantities with full data-source traceability.</p>
+                    <span class="explore-arrow">Open StructBOQ →</span>
+                </a>
+                <a href="case-studies.html" class="explore-card">
+                    <span class="explore-num">Evidence</span>
+                    <h3>Case Studies</h3>
+                    <p>Seven real IFC files, four authoring tools, every finding traced end to end.</p>
+                    <span class="explore-arrow">Read the studies →</span>
+                </a>
+                <a href="knowledge-hub.html" class="explore-card">
+                    <span class="explore-num">Learn</span>
+                    <h3>Knowledge Hub</h3>
+                    <p>A learning path through OpenBIM, IFC, IDS, and ISO 19650. In progress.</p>
+                    <span class="explore-arrow">View modules →</span>
+                </a>
+                <a href="about.html" class="explore-card">
+                    <span class="explore-num">Background</span>
+                    <h3>About</h3>
+                    <p>Education, technical skills, and the other tools I've built.</p>
+                    <span class="explore-arrow">Read more →</span>
+                </a>
+                <a href="services.html" class="explore-card">
+                    <span class="explore-num">Work With Me</span>
+                    <h3>Services</h3>
+                    <p>Validation, IDS, schema, CDE — and custom automation. How to work with me.</p>
+                    <span class="explore-arrow">View services →</span>
+                </a>
             </div>
         </div>
     </section>
@@ -688,8 +444,8 @@
         <div class="contact-inner">
             <div class="contact-grid">
                 <div class="contact-left reveal">
-                    <h2>Send Your IFC File for a Free Validation Audit.</h2>
-                    <p>No engagement required. Send your IFC file — receive a full validation report and audited BOQ.</p>
+                    <h2>Have a project to discuss?</h2>
+                    <p>Get in touch about validation, IDS, schema, advisory, or automation work.</p>
                     <a href="mailto:engrshabir@shabirbim.com" class="contact-detail">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                         engrshabir@shabirbim.com
@@ -700,7 +456,7 @@
                     </a>
                 </div>
                 <div class="contact-right reveal d1">
-                    <a href="submit-ifc.html" class="btn-gold">Submit IFC File →</a>
+                    <a href="submit-ifc.html" class="btn-gold">Get In Touch →</a>
                 </div>
             </div>
         </div>
@@ -709,9 +465,13 @@
     <!-- FOOTER -->
     <footer>
         <div class="footer-links">
-            <a href="about.html">About</a>
+            <a href="index.html">Home</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
             <a href="case-studies.html">Case Studies</a>
-            <a href="demo.html">Demo</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="submit-ifc.html">Get In Touch</a>
         </div>
         <p>&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
     </footer>
@@ -736,15 +496,6 @@
                 navLinks.classList.remove('scrolled');
             }
         });
-
-        // Service image slideshow
-        const slides = document.querySelectorAll('.svc-img img');
-        let current = 0;
-        setInterval(() => {
-            slides[current].classList.remove('active');
-            current = (current + 1) % slides.length;
-            slides[current].classList.add('active');
-        }, 4000);
 
         // Reveal on scroll
         const observer = new IntersectionObserver(entries => {

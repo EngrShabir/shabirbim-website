@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StructBOQ | IFC Validation System | Shabir Ahmad</title>
+    <meta name="description" content="StructBOQ is a quality gate between your IFC model and downstream engineering decisions — classification checks, unit consistency, quantity source audit, and a validated BOQ output. Revit, ArchiCAD, Allplan, Tekla.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <style>
+        :root{--accent:#D4AF37;--accent-glow:rgba(212,175,55,0.25);--border:rgba(0,0,0,0.09);--bg:#F5F4F0;--bg2:#EDECEA;--bg3:#E8E6E1;--text:#0F0E0A;--muted:#6B6859;}
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:70px;}
+        .top-navbar{position:fixed;top:0;left:0;width:100%;height:70px;background:rgba(245,244,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;}
+        .nav-container{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:flex-end;align-items:center;position:relative;}
+        .nav-logo{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.01em;}
+        .nav-cta{background:var(--accent);color:#000;padding:9px 20px;border-radius:4px;font-size:0.875rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
+        .nav-cta:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
+        .nav-links{display:flex;gap:28px;align-items:center;position:absolute;left:50%;transform:translateX(-50%);}
+        .nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .nav-links a:hover{color:var(--text);}
+        .container{max-width:1040px;margin:0 auto;padding:0 32px;}
+        .label{display:block;font-size:0.72rem;font-weight:700;color:var(--accent);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:16px;}
+        .reveal{opacity:0;transform:translateY(24px);transition:all 0.7s cubic-bezier(0.16,1,0.3,1);}
+        .reveal.in{opacity:1;transform:none;}
+        .d1{transition-delay:0.1s;} .d2{transition-delay:0.2s;} .d3{transition-delay:0.3s;}
+
+        .page-intro{padding:64px 0 48px;border-bottom:1px solid var(--border);}
+        .page-intro h1{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:16px;}
+        .page-intro p{font-size:1rem;color:var(--muted);max-width:600px;line-height:1.75;}
+
+        .video-section{padding:56px 0;border-bottom:1px solid var(--border);}
+        .video-frame{border:1px solid var(--border);position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:var(--bg3);}
+        .video-frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+        .loom-overlay{position:absolute;inset:0;z-index:10;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(15,14,10,0.35);transition:background 0.25s;}
+        .loom-overlay:hover{background:rgba(15,14,10,0.18);}
+        .play-btn{display:flex;align-items:center;gap:10px;background:var(--accent);color:#000;padding:14px 28px;font-size:0.875rem;font-weight:700;letter-spacing:0.02em;transition:all 0.2s;}
+        .loom-overlay:hover .play-btn{background:#FDE047;box-shadow:0 0 24px var(--accent-glow);}
+        .play-icon{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid #000;flex-shrink:0;}
+
+        .watch-for{margin-top:36px;}
+        .watch-for-label{font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px;display:block;}
+        .watch-list{list-style:none;display:flex;flex-direction:column;gap:0;}
+        .watch-list li{font-size:0.9rem;line-height:1.6;color:var(--text);padding:13px 0;border-bottom:1px solid var(--border);padding-left:22px;position:relative;}
+        .watch-list li:first-child{border-top:1px solid var(--border);}
+        .watch-list li::before{content:'→';position:absolute;left:0;color:var(--accent);font-weight:700;}
+
+        .highlights{display:flex;flex-wrap:wrap;border:1px solid var(--border);background:var(--text);margin-top:0;}
+        .hl-item{flex:1;min-width:160px;padding:28px 32px;border-right:1px solid rgba(255,255,255,0.07);}
+        .hl-item:last-child{border-right:none;}
+        .hl-label{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:block;margin-bottom:8px;}
+        .hl-value{font-size:1.35rem;font-weight:800;color:var(--accent);letter-spacing:-0.02em;display:block;margin-bottom:4px;}
+        .hl-sub{font-size:0.72rem;color:rgba(255,255,255,0.3);display:block;}
+
+        /* ── STRUCTBOQ DESCRIPTION ── */
+        .solution-block{padding:56px 0;border-bottom:1px solid var(--border);}
+        .solution-block h2{font-size:clamp(1.6rem,2.8vw,2.1rem);font-weight:800;letter-spacing:-0.03em;line-height:1.2;margin-bottom:20px;}
+        .solution-block p{color:var(--muted);font-size:1rem;line-height:1.75;max-width:720px;}
+        .research-line{margin-top:16px;font-size:0.85rem;color:var(--muted);font-style:italic;line-height:1.6;}
+
+        /* ── WHAT GETS VALIDATED ── */
+        .validates-block{margin-top:36px;padding-top:28px;border-top:1px solid var(--border);}
+        .validates-label{display:block;font-size:0.7rem;font-weight:700;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:14px;}
+        .validates-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;}
+        .validates-list li{font-size:0.88rem;color:var(--muted);padding-left:18px;position:relative;line-height:1.6;}
+        .validates-list li::before{content:'✓';position:absolute;left:0;color:var(--accent);font-weight:700;}
+
+        /* ── VALIDATION ACCURACY ── */
+        .accuracy-block{padding:56px 0;border-bottom:1px solid var(--border);}
+        .stat-inline{padding-top:0;margin-bottom:24px;}
+        .snum-label{display:block;font-size:1.1rem;font-weight:800;color:var(--accent);letter-spacing:-0.01em;line-height:1;margin-bottom:8px;}
+        .stat-inline .sdesc{display:block;font-size:0.85rem;color:var(--muted);line-height:1.6;max-width:600px;}
+        .delta-rows{margin:24px 0;display:flex;flex-direction:column;gap:10px;max-width:600px;}
+        .delta-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.85rem;}
+        .delta-file{color:var(--muted);}
+        .delta-val{color:var(--accent);font-weight:700;font-size:0.87rem;}
+        .solution-link{color:var(--accent);text-decoration:none;font-size:0.9rem;font-weight:600;transition:opacity 0.2s;display:inline-block;}
+        .solution-link:hover{opacity:0.7;}
+
+        /* ── SOFTWARE COVERAGE ── */
+        .sw-coverage{padding:48px 0;border-bottom:1px solid var(--border);}
+        .sw-grid{display:flex;gap:24px;flex-wrap:wrap;margin-top:16px;}
+        .sw-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);}
+        .sw-name{font-size:0.9rem;font-weight:600;color:var(--text);}
+        .sw-status{font-size:0.78rem;font-weight:700;}
+        .sw-status.ok{color:var(--accent);}
+        .sw-status.pending{color:var(--muted);}
+
+        /* ── COMPARE TABLE ── */
+        .compare-block{padding:48px 0 64px;}
+        .compare-landscape{margin-top:16px;border:1px solid var(--border);border-radius:8px;overflow-x:auto;}
+        .cl-row{display:grid;grid-template-columns:110px repeat(6,1fr);border-bottom:1px solid var(--border);min-width:640px;}
+        .cl-row:last-child{border-bottom:none;}
+        .cl-head-row{display:grid;grid-template-columns:110px repeat(6,1fr);border-bottom:1px solid var(--border);background:rgba(0,0,0,0.03);min-width:640px;}
+        .cl-corner{padding:12px 14px;}
+        .cl-attr{padding:12px 14px;font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);border-left:1px solid var(--border);}
+        .cl-label{padding:14px;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;display:flex;align-items:center;}
+        .cl-row.manual .cl-label{color:var(--muted);}
+        .cl-row.structboq .cl-label{color:var(--accent);}
+        .cl-cell{padding:14px;font-size:0.8rem;line-height:1.4;border-left:1px solid var(--border);display:flex;align-items:center;}
+        .cl-row.manual{background:rgba(0,0,0,0.02);}
+        .cl-row.manual .cl-cell{color:var(--muted);}
+        .cl-row.structboq{background:rgba(212,175,55,0.03);}
+        .cl-row.structboq .cl-cell{color:var(--text);}
+        .tick{color:var(--accent);font-weight:700;margin-right:4px;}
+
+        footer{padding:48px 0 32px;border-top:1px solid var(--border);}
+        .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+        .footer-links a{font-size:0.83rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+        .footer-links a:hover{color:var(--text);}
+        .footer-copy{text-align:center;font-size:0.78rem;color:var(--muted);}
+        .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:1001;}
+        .hamburger span{display:block;width:22px;height:2px;background:var(--accent);transition:transform 0.3s,opacity 0.3s;}
+        .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+        .hamburger.active span:nth-child(2){opacity:0;}
+        .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+        .nav-mobile-cta{display:none;}
+        @media(max-width:768px){
+            .hamburger{display:flex;}
+            .nav-cta{display:none;}
+            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);flex-direction:column;padding:0;gap:0;z-index:999;position:fixed;transform:none;}
+            .nav-links.open{display:flex;}
+            .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border);font-size:0.95rem;color:var(--muted) !important;font-weight:500;}
+            .nav-links a:last-child{border-bottom:none;}
+            .nav-mobile-cta{display:block;color:var(--accent) !important;font-weight:700;}
+            .container{padding:0 16px;}
+            .highlights{flex-direction:column;}
+            .hl-item{border-right:none;border-bottom:1px solid rgba(255,255,255,0.07);}
+            .hl-item:last-child{border-bottom:none;}
+            footer{padding:32px 0 20px;}
+            .footer-links{gap:16px;flex-wrap:wrap;}
+        }
+    </style>
+    <script data-goatcounter="https://shabir.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<header class="top-navbar">
+    <div class="nav-container">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a class="nav-mobile-cta" href="submit-ifc.html">Get In Touch →</a>
+        </div>
+        <a href="submit-ifc.html" class="nav-cta">Get In Touch</a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+</header>
+
+<section class="page-intro">
+    <div class="container">
+        <div class="reveal">
+            <span class="label">StructBOQ</span>
+            <h1>StructBOQ — IFC Validation System</h1>
+            <p>StructBOQ is not a BOQ generator. It is a quality gate between your model and downstream engineering decisions. It reads your IFC file directly — Revit, ArchiCAD, Tekla, Allplan — and audits every element for classification errors, unit inconsistencies, volume anomalies, and quantity source failures before generating a validated BOQ. Supports IFC2x3, IFC4, IFC4x3.</p>
+        </div>
+    </div>
+</section>
+
+<section class="video-section">
+    <div class="container">
+        <div class="reveal d1">
+            <div class="video-frame" id="videoFrame">
+                <iframe id="loomIframe"
+                    src=""
+                    data-src="https://www.loom.com/embed/74cdf4da3261456aa44773ee61696386?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
+                    loading="lazy"
+                    frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
+                </iframe>
+                <div class="loom-overlay" id="loomOverlay" onclick="activateLoom()">
+                    <div class="play-btn"><span class="play-icon"></span> Watch Demo</div>
+                </div>
+            </div>
+
+            <div class="watch-for">
+                <span class="watch-for-label">What to watch for</span>
+                <ul class="watch-list">
+                    <li>How the pipeline distinguishes IfcQuantityVolume from geometric fallback — and when each is used</li>
+                    <li>Where misclassified elements are caught before quantities are committed to the BOQ</li>
+                    <li>The final Excel structure: element list, audit flags, and summary sheet in one file</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="padding:0 0 56px;">
+    <div class="container">
+        <div class="highlights reveal d2">
+            <div class="hl-item">
+                <span class="hl-label">Runtime</span>
+                <span class="hl-value">~1 min</span>
+                <span class="hl-sub">Unedited walkthrough</span>
+            </div>
+            <div class="hl-item">
+                <span class="hl-label">IFC versions</span>
+                <span class="hl-value">IFC4 + IFC2X3</span>
+                <span class="hl-sub">Both schemas validated</span>
+            </div>
+            <div class="hl-item">
+                <span class="hl-label">Output</span>
+                <span class="hl-value">Excel BOQ</span>
+                <span class="hl-sub">Audit trail included</span>
+            </div>
+            <div class="hl-item">
+                <span class="hl-label">Setup required</span>
+                <span class="hl-value">Zero</span>
+                <span class="hl-sub">Upload, receive report</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="solution-block">
+    <div class="container">
+        <div class="reveal">
+            <p class="research-line">StructBOQ investigates IFC semantic reliability, quantity traceability, and model assurance across open BIM workflows.</p>
+            <div class="validates-block">
+                <span class="validates-label">What Gets Validated</span>
+                <ul class="validates-list">
+                    <li>Element classification — footings, slabs, columns, beams, proxies</li>
+                    <li>Quantity source — BaseQuantities, Pset, or geometric fallback per element</li>
+                    <li>Unit consistency — cm², mm², m² conversion traps across all software</li>
+                    <li>Reinforcement extraction — bar geometry, designation lookup, ratio fallback</li>
+                    <li>Semantic anomalies — GrossVolume corruption, void relationships, composite assemblies</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="accuracy-block">
+    <div class="container">
+        <div class="reveal">
+            <div class="stat-inline">
+                <span class="snum-label">Validation Accuracy</span>
+                <span class="sdesc">Cross-checked against raw IFC data in Bonsai / BlenderBIM across three software platforms.</span>
+            </div>
+            <div class="delta-rows">
+                <div class="delta-row"><span class="delta-file">FZK-Haus (ArchiCAD IFC4)</span><span class="delta-val">0.0001 m³ delta</span></div>
+                <div class="delta-row"><span class="delta-file">TIEFGARAGE (Allplan IFC2X3)</span><span class="delta-val">0.000165 m³ delta</span></div>
+                <div class="delta-row"><span class="delta-file">CPS-026/270 (Revit IFC2X3)</span><span class="delta-val">0.066 m³ delta</span></div>
+            </div>
+            <a href="case-studies.html" class="solution-link">Read the case studies →</a>
+        </div>
+    </div>
+</section>
+
+<section class="sw-coverage">
+    <div class="container">
+        <div class="reveal">
+            <span class="label">Validated Software Coverage</span>
+            <div class="sw-grid">
+                <div class="sw-item"><span class="sw-name">Revit</span><span class="sw-status ok">✓ Validated</span></div>
+                <div class="sw-item"><span class="sw-name">ArchiCAD</span><span class="sw-status ok">✓ Validated</span></div>
+                <div class="sw-item"><span class="sw-name">Allplan</span><span class="sw-status ok">✓ Validated</span></div>
+                <div class="sw-item"><span class="sw-name">Tekla</span><span class="sw-status pending">In Testing</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="compare-block">
+    <div class="container">
+        <div class="reveal">
+            <span class="label">Manual vs. StructBOQ</span>
+            <div class="compare-landscape">
+                <div class="cl-head-row">
+                    <div class="cl-corner"></div>
+                    <div class="cl-attr">Quantity Source</div>
+                    <div class="cl-attr">Classification</div>
+                    <div class="cl-attr">Error Detection</div>
+                    <div class="cl-attr">Confidence</div>
+                    <div class="cl-attr">Turnaround</div>
+                    <div class="cl-attr">Audit Trail</div>
+                </div>
+                <div class="cl-row manual">
+                    <div class="cl-label">Manual</div>
+                    <div class="cl-cell">Unknown</div>
+                    <div class="cl-cell">Unverified</div>
+                    <div class="cl-cell">Undetected</div>
+                    <div class="cl-cell">None</div>
+                    <div class="cl-cell">Days</div>
+                    <div class="cl-cell">None</div>
+                </div>
+                <div class="cl-row structboq">
+                    <div class="cl-label">StructBOQ</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Per element</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Auto-verified</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Flagged + severity</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Scored per element</div>
+                    <div class="cl-cell"><span class="tick">✓</span>24 hours</div>
+                    <div class="cl-cell"><span class="tick">✓</span>Excel + PDF</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="submit-ifc.html">Get In Touch</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </div>
+</footer>
+
+<script>
+    function activateLoom() {
+        const iframe = document.getElementById('loomIframe');
+        iframe.src = iframe.dataset.src;
+        document.getElementById('loomOverlay').style.display = 'none';
+        iframe.style.pointerEvents = 'auto';
+    }
+
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    const hamburger=document.getElementById('hamburger');
+    const navMenu=document.querySelector('.nav-links');
+    hamburger.addEventListener('click',()=>{navMenu.classList.toggle('open');hamburger.classList.toggle('active');});
+    document.addEventListener('click',e=>{if(!hamburger.contains(e.target)&&!navMenu.contains(e.target)){navMenu.classList.remove('open');hamburger.classList.remove('active');}});
+    navMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{navMenu.classList.remove('open');hamburger.classList.remove('active');}));
+</script>
+</body>
+</html>

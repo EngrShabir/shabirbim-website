@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit IFC File | StructBOQ | Shabir Ahmad</title>
+    <title>Get In Touch | Shabir Ahmad</title>
+    <meta name="description" content="Tell me a bit about what you need — validation, IDS, quantity verification, ISO 19650 advisory, or custom automation — and I'll follow up to discuss scope and next steps.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,11 +15,11 @@
         html{scroll-behavior:smooth;}
         body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:70px;}
         .top-navbar{position:fixed;top:0;left:0;width:100%;height:70px;background:rgba(245,244,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;}
-        .nav-container{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:space-between;align-items:center;}
+        .nav-container{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:flex-end;align-items:center;position:relative;}
         .nav-logo{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.01em;}
         .nav-cta{background:var(--accent);color:#000;padding:9px 20px;border-radius:4px;font-size:0.875rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
         .nav-cta:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
-        .nav-links{display:flex;gap:28px;align-items:center;}
+        .nav-links{display:flex;gap:28px;align-items:center;position:absolute;left:50%;transform:translateX(-50%);}
         .nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
         .nav-links a:hover{color:var(--text);}
         .container{max-width:900px;margin:0 auto;padding:0 32px;}
@@ -31,16 +32,8 @@
         .page-intro h1{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:16px;}
         .page-intro p{font-size:1rem;color:var(--muted);max-width:560px;line-height:1.75;}
 
-        .process-steps{display:flex;gap:0;margin-top:32px;border:1px solid var(--border);}
-        .process-step{flex:1;padding:20px 24px;border-right:1px solid var(--border);display:flex;align-items:flex-start;gap:14px;}
-        .process-step:last-child{border-right:none;}
-        .step-num{font-size:1.4rem;font-weight:800;color:var(--accent);letter-spacing:-0.03em;line-height:1;flex-shrink:0;padding-top:2px;}
-        .step-text strong{display:block;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:3px;}
-        .step-text span{font-size:0.78rem;color:var(--muted);line-height:1.5;}
-
         .form-section{padding:56px 0;}
         .form-grid{max-width:560px;}
-        @media(max-width:720px){.process-steps{flex-direction:column;}.process-step{border-right:none;border-bottom:1px solid var(--border);}.process-step:last-child{border-bottom:none;}}
 
         .form-group{margin-bottom:20px;}
         .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
@@ -49,17 +42,17 @@
         .form-control{width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,0.15);background:var(--bg2);font-family:inherit;font-size:0.9rem;color:var(--text);transition:border-color 0.2s,box-shadow 0.2s;outline:none;}
         .form-control:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,175,55,0.12);}
         textarea.form-control{resize:vertical;min-height:100px;}
+        select.form-control{cursor:pointer;}
+        .form-error{display:none;margin-top:6px;font-size:0.78rem;color:#B3261E;}
+        .form-error.show{display:block;}
+        .form-control.invalid{border-color:#B3261E;}
         .btn-submit{width:100%;background:var(--accent);color:#000;border:none;padding:16px;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer;transition:all 0.25s;margin-top:4px;}
         .btn-submit:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
         .btn-submit:disabled{opacity:0.6;cursor:not-allowed;}
 
         .success-state{display:none;}
-        .success-step-done{font-size:0.72rem;font-weight:700;color:var(--accent);letter-spacing:0.13em;text-transform:uppercase;margin-bottom:12px;display:block;}
         .success-state h2{font-size:1.6rem;font-weight:800;letter-spacing:-0.025em;margin-bottom:12px;color:var(--text);}
-        .success-state p{font-size:0.9rem;color:var(--muted);margin-bottom:28px;line-height:1.75;}
-        .btn-mailto{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#000;padding:15px 28px;text-decoration:none;font-weight:800;font-size:0.9rem;transition:all 0.25s;width:100%;justify-content:center;}
-        .btn-mailto:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
-        .mailto-note{margin-top:14px;font-size:0.78rem;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);padding-top:14px;}
+        .success-state p{font-size:0.95rem;color:var(--muted);line-height:1.75;}
 
         footer{padding:48px 0 32px;border-top:1px solid var(--border);}
         .footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
@@ -75,7 +68,7 @@
         @media(max-width:768px){
             .hamburger{display:flex;}
             .nav-cta{display:none;}
-            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);flex-direction:column;padding:0;gap:0;z-index:999;}
+            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);flex-direction:column;padding:0;gap:0;z-index:999;position:fixed;transform:none;}
             .nav-links.open{display:flex;}
             .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border);font-size:0.95rem;color:var(--muted) !important;font-weight:500;}
             .nav-links a:last-child{border-bottom:none;}
@@ -86,19 +79,22 @@
             .footer-links{gap:16px;flex-wrap:wrap;}
         }
     </style>
+    <script data-goatcounter="https://shabir.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
 <header class="top-navbar">
     <div class="nav-container">
-        <a href="index.html" class="nav-logo">Shabir Ahmad</a>
         <div class="nav-links">
-            <a href="about.html">About</a>
+            <a href="index.html">Home</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
             <a href="case-studies.html">Case Studies</a>
-            <a href="demo.html">Demo</a>
-            <a class="nav-mobile-cta" href="submit-ifc.html">Submit IFC File →</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a class="nav-mobile-cta" href="submit-ifc.html">Get In Touch →</a>
         </div>
-        <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+        <a href="submit-ifc.html" class="nav-cta">Get In Touch</a>
         <button class="hamburger" id="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
     </div>
 </header>
@@ -106,25 +102,9 @@
 <section class="page-intro">
     <div class="container">
         <div class="reveal">
-            <span class="label">Get Started</span>
-            <h1>Submit Your IFC File</h1>
-            <p>Two steps. No software to install. Validated BOQ report delivered within 24 hours.</p>
-            <div class="process-steps">
-                <div class="process-step">
-                    <span class="step-num">01</span>
-                    <div class="step-text">
-                        <strong>Fill the form below</strong>
-                        <span>Name, company, email, project notes</span>
-                    </div>
-                </div>
-                <div class="process-step">
-                    <span class="step-num">02</span>
-                    <div class="step-text">
-                        <strong>Email your IFC file</strong>
-                        <span>A pre-filled email link opens automatically</span>
-                    </div>
-                </div>
-            </div>
+            <span class="label">Contact</span>
+            <h1>Get In Touch</h1>
+            <p>Tell me a bit about what you need — I'll follow up to discuss scope and next steps.</p>
         </div>
     </div>
 </section>
@@ -134,9 +114,9 @@
         <div class="form-grid reveal d1">
 
             <div class="form-side">
-                <form id="ifcForm" action="https://api.web3forms.com/submit" method="POST">
+                <form id="inquiryForm" action="https://api.web3forms.com/submit" method="POST">
                     <input type="hidden" name="access_key" value="59fec470-8ad0-4cde-980b-bde97ff4032a">
-                    <input type="hidden" name="subject" value="New IFC Submission — shabirbim.com">
+                    <input type="hidden" name="subject" value="New Inquiry — shabirbim.com">
                     <input type="checkbox" name="botcheck" style="display:none;">
 
                     <div class="form-row">
@@ -156,19 +136,35 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="notes">Project Notes</label>
-                        <textarea id="notes" name="notes" class="form-control" rows="4" placeholder="Software, element scope, known issues, anything relevant…"></textarea>
+                        <label class="form-label" for="emailConfirm">Confirm Email Address</label>
+                        <input type="email" id="emailConfirm" name="email_confirm" class="form-control" required>
+                        <span class="form-error" id="emailError">Emails don't match — please check and try again.</span>
                     </div>
 
-                    <button type="submit" class="btn-submit" id="submitBtn">Submit Details →</button>
+                    <div class="form-group">
+                        <label class="form-label" for="service">What do you need?</label>
+                        <select id="service" name="service" class="form-control" required>
+                            <option value="" disabled selected>Select one…</option>
+                            <option value="IFC / Schema Validation">IFC / Schema Validation</option>
+                            <option value="IDS Authoring &amp; Validation">IDS Authoring &amp; Validation</option>
+                            <option value="Independent Quantity Verification">Independent Quantity Verification</option>
+                            <option value="ISO 19650 / CDE Advisory">ISO 19650 / CDE Advisory</option>
+                            <option value="Custom Python Automation">Custom Python Automation</option>
+                            <option value="Something else">Something else</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="notes">Notes</label>
+                        <textarea id="notes" name="notes" class="form-control" rows="4" placeholder="Anything that helps me understand the project — optional"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">Send Inquiry →</button>
                 </form>
 
                 <div class="success-state" id="successState">
-                    <span class="success-step-done">Step 1 complete</span>
-                    <h2>Now send your IFC file</h2>
-                    <p>Your project details have been received. Click below to open a pre-filled email — attach your IFC file and hit send.</p>
-                    <a id="mailtoLink" href="#" class="btn-mailto">Open Email &amp; Attach IFC File →</a>
-                    <p class="mailto-note">Opens your default email client with subject and body pre-filled. Attach your IFC file and send. No file size limit.</p>
+                    <h2>Thanks — got your inquiry.</h2>
+                    <p>I'll get back to you soon.</p>
                 </div>
             </div>
 
@@ -180,22 +176,37 @@
     <div class="container">
         <div class="footer-links">
             <a href="index.html">Home</a>
-            <a href="about.html">About</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
             <a href="case-studies.html">Case Studies</a>
-            <a href="demo.html">Demo</a>
-            <a href="submit-ifc.html">Submit IFC File</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="submit-ifc.html">Get In Touch</a>
         </div>
         <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
     </div>
 </footer>
 
 <script>
-    const form = document.getElementById('ifcForm');
+    const form = document.getElementById('inquiryForm');
     const successState = document.getElementById('successState');
     const submitBtn = document.getElementById('submitBtn');
+    const emailField = document.getElementById('email');
+    const emailConfirmField = document.getElementById('emailConfirm');
+    const emailError = document.getElementById('emailError');
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+
+        if (emailField.value.trim() !== emailConfirmField.value.trim()) {
+            emailError.classList.add('show');
+            emailConfirmField.classList.add('invalid');
+            emailConfirmField.focus();
+            return;
+        }
+        emailError.classList.remove('show');
+        emailConfirmField.classList.remove('invalid');
+
         const data = Object.fromEntries(new FormData(form));
 
         submitBtn.textContent = 'Sending…';
@@ -209,24 +220,24 @@
         .then(res => res.json())
         .then(json => {
             if (json.success) {
-                const company = encodeURIComponent(data.company || 'Project');
-                const name = encodeURIComponent(data.name || '');
-                const body = encodeURIComponent(`Hi Shabir,\n\nPlease find my IFC file attached.\n\nName: ${data.name}\nCompany: ${data.company}\nNotes: ${data.notes || '—'}\n`);
-                document.getElementById('mailtoLink').href =
-                    `mailto:engrshabir@shabirbim.com?subject=IFC File — ${company}&body=${body}`;
                 form.style.display = 'none';
                 successState.style.display = 'block';
             } else {
-                submitBtn.textContent = 'Submit Details →';
+                submitBtn.textContent = 'Send Inquiry →';
                 submitBtn.disabled = false;
                 alert('Something went wrong. Please email engrshabir@shabirbim.com directly.');
             }
         })
         .catch(() => {
-            submitBtn.textContent = 'Submit Details →';
+            submitBtn.textContent = 'Send Inquiry →';
             submitBtn.disabled = false;
             alert('Something went wrong. Please email engrshabir@shabirbim.com directly.');
         });
+    });
+
+    emailConfirmField.addEventListener('input', () => {
+        emailError.classList.remove('show');
+        emailConfirmField.classList.remove('invalid');
     });
 
     const obs = new IntersectionObserver(entries => {

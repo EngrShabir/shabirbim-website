@@ -108,7 +108,7 @@ Element-level breakdown with name, material, flag status, data source, dimension
 
 ## Contact
 
-Send an IFC file for a free validation report — delivered within 24 hours.
+Tell me a bit about what you need — I'll follow up to discuss scope and next steps.
 
 [**shabirbim.com/submit-ifc.html**](https://shabirbim.com/submit-ifc.html)
 [engrshabir@shabirbim.com](mailto:engrshabir@shabirbim.com)

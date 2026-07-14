@@ -15,11 +15,11 @@
         html{scroll-behavior:smooth;}
         body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:70px;}
         .navbar{position:fixed;top:0;left:0;width:100%;height:70px;background:rgba(245,244,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;}
-        .nav-inner{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:space-between;align-items:center;}
+        .nav-inner{max-width:1200px;margin:0 auto;height:100%;padding:0 32px;display:flex;justify-content:flex-end;align-items:center;position:relative;}
         .nav-logo{font-size:1.1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.01em;}
         .nav-cta{background:var(--accent);color:#000;padding:9px 20px;border-radius:4px;font-size:0.875rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
         .nav-cta:hover{background:#FDE047;box-shadow:0 0 20px var(--accent-glow);}
-        .nav-links{display:flex;gap:28px;align-items:center;}
+        .nav-links{display:flex;gap:28px;align-items:center;position:absolute;left:50%;transform:translateX(-50%);}
         .nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
         .nav-links a:hover{color:var(--text);}
         .container{max-width:900px;margin:0 auto;padding:0 32px;}
@@ -85,7 +85,7 @@
         @media(max-width:768px){
             .hamburger{display:flex;}
             .nav-cta{display:none;}
-            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);flex-direction:column;padding:0;gap:0;z-index:999;}
+            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);flex-direction:column;padding:0;gap:0;z-index:999;position:fixed;transform:none;}
             .nav-links.open{display:flex;}
             .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border);font-size:0.95rem;color:var(--muted) !important;font-weight:500;}
             .nav-links a:last-child{border-bottom:none;}
@@ -113,19 +113,22 @@
         .footer-links a:hover{color:var(--text);}
         .footer-copy{text-align:center;font-size:0.78rem;color:var(--muted);}
     </style>
+    <script data-goatcounter="https://shabir.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
 <nav class="navbar">
     <div class="nav-inner">
-        <a href="index.html" class="nav-logo">Shabir Ahmad</a>
         <div class="nav-links">
-            <a href="about.html">About</a>
+            <a href="index.html">Home</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
             <a href="case-studies.html">Case Studies</a>
-            <a href="demo.html">Demo</a>
-            <a class="nav-mobile-cta" href="submit-ifc.html">Submit IFC File →</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a class="nav-mobile-cta" href="submit-ifc.html">Get In Touch →</a>
         </div>
-        <a href="submit-ifc.html" class="nav-cta">Submit IFC File</a>
+        <a href="submit-ifc.html" class="nav-cta">Get In Touch</a>
         <button class="hamburger" id="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
     </div>
 </nav>
@@ -306,10 +309,12 @@
     <div class="container">
         <div class="footer-links">
             <a href="index.html">Home</a>
-            <a href="about.html">About</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
             <a href="case-studies.html">Case Studies</a>
-            <a href="demo.html">Demo</a>
-            <a href="submit-ifc.html">Submit IFC</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="submit-ifc.html">Get In Touch</a>
         </div>
         <p class="footer-copy">&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
     </div>

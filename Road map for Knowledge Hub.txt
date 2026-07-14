@@ -1,0 +1,87 @@
+Road map for Knowledge Hub
+Module 1 — BIM Fundamentals (Light template)
+
+What BIM actually is (and common misconceptions)
+The problem BIM solves in construction
+BIM dimensions explained practically (3D–7D)
+Who does what — roles in a BIM project
+Common BIM uses (clash detection, takeoff, scheduling, FM handover)
+
+Module 2 — OpenBIM (Light template)
+
+Open BIM vs proprietary BIM — the vendor lock-in problem
+Who is buildingSMART and why they matter
+The open standards family (IFC, BCF, IDS, MVD — naming/purpose only)
+What an OpenBIM workflow looks like end-to-end
+
+Module 3 — IFC Fundamentals (Light template)
+
+What an IFC file actually is
+IFC2x3 vs IFC4 vs IFC4.3 — practical differences
+Opening your first IFC file (viewer walkthrough)
+STEP physical file structure at a glance
+Reading an IFC file as plain text — the "aha" lesson
+
+Module 4 — IFC Structure (Full template — core module)
+
+Entities — IfcWall, IfcSlab, IfcDoor, etc.
+Spatial structure hierarchy (Project → Site → Building → Storey → Space)
+Relationships (IfcRelAggregates, IfcRelContainedInSpatialStructure)
+Property Sets — standard vs custom
+Base Quantities — and why they're so often wrong
+Types vs Occurrences (IfcWallType vs IfcWall)
+Geometry representation — conceptual only
+
+Module 5 — IFC Versions & Schema (Full template)
+
+Why schema versions matter practically
+EXPRESS schema language — reading, not writing
+Where official schema docs live and how to use them
+Model View Definitions (MVDs) — what they constrain
+
+Module 6 — Information Quality & Validation (Full template)
+
+Why models fail — real-world causes
+Levels of validation — syntax, schema, business rules
+buildingSMART's IFC Validation Service — how to use it
+Exporter behavior across major tools — comparative, evidence-based
+
+Module 7 — IDS (Full template)
+
+The problem IDS solves — connecting requirements to verification
+IDS structure — facets (entity, attribute, property, classification, material)
+Writing your first IDS file, step by step
+IDS vs traditional EIR/spec documents
+Validating an IFC file against an IDS — full walkthrough
+
+Module 8 — ISO 19650 & CDE (Full template)
+
+What ISO 19650 actually governs
+The Common Data Environment concept
+Naming conventions as data integrity, not bureaucracy
+Where EIR/OIR connect back to IDS
+
+
+Module 9 — IfcOpenShell & Python (Full template)
+
+Environment setup
+Reading an IFC file programmatically — first script
+Extracting properties and quantities with code
+Common pitfalls (units, None values, missing psets)
+From script to reusable tool — a taste of what StructBOQ automates
+
+Module 10 — Automation & Workflows (Full template)
+
+Batch processing multiple IFC files
+Building a basic automated QA pipeline
+Where automation fits inside a BIM Execution Plan
+CI/CD-style checking as a repeatable pipeline step
+
+
+Module 11 — Digital Twins & Advanced Topics (Full template)
+
+From static BIM to Digital Twin — what changes
+IFC and real-time/sensor data — current state, limitations
+Interoperability challenges nobody talks about
+Where open standards are heading
+

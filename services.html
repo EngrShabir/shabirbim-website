@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services | Shabir Ahmad — BIM Automation Engineer</title>
+    <meta name="description" content="IFC and schema validation, IDS authoring, independent quantity verification, and ISO 19650 / CDE advisory.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <script data-goatcounter="https://shabir.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <style>
+        :root {
+            --bg-solid: #E8E6E1;
+            --border-color: rgba(0, 0, 0, 0.09);
+            --accent: #D4AF37;
+            --accent-glow: rgba(212, 175, 55, 0.3);
+            --text-primary: #0F0E0A;
+            --text-secondary: #6B6859;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F4F0;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 70px;
+        }
+
+        /* NAV */
+        .top-navbar {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 70px;
+            background-color: #F5F4F0;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+        .nav-container {
+            max-width: 1200px; margin: 0 auto;
+            height: 100%; padding: 0 32px;
+            display: flex; justify-content: flex-end; align-items: center; position: relative;
+        }
+        .nav-logo {
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--accent); text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        .nav-cta {
+            background: var(--accent); color: #000;
+            padding: 9px 20px; border-radius: 4px;
+            font-size: 0.875rem; font-weight: 700;
+            text-decoration: none; transition: all 0.25s;
+        }
+        .nav-cta:hover { background: #FDE047; box-shadow: 0 0 20px var(--accent-glow); }
+        .nav-links { display: flex; gap: 28px; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        /* LAYOUT */
+        .page-wrap { max-width: 1000px; margin: 0 auto; padding: 80px 20px 100px; }
+
+        .section-label {
+            font-size: 0.8rem; font-weight: 700; color: var(--accent);
+            letter-spacing: 0.12em; text-transform: uppercase;
+            margin-bottom: 14px; display: block;
+        }
+
+        /* HERO BLOCK */
+        .about-hero {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 60px; margin-bottom: 70px;
+        }
+        .about-hero h1 {
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.15; margin-bottom: 20px;
+        }
+        .about-hero .lead {
+            font-size: clamp(1rem, 1.8vw, 1.2rem);
+            color: var(--text-secondary); max-width: 680px;
+            line-height: 1.75;
+        }
+
+        /* SECTION HEADERS */
+        .block-title {
+            font-size: 1.5rem; font-weight: 800;
+            margin-bottom: 32px; letter-spacing: -0.02em;
+        }
+        .content-block { margin-bottom: 70px; }
+
+        /* SERVICE CARDS (reuses about.html skill-card pattern) */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 640px) {
+            .skills-grid { grid-template-columns: 1fr; }
+        }
+        .skill-card {
+            background: var(--bg-solid);
+            border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 30px;
+            transition: all 0.3s ease;
+        }
+        .skill-card:hover { border-color: rgba(212,175,55,0.35); }
+        .skill-card-title {
+            font-size: 1.05rem; font-weight: 700; color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        .skill-card p {
+            color: var(--text-secondary); font-size: 0.95rem; line-height: 1.65;
+        }
+
+        /* DIVIDER */
+        .divider {
+            height: 1px; background: var(--border-color);
+            margin: 0 0 70px;
+        }
+
+        /* CLOSING CONTACT (reuses index.html contact-detail pattern) */
+        .contact-detail {
+            display: flex; align-items: center; gap: 10px;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.95rem; margin-bottom: 12px;
+            transition: color 0.2s;
+        }
+        .contact-detail:hover { color: var(--accent); }
+        .btn-gold {
+            background: var(--accent); color: #000;
+            padding: 15px 32px; border-radius: 4px;
+            font-weight: 800; font-size: 0.95rem;
+            text-decoration: none; display: inline-block;
+            margin-bottom: 20px; transition: all 0.25s;
+        }
+        .btn-gold:hover { background: #FDE047; box-shadow: 0 0 25px var(--accent-glow); }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 32px 28px; text-align: center;
+            font-size: 0.85rem; color: #64748b;
+        }
+        .footer-links {
+            display: flex; justify-content: center; gap: 32px;
+            margin-bottom: 16px;
+        }
+        .footer-links a {
+            color: #94A3B8; text-decoration: none;
+            font-size: 0.85rem; font-weight: 500;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: #F1F5F9; }
+
+        /* REVEAL */
+        .reveal { opacity: 0; transform: translateY(24px); transition: all 0.65s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:1001;}
+        .hamburger span{display:block;width:22px;height:2px;background:var(--accent);transition:transform 0.3s,opacity 0.3s;}
+        .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+        .hamburger.active span:nth-child(2){opacity:0;}
+        .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+        .nav-mobile-cta{display:none;}
+        @media(max-width:768px){
+            .hamburger{display:flex;}
+            .nav-cta{display:none;}
+            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);flex-direction:column;padding:0;gap:0;z-index:999;position:fixed;transform:none;}
+            .nav-links.open{display:flex;}
+            .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border-color);font-size:0.95rem;color:var(--text-secondary) !important;font-weight:500;}
+            .nav-links a:last-child{border-bottom:none;}
+            .nav-mobile-cta{display:block;color:var(--accent) !important;font-weight:700;}
+            .page-wrap{padding:48px 16px 64px;}
+            footer{padding:32px 16px 20px;}
+            .footer-links{gap:16px;flex-wrap:wrap;}
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <header class="top-navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="knowledge-hub.html">Knowledge Hub</a>
+                <a href="case-studies.html">Case Studies</a>
+                <a href="structboq.html">StructBOQ</a>
+                <a href="about.html">About</a>
+                <a href="services.html">Services</a>
+                <a class="nav-mobile-cta" href="submit-ifc.html">Get In Touch →</a>
+            </div>
+            <a href="submit-ifc.html" class="nav-cta">Get In Touch</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <div class="page-wrap">
+
+        <!-- HERO -->
+        <div class="about-hero reveal active">
+            <span class="section-label">Services</span>
+            <h1>Services</h1>
+            <p class="lead">Independent validation and information management support for teams who need their BIM data to be correct, not just complete.</p>
+        </div>
+
+        <!-- SERVICES -->
+        <div class="content-block reveal">
+            <div class="skills-grid">
+
+                <div class="skill-card">
+                    <div class="skill-card-title">IFC / Schema Validation</div>
+                    <p>Auditing IFC models against schema and standard compliance — not just that a file opens, but that it means what it claims.</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card-title">IDS Authoring &amp; Validation</div>
+                    <p>Writing and validating Information Delivery Specifications so "correct" is defined as something a machine can check, not a spec buried in a PDF.</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card-title">Independent Quantity Verification</div>
+                    <p>Auditing IFC quantities directly against source data, using StructBOQ — full data-source traceability, not a black-box number.</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card-title">ISO 19650 / CDE Advisory</div>
+                    <p>Information management setup and review — requirements cascade (OIR/AIR/PIR/EIR), Common Data Environment structure, and delivery workflow.</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card-title">Custom Python Automation for BIM Workflows</div>
+                    <p>Scripts and tools built on IfcOpenShell for teams that need something StructBOQ doesn't already cover — custom extraction, batch processing, or workflow automation tailored to a specific project or pipeline.</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- CONTACT -->
+        <div class="content-block reveal" style="margin-bottom:0;">
+            <span class="section-label">Get In Touch</span>
+            <h2 class="block-title">Interested in working together?</h2>
+            <p style="color:var(--text-secondary);font-size:1rem;margin-bottom:24px;">Reach out — I'd be glad to talk through what your project needs.</p>
+            <div><a href="submit-ifc.html" class="btn-gold">Get In Touch →</a></div>
+            <a href="mailto:engrshabir@shabirbim.com" class="contact-detail">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                engrshabir@shabirbim.com
+            </a>
+            <a href="https://linkedin.com/in/shabir-bim" target="_blank" class="contact-detail">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                linkedin.com/in/shabir-bim
+            </a>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="submit-ifc.html">Get In Touch</a>
+        </div>
+        <p>&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        const hamburger=document.getElementById('hamburger');
+        const navMenu=document.querySelector('.nav-links');
+        hamburger.addEventListener('click',()=>{navMenu.classList.toggle('open');hamburger.classList.toggle('active');});
+        document.addEventListener('click',e=>{if(!hamburger.contains(e.target)&&!navMenu.contains(e.target)){navMenu.classList.remove('open');hamburger.classList.remove('active');}});
+        navMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{navMenu.classList.remove('open');hamburger.classList.remove('active');}));
+    </script>
+</body>
+</html>
