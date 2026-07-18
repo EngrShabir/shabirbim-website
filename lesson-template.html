@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[LESSON TITLE] | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="[ONE-SENTENCE META DESCRIPTION]">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <style>
+        :root {
+            --bg-solid: #E8E6E1;
+            --border-color: rgba(0, 0, 0, 0.09);
+            --accent: #D4AF37;
+            --accent-glow: rgba(212, 175, 55, 0.3);
+            --text-primary: #0F0E0A;
+            --text-secondary: #6B6859;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F4F0;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 70px;
+        }
+
+        /* NAV — reused unchanged from knowledge-hub.html */
+        .top-navbar {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 70px;
+            background-color: #F5F4F0;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+        .nav-container {
+            max-width: 1200px; margin: 0 auto;
+            height: 100%; padding: 0 32px;
+            display: flex; justify-content: flex-end; align-items: center; position: relative;
+        }
+        .nav-logo {
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--accent); text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        .nav-cta {
+            background: var(--accent); color: #000;
+            padding: 9px 20px; border-radius: 4px;
+            font-size: 0.875rem; font-weight: 700;
+            text-decoration: none; transition: all 0.25s;
+        }
+        .nav-cta:hover { background: #FDE047; box-shadow: 0 0 20px var(--accent-glow); }
+        .nav-links { display: flex; gap: 28px; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:1001;}
+        .hamburger span{display:block;width:22px;height:2px;background:var(--accent);transition:transform 0.3s,opacity 0.3s;}
+        .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+        .hamburger.active span:nth-child(2){opacity:0;}
+        .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+        .nav-mobile-cta{display:none;}
+        @media(max-width:768px){
+            .hamburger{display:flex;padding:13px;}
+            .nav-cta{display:none;}
+            .nav-links{display:flex;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);flex-direction:column;padding:0;gap:0;z-index:999;transform:translateY(-8px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.25s ease,transform 0.25s ease,visibility 0s linear 0.25s;}
+            .nav-links.open{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto;transition:opacity 0.25s ease,transform 0.25s ease;}
+            .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border-color);font-size:0.95rem;color:var(--text-secondary) !important;font-weight:500;transition:background 0.15s ease;}
+            .nav-links a:last-child{border-bottom:none;}
+            .nav-links a:active{background:rgba(212,175,55,0.1);}
+            .nav-mobile-cta{display:block;color:var(--accent) !important;font-weight:700;}
+            footer{padding:32px 16px 20px;}
+            .footer-links{gap:16px;flex-wrap:wrap;}
+        }
+
+        /* FOOTER — reused unchanged from knowledge-hub.html */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 32px 28px; text-align: center;
+            font-size: 0.85rem; color: #64748b;
+        }
+        .footer-links {
+            display: flex; justify-content: center; gap: 32px;
+            margin-bottom: 16px;
+        }
+        .footer-links a {
+            color: #94A3B8; text-decoration: none;
+            font-size: 0.85rem; font-weight: 500;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: #F1F5F9; }
+
+        /* ── LESSON PAGE — page-scoped variables, does not touch :root ── */
+        .lesson-wrap {
+            --lesson-bg: #E9EEF3;
+            --paper: #FFFFFF;
+            --paper-border: rgba(15, 14, 10, 0.08);
+            --paper-shadow: rgba(30, 41, 59, 0.08);
+            --text-primary: #16181D;
+            --text-secondary: #5B6472;
+            --accent-gold: #D4AF37;
+            position: relative;
+            background: var(--lesson-bg);
+            padding: 56px 20px 96px;
+        }
+        .lesson-wrap::before {
+            content: '';
+            position: absolute; inset: 0; z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 260px 260px;
+            mix-blend-mode: multiply;
+            opacity: 0.48;
+            pointer-events: none;
+        }
+
+        .paper {
+            position: relative;
+            z-index: 1;
+            max-width: 880px;
+            margin: 0 auto;
+            background: var(--paper);
+            border: 1px solid var(--paper-border);
+            box-shadow: 0 4px 28px var(--paper-shadow);
+            border-radius: 12px;
+            padding: 56px 64px;
+        }
+
+        .lesson-back-link {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 14px;
+            transition: color 0.2s;
+        }
+        .lesson-back-link:hover { color: var(--accent-gold); }
+
+        .lesson-breadcrumb {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+
+        .lesson-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.18;
+            color: var(--text-primary);
+            margin-bottom: 22px;
+        }
+
+        .title-rule {
+            border: none;
+            height: 2px;
+            width: 64px;
+            background: var(--accent-gold);
+            margin-bottom: 44px;
+        }
+
+        .lesson-content h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            margin-top: 52px;
+            margin-bottom: 18px;
+        }
+        .lesson-content h2:first-child { margin-top: 0; }
+
+        .lesson-content h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 32px;
+            margin-bottom: 14px;
+        }
+
+        .lesson-content p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        .lesson-content p:last-child { margin-bottom: 0; }
+
+        .key-takeaways {
+            margin-top: 52px;
+            background: rgba(15, 14, 10, 0.025);
+            border: 1px solid var(--paper-border);
+            border-radius: 10px;
+            padding: 30px 34px;
+        }
+        .key-takeaways h2 { margin-top: 0; margin-bottom: 18px; }
+        .key-takeaways ul { list-style: disc; padding-left: 20px; margin: 0; }
+        .key-takeaways li {
+            font-size: 0.98rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .key-takeaways li:last-child { margin-bottom: 0; }
+
+        .further-reading {
+            margin-top: 56px;
+            padding-top: 32px;
+            border-top: 1px solid var(--paper-border);
+        }
+        .further-reading h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .further-reading ul { list-style: none; }
+        .further-reading li {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 14px;
+            position: relative;
+        }
+        .further-reading li::before {
+            content: '—';
+            position: absolute; left: 0;
+        }
+        .further-reading li:last-child { margin-bottom: 0; }
+
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 56px;
+            padding-top: 28px;
+            border-top: 1px solid var(--paper-border);
+        }
+        .lesson-nav a {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .lesson-nav a:hover { color: var(--accent-gold); }
+        .lesson-nav .disabled {
+            color: #A7ADB5;
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .giscus-placeholder {
+            position: relative;
+            z-index: 1;
+            max-width: 880px;
+            margin: 40px auto 0;
+        }
+        .discuss-heading {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        .comment-note {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin: 0 0 14px;
+        }
+
+        @media (max-width: 600px) {
+            .lesson-wrap { padding: 36px 14px 64px; }
+            .paper { padding: 38px 26px; border-radius: 10px; }
+            .lesson-content h2 { margin-top: 40px; }
+            .lesson-content p { margin-bottom: 22px; }
+            .key-takeaways { padding: 26px 24px; }
+            .lesson-nav a:active, .lesson-back-link:active { color: var(--accent-gold); }
+        }
+    </style>
+    <script data-goatcounter="https://shabir.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <header class="top-navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="knowledge-hub.html">Knowledge Hub</a>
+                <a href="case-studies.html">Case Studies</a>
+                <a href="structboq.html">StructBOQ</a>
+                <a href="about.html">About</a>
+                <a href="services.html">Services</a>
+                <a class="nav-mobile-cta" href="submit-ifc.html">Get In Touch →</a>
+            </div>
+            <a href="submit-ifc.html" class="nav-cta">Get In Touch</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <div class="lesson-wrap">
+        <div class="paper">
+
+            <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
+            <span class="lesson-breadcrumb">[Module X → X.X]</span>
+            <h1 class="lesson-title">[LESSON TITLE]</h1>
+            <hr class="title-rule">
+
+            <div class="lesson-content">
+
+                <!-- PASTE LESSON CONTENT HERE — use <h2> for section headings, <p> for paragraphs, <strong> for bold terms -->
+
+                <div class="key-takeaways">
+                    <h2>Key Takeaways</h2>
+                    <ul>
+                        <li>[Key takeaway]</li>
+                        <!-- add more <li>[Key takeaway]</li> items as needed -->
+                    </ul>
+                </div>
+
+                <div class="further-reading">
+                    <h3>Further Reading</h3>
+                    <ul>
+                        <li>[Reference]</li>
+                        <!-- add more <li>[Reference]</li> items as needed -->
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="lesson-nav">
+                <a href="[prev-lesson-filename.html]">← Prev</a>
+                <a href="[next-lesson-filename.html]">Next →</a>
+                <!-- If this is the first/last lesson in the hub, use the disabled span pattern instead (see how Prev is handled in lesson-1-1-what-is-bim.html): <span class="disabled">← Prev</span> -->
+            </div>
+
+        </div>
+
+        <div id="giscus-comments" class="giscus-placeholder">
+            <h3 class="discuss-heading">Discuss this lesson</h3>
+            <p class="comment-note">Comments use a free GitHub account — takes under a minute to create, and keeps discussions spam-free and permanently archived.</p>
+            <div class="giscus"></div>
+            <script src="https://giscus.app/client.js"
+                    data-repo="EngrShabir/shabirbim-website"
+                    data-repo-id="R_kgDOSQ5-VA"
+                    data-category="Announcements"
+                    data-category-id="DIC_kwDOSQ5-VM4DBczi"
+                    data-mapping="pathname"
+                    data-strict="0"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="0"
+                    data-input-position="bottom"
+                    data-theme="light"
+                    data-lang="en"
+                    data-loading="lazy"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="submit-ifc.html">Get In Touch</a>
+        </div>
+        <p>&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </footer>
+
+    <script>
+        const hamburger=document.getElementById('hamburger');
+        const navMenu=document.querySelector('.nav-links');
+        hamburger.addEventListener('click',()=>{navMenu.classList.toggle('open');hamburger.classList.toggle('active');});
+        document.addEventListener('click',e=>{if(!hamburger.contains(e.target)&&!navMenu.contains(e.target)){navMenu.classList.remove('open');hamburger.classList.remove('active');}});
+        navMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{navMenu.classList.remove('open');hamburger.classList.remove('active');}));
+    </script>
+</body>
+</html>
