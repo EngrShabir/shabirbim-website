@@ -171,13 +171,17 @@
         .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
         .nav-mobile-cta{display:none;}
         @media(max-width:768px){
-            .hamburger{display:flex;}
+            .hamburger{display:flex;padding:13px;}
             .nav-cta{display:none;}
-            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);flex-direction:column;padding:0;gap:0;z-index:999;position:fixed;transform:none;}
-            .nav-links.open{display:flex;}
-            .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border-color);font-size:0.95rem;color:var(--text-secondary) !important;font-weight:500;}
+            .nav-links{display:flex;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);flex-direction:column;padding:0;gap:0;z-index:999;transform:translateY(-8px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.25s ease,transform 0.25s ease,visibility 0s linear 0.25s;}
+            .nav-links.open{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto;transition:opacity 0.25s ease,transform 0.25s ease;}
+            .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border-color);font-size:0.95rem;color:var(--text-secondary) !important;font-weight:500;transition:background 0.15s ease;}
             .nav-links a:last-child{border-bottom:none;}
+            .nav-links a:active{background:rgba(212,175,55,0.1);}
             .nav-mobile-cta{display:block;color:var(--accent) !important;font-weight:700;}
+            .skill-card:active{border-color:rgba(212,175,55,0.35);}
+            .contact-detail:active{color:var(--accent);}
+            .btn-gold:active{background:#FDE047;box-shadow:0 0 25px var(--accent-glow);}
             .page-wrap{padding:48px 16px 64px;}
             footer{padding:32px 16px 20px;}
             .footer-links{gap:16px;flex-wrap:wrap;}

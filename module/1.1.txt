@@ -1,0 +1,46 @@
+1.1 What is BIM?
+Introduction
+Everyone in construction says "use BIM," but ask five people what BIM actually is and you will likely get five different answers. Software. A 3D model. A process. A deliverable. Sometimes all four from the same person in the same conversation.
+That confusion is not really anyone's fault. The term gets used loosely across the industry, often to mean whatever the speaker's own job touches. This lesson clears that up by separating what BIM actually is from what it is often mistaken for.
+The Traditional Misconception
+A few beliefs about BIM come up constantly, and each one is only part of the story.
+"BIM is Revit." Revit is one BIM authoring tool among many, alongside ArchiCAD, Allplan, Tekla Structures, and others. BIM is not the software itself. It is the approach to creating, managing, and exchanging information throughout a project's lifecycle. Software simply makes that possible.
+"BIM is just a 3D model." A 3D model is the visible part of BIM, not the purpose of it. You can build an impressive-looking model with almost none of the information that makes BIM valuable.
+"BIM means making beautiful models." Visual quality and information quality are two different things. A model can look perfect while still containing missing data, incorrect classifications, inconsistent properties, or unreliable quantities.
+"BIM is only for architects." Architects may create much of the initial model, but structural engineers, MEP consultants, quantity surveyors, contractors, and facility managers all depend on the same information, each using it for different purposes throughout the project.
+The Actual Definition
+A practical way to think about BIM, consistent with the principles described by BSI and the ISO 19650 series, is this:
+
+Building Information Modeling is the process of creating, managing, and exchanging information about a built asset throughout its lifecycle.
+
+Three words carry almost all of that meaning.
+Building refers to the built asset itself. It might be a building, a bridge, a tunnel, a railway, or any other piece of infrastructure.
+Information refers to the data attached to that asset. Not just what it looks like, but what it is made from, how it performs, what it costs, how it should be maintained, and much more.
+Modeling refers to the continuous process of creating, updating, and managing that information. It is not simply producing one model and handing it over at the end of a project.
+Of those three words, information is by far the most important.
+The Most Important Word: Information
+Geometry is only one part of BIM.
+Imagine selecting a wall inside a BIM model. You do not just see a rectangle with a height, width, and thickness. You can also access information such as material, fire rating, thickness, manufacturer, thermal performance, cost, and acoustic properties.
+None of this information is visible just by looking at the wall. It is stored as data attached to the object itself. For example, The B1M often shows how selecting a model element reveals manufacturer, cost, and performance information, rather than just geometry.
+That is the real difference. The geometry tells you what something looks like. The information tells you what it actually is.
+BIM Is More Than a Model
+When people talk about BIM, they often focus on the model because it is the easiest part to see.
+In reality, BIM combines people, processes, standards, information, and software into a coordinated way of working. The 3D model is only one component of that wider system.
+Over the next lessons, we will explore each of those components individually and see how they work together.
+Why People Use BIM
+Construction projects involve many different disciplines working on the same asset. Without reliable information, mistakes are discovered late, coordination becomes difficult, and costs increase.
+BIM exists to improve how information is created, shared, and managed so that better decisions can be made throughout a project's lifecycle.
+The next lesson looks at the problems BIM was created to solve and why the industry moved away from traditional workflows.
+Key Takeaways
+
+BIM is not software.
+BIM is more than a 3D model.
+Information gives a model its value.
+BIM combines people, processes, standards, and technology.
+Understanding information is the foundation for everything that follows.
+
+Further Reading
+
+BSI guidance on ISO 19650
+buildingSMART International — free Entry-level openBIM training
+The B1M — What is a BIM Model

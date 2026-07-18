@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.1 What is BIM? | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 1.1 — What Building Information Modeling actually is, and the common misconceptions that get in the way of understanding it.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <style>
+        :root {
+            --bg-solid: #E8E6E1;
+            --border-color: rgba(0, 0, 0, 0.09);
+            --accent: #D4AF37;
+            --accent-glow: rgba(212, 175, 55, 0.3);
+            --text-primary: #0F0E0A;
+            --text-secondary: #6B6859;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F4F0;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 70px;
+        }
+
+        /* NAV — reused unchanged from knowledge-hub.html */
+        .top-navbar {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 70px;
+            background-color: #F5F4F0;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+        .nav-container {
+            max-width: 1200px; margin: 0 auto;
+            height: 100%; padding: 0 32px;
+            display: flex; justify-content: flex-end; align-items: center; position: relative;
+        }
+        .nav-logo {
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--accent); text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        .nav-cta {
+            background: var(--accent); color: #000;
+            padding: 9px 20px; border-radius: 4px;
+            font-size: 0.875rem; font-weight: 700;
+            text-decoration: none; transition: all 0.25s;
+        }
+        .nav-cta:hover { background: #FDE047; box-shadow: 0 0 20px var(--accent-glow); }
+        .nav-links { display: flex; gap: 28px; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:1001;}
+        .hamburger span{display:block;width:22px;height:2px;background:var(--accent);transition:transform 0.3s,opacity 0.3s;}
+        .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+        .hamburger.active span:nth-child(2){opacity:0;}
+        .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+        .nav-mobile-cta{display:none;}
+        @media(max-width:768px){
+            .hamburger{display:flex;padding:13px;}
+            .nav-cta{display:none;}
+            .nav-links{display:flex;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);flex-direction:column;padding:0;gap:0;z-index:999;transform:translateY(-8px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.25s ease,transform 0.25s ease,visibility 0s linear 0.25s;}
+            .nav-links.open{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto;transition:opacity 0.25s ease,transform 0.25s ease;}
+            .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border-color);font-size:0.95rem;color:var(--text-secondary) !important;font-weight:500;transition:background 0.15s ease;}
+            .nav-links a:last-child{border-bottom:none;}
+            .nav-links a:active{background:rgba(212,175,55,0.1);}
+            .nav-mobile-cta{display:block;color:var(--accent) !important;font-weight:700;}
+            footer{padding:32px 16px 20px;}
+            .footer-links{gap:16px;flex-wrap:wrap;}
+        }
+
+        /* FOOTER — reused unchanged from knowledge-hub.html */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 32px 28px; text-align: center;
+            font-size: 0.85rem; color: #64748b;
+        }
+        .footer-links {
+            display: flex; justify-content: center; gap: 32px;
+            margin-bottom: 16px;
+        }
+        .footer-links a {
+            color: #94A3B8; text-decoration: none;
+            font-size: 0.85rem; font-weight: 500;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: #F1F5F9; }
+
+        /* ── LESSON PAGE — page-scoped variables, does not touch :root ── */
+        .lesson-wrap {
+            --lesson-bg: #E9EEF3;
+            --paper: #FFFFFF;
+            --paper-border: rgba(15, 14, 10, 0.08);
+            --paper-shadow: rgba(30, 41, 59, 0.08);
+            --text-primary: #16181D;
+            --text-secondary: #5B6472;
+            --accent-gold: #D4AF37;
+            position: relative;
+            background: var(--lesson-bg);
+            padding: 56px 20px 96px;
+        }
+        .lesson-wrap::before {
+            content: '';
+            position: absolute; inset: 0; z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 260px 260px;
+            mix-blend-mode: multiply;
+            opacity: 0.48;
+            pointer-events: none;
+        }
+
+        .paper {
+            position: relative;
+            z-index: 1;
+            max-width: 880px;
+            margin: 0 auto;
+            background: var(--paper);
+            border: 1px solid var(--paper-border);
+            box-shadow: 0 4px 28px var(--paper-shadow);
+            border-radius: 12px;
+            padding: 56px 64px;
+        }
+
+        .lesson-back-link {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 14px;
+            transition: color 0.2s;
+        }
+        .lesson-back-link:hover { color: var(--accent-gold); }
+
+        .lesson-breadcrumb {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+
+        .lesson-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.18;
+            color: var(--text-primary);
+            margin-bottom: 22px;
+        }
+
+        .title-rule {
+            border: none;
+            height: 2px;
+            width: 64px;
+            background: var(--accent-gold);
+            margin-bottom: 44px;
+        }
+
+        .lesson-content h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            margin-top: 52px;
+            margin-bottom: 18px;
+        }
+        .lesson-content h2:first-child { margin-top: 0; }
+
+        .lesson-content h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 32px;
+            margin-bottom: 14px;
+        }
+
+        .lesson-content p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        .lesson-content p:last-child { margin-bottom: 0; }
+
+        .key-takeaways {
+            margin-top: 52px;
+            background: rgba(15, 14, 10, 0.025);
+            border: 1px solid var(--paper-border);
+            border-radius: 10px;
+            padding: 30px 34px;
+        }
+        .key-takeaways h2 { margin-top: 0; margin-bottom: 18px; }
+        .key-takeaways ul { list-style: disc; padding-left: 20px; margin: 0; }
+        .key-takeaways li {
+            font-size: 0.98rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .key-takeaways li:last-child { margin-bottom: 0; }
+
+        .further-reading {
+            margin-top: 56px;
+            padding-top: 32px;
+            border-top: 1px solid var(--paper-border);
+        }
+        .further-reading h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .further-reading ul { list-style: none; }
+        .further-reading li {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 14px;
+            position: relative;
+        }
+        .further-reading li::before {
+            content: '—';
+            position: absolute; left: 0;
+        }
+        .further-reading li:last-child { margin-bottom: 0; }
+
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 56px;
+            padding-top: 28px;
+            border-top: 1px solid var(--paper-border);
+        }
+        .lesson-nav a {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .lesson-nav a:hover { color: var(--accent-gold); }
+        .lesson-nav .disabled {
+            color: #A7ADB5;
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .giscus-placeholder {
+            position: relative;
+            z-index: 1;
+            max-width: 880px;
+            margin: 40px auto 0;
+        }
+        .discuss-heading {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        .comment-note {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin: 0 0 14px;
+        }
+
+        @media (max-width: 600px) {
+            .lesson-wrap { padding: 36px 14px 64px; }
+            .paper { padding: 38px 26px; border-radius: 10px; }
+            .lesson-content h2 { margin-top: 40px; }
+            .lesson-content p { margin-bottom: 22px; }
+            .key-takeaways { padding: 26px 24px; }
+            .lesson-nav a:active, .lesson-back-link:active { color: var(--accent-gold); }
+        }
+    </style>
+    <script data-goatcounter="https://shabir.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <header class="top-navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="knowledge-hub.html">Knowledge Hub</a>
+                <a href="case-studies.html">Case Studies</a>
+                <a href="structboq.html">StructBOQ</a>
+                <a href="about.html">About</a>
+                <a href="services.html">Services</a>
+                <a class="nav-mobile-cta" href="submit-ifc.html">Get In Touch →</a>
+            </div>
+            <a href="submit-ifc.html" class="nav-cta">Get In Touch</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <div class="lesson-wrap">
+        <div class="paper">
+
+            <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
+            <span class="lesson-breadcrumb">Module 1 → 1.1</span>
+            <h1 class="lesson-title">1.1 What is BIM?</h1>
+            <hr class="title-rule">
+
+            <div class="lesson-content">
+
+                <h2>Introduction</h2>
+                <p>Everyone in construction says "use BIM," but ask five people what BIM actually is and you will likely get five different answers. Software. A 3D model. A process. A deliverable. Sometimes all four from the same person in the same conversation.</p>
+                <p>That confusion is not really anyone's fault. The term gets used loosely across the industry, often to mean whatever the speaker's own job touches. This lesson clears that up by separating what BIM actually is from what it is often mistaken for.</p>
+
+                <h2>The Traditional Misconception</h2>
+                <p>A few beliefs about BIM come up constantly, and each one is only part of the story.</p>
+                <p><strong>"BIM is Revit."</strong> Revit is one BIM authoring tool among many, alongside ArchiCAD, Allplan, Tekla Structures, and others. BIM is not the software itself. It is the approach to creating, managing, and exchanging information throughout a project's lifecycle. Software simply makes that possible.</p>
+                <p><strong>"BIM is just a 3D model."</strong> A 3D model is the visible part of BIM, not the purpose of it. You can build an impressive-looking model with almost none of the information that makes BIM valuable.</p>
+                <p><strong>"BIM means making beautiful models."</strong> Visual quality and information quality are two different things. A model can look perfect while still containing missing data, incorrect classifications, inconsistent properties, or unreliable quantities.</p>
+                <p><strong>"BIM is only for architects."</strong> Architects may create much of the initial model, but structural engineers, MEP consultants, quantity surveyors, contractors, and facility managers all depend on the same information, each using it for different purposes throughout the project.</p>
+
+                <h2>The Actual Definition</h2>
+                <p>A practical way to think about BIM, consistent with the principles described by BSI and the ISO 19650 series, is this:</p>
+                <p><strong>Building Information Modeling is the process of creating, managing, and exchanging information about a built asset throughout its lifecycle.</strong></p>
+                <p>Three words carry almost all of that meaning.</p>
+                <p><strong>Building</strong> refers to the built asset itself. It might be a building, a bridge, a tunnel, a railway, or any other piece of infrastructure.</p>
+                <p><strong>Information</strong> refers to the data attached to that asset. Not just what it looks like, but what it is made from, how it performs, what it costs, how it should be maintained, and much more.</p>
+                <p><strong>Modeling</strong> refers to the continuous process of creating, updating, and managing that information. It is not simply producing one model and handing it over at the end of a project.</p>
+                <p>Of those three words, information is by far the most important.</p>
+
+                <h2>The Most Important Word: Information</h2>
+                <p>Geometry is only one part of BIM.</p>
+                <p>Imagine selecting a wall inside a BIM model. You do not just see a rectangle with a height, width, and thickness. You can also access information such as material, fire rating, thickness, manufacturer, thermal performance, cost, and acoustic properties.</p>
+                <p>None of this information is visible just by looking at the wall. It is stored as data attached to the object itself. For example, The B1M often shows how selecting a model element reveals manufacturer, cost, and performance information, rather than just geometry.</p>
+                <p>That is the real difference. The geometry tells you what something looks like. The information tells you what it actually is.</p>
+
+                <h2>BIM Is More Than a Model</h2>
+                <p>When people talk about BIM, they often focus on the model because it is the easiest part to see.</p>
+                <p>In reality, BIM combines people, processes, standards, information, and software into a coordinated way of working. The 3D model is only one component of that wider system.</p>
+                <p>Over the next lessons, we will explore each of those components individually and see how they work together.</p>
+
+                <h2>Why People Use BIM</h2>
+                <p>Construction projects involve many different disciplines working on the same asset. Without reliable information, mistakes are discovered late, coordination becomes difficult, and costs increase.</p>
+                <p>BIM exists to improve how information is created, shared, and managed so that better decisions can be made throughout a project's lifecycle.</p>
+                <p>The next lesson looks at the problems BIM was created to solve and why the industry moved away from traditional workflows.</p>
+
+                <div class="key-takeaways">
+                    <h2>Key Takeaways</h2>
+                    <ul>
+                        <li>BIM is not software.</li>
+                        <li>BIM is more than a 3D model.</li>
+                        <li>Information gives a model its value.</li>
+                        <li>BIM combines people, processes, standards, and technology.</li>
+                        <li>Understanding information is the foundation for everything that follows.</li>
+                    </ul>
+                </div>
+
+                <div class="further-reading">
+                    <h3>Further Reading</h3>
+                    <ul>
+                        <li>BSI guidance on ISO 19650</li>
+                        <li>buildingSMART International — free Entry-level openBIM training</li>
+                        <li>The B1M — What is a BIM Model</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="lesson-nav">
+                <span class="disabled">← Prev</span>
+                <a href="lesson-1-2-placeholder.html">Next →</a>
+            </div>
+
+        </div>
+
+        <div id="giscus-comments" class="giscus-placeholder">
+            <h3 class="discuss-heading">Discuss this lesson</h3>
+            <p class="comment-note">Comments use a free GitHub account — takes under a minute to create, and keeps discussions spam-free and permanently archived.</p>
+            <div class="giscus"></div>
+            <script src="https://giscus.app/client.js"
+                    data-repo="EngrShabir/shabirbim-website"
+                    data-repo-id="R_kgDOSQ5-VA"
+                    data-category="Announcements"
+                    data-category-id="DIC_kwDOSQ5-VM4DBczi"
+                    data-mapping="pathname"
+                    data-strict="0"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="0"
+                    data-input-position="bottom"
+                    data-theme="light"
+                    data-lang="en"
+                    data-loading="lazy"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="knowledge-hub.html">Knowledge Hub</a>
+            <a href="case-studies.html">Case Studies</a>
+            <a href="structboq.html">StructBOQ</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="submit-ifc.html">Get In Touch</a>
+        </div>
+        <p>&copy; 2026 Shabir Ahmad &nbsp;·&nbsp; shabirbim.com</p>
+    </footer>
+
+    <script>
+        const hamburger=document.getElementById('hamburger');
+        const navMenu=document.querySelector('.nav-links');
+        hamburger.addEventListener('click',()=>{navMenu.classList.toggle('open');hamburger.classList.toggle('active');});
+        document.addEventListener('click',e=>{if(!hamburger.contains(e.target)&&!navMenu.contains(e.target)){navMenu.classList.remove('open');hamburger.classList.remove('active');}});
+        navMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{navMenu.classList.remove('open');hamburger.classList.remove('active');}));
+    </script>
+</body>
+</html>

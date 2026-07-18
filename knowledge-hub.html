@@ -86,31 +86,34 @@
             color: var(--text-secondary); max-width: 680px;
             line-height: 1.75; margin-bottom: 20px;
         }
-        .hub-status {
-            display: inline-block;
-            background: rgba(212,175,55,0.12);
-            border: 1px solid rgba(212,175,55,0.25);
-            color: var(--accent); border-radius: 20px;
-            font-size: 0.72rem; font-weight: 700;
-            letter-spacing: 0.06em; padding: 4px 12px;
-            text-transform: uppercase;
-        }
-
         /* MODULE LIST */
-        .module-list { display: flex; flex-direction: column; gap: 14px; }
+        .module-list { display: flex; flex-direction: column; gap: 18px; }
         .module-card {
-            display: flex; align-items: flex-start; gap: 22px;
-            background: var(--bg-solid);
+            background: #FFFFFF;
             border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 22px 26px;
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(15, 14, 10, 0.06);
+            transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
         }
-        .module-card:hover { border-color: rgba(212,175,55,0.35); }
+        .module-card:hover {
+            box-shadow: 0 6px 16px rgba(15, 14, 10, 0.10);
+            transform: translateY(-1px);
+        }
+        .module-card.open { border-color: rgba(212, 175, 55, 0.4); }
+        .module-toggle {
+            width: 100%;
+            display: flex; align-items: flex-start; gap: 22px;
+            padding: 22px 26px;
+            background: none; border: none; text-align: left;
+            font-family: inherit; color: inherit; cursor: pointer;
+        }
         .module-num {
             font-size: 1.4rem; font-weight: 800; color: var(--accent);
             letter-spacing: -0.02em; line-height: 1;
             min-width: 38px; flex-shrink: 0; padding-top: 2px;
         }
+        .module-body { flex: 1; }
         .module-body h3 {
             font-size: 1.05rem; font-weight: 700;
             margin-bottom: 6px; letter-spacing: -0.01em;
@@ -118,10 +121,50 @@
         .module-body p {
             font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;
         }
+        .module-chevron {
+            flex-shrink: 0; margin-top: 4px;
+            width: 20px; height: 20px;
+            color: var(--text-secondary);
+            transition: transform 0.25s ease;
+        }
+        .module-card.open .module-chevron { transform: rotate(180deg); color: var(--accent); }
+
+        /* Expanded panel — page-scoped variables, does not touch global :root */
+        .module-lessons {
+            --panel-paper: #FFFFFF;
+            --panel-text: #16181D;
+            --panel-text-secondary: #5B6472;
+            max-height: 0;
+            overflow: hidden;
+            background: var(--panel-paper);
+            transition: max-height 0.4s ease;
+        }
+        .module-card.open .module-lessons { max-height: 900px; }
+        .module-lessons-inner {
+            padding: 8px 24px 12px;
+            display: flex; flex-direction: column;
+        }
+        .lesson-row {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.88rem; line-height: 1.5;
+            color: var(--panel-text-secondary);
+            opacity: 0.7;
+        }
+        .lesson-row:last-child { border-bottom: none; }
+        .lesson-row.is-published { opacity: 1; }
+        .lesson-row a {
+            color: var(--panel-text); text-decoration: none;
+            font-weight: 600; transition: color 0.2s;
+        }
+        .lesson-row a:hover { color: var(--accent); }
 
         @media (max-width: 600px) {
             .page-wrap { padding: 48px 16px 64px; }
-            .module-card { padding: 18px 20px; gap: 16px; }
+            .module-toggle { padding: 18px 20px; gap: 16px; transition: background 0.15s ease; }
+            .module-toggle:active { background: rgba(212, 175, 55, 0.06); }
+            .module-lessons-inner { padding: 10px 20px 14px; }
+            .lesson-row { padding: 14px 0; font-size: 0.85rem; }
         }
 
         /* FOOTER */
@@ -153,12 +196,13 @@
         .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
         .nav-mobile-cta{display:none;}
         @media(max-width:768px){
-            .hamburger{display:flex;}
+            .hamburger{display:flex;padding:13px;}
             .nav-cta{display:none;}
-            .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);flex-direction:column;padding:0;gap:0;z-index:999;position:fixed;transform:none;}
-            .nav-links.open{display:flex;}
-            .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border-color);font-size:0.95rem;color:var(--text-secondary) !important;font-weight:500;}
+            .nav-links{display:flex;position:fixed;top:70px;left:0;right:0;background:rgba(245,244,240,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);flex-direction:column;padding:0;gap:0;z-index:999;transform:translateY(-8px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.25s ease,transform 0.25s ease,visibility 0s linear 0.25s;}
+            .nav-links.open{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto;transition:opacity 0.25s ease,transform 0.25s ease;}
+            .nav-links a{padding:16px 24px;border-bottom:1px solid var(--border-color);font-size:0.95rem;color:var(--text-secondary) !important;font-weight:500;transition:background 0.15s ease;}
             .nav-links a:last-child{border-bottom:none;}
+            .nav-links a:active{background:rgba(212,175,55,0.1);}
             .nav-mobile-cta{display:block;color:var(--accent) !important;font-weight:700;}
             footer{padding:32px 16px 20px;}
             .footer-links{gap:16px;flex-wrap:wrap;}
@@ -192,96 +236,223 @@
             <span class="section-label">Knowledge Hub</span>
             <h1>A Learning Path Through OpenBIM.</h1>
             <p class="lead">Eleven modules, BIM fundamentals through digital twins — building toward IFC, IDS, ISO 19650, and the automation that ties them together.</p>
-            <span class="hub-status">In progress — lesson content coming soon</span>
         </div>
 
         <div class="module-list reveal">
 
-            <div class="module-card">
-                <span class="module-num">01</span>
-                <div class="module-body">
-                    <h3>BIM Fundamentals</h3>
-                    <p>What BIM actually is, the problem it solves in construction, and who does what on a BIM project.</p>
+            <div class="module-card" data-module="1">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">01</span>
+                    <div class="module-body">
+                        <h3>BIM Fundamentals</h3>
+                        <p>What BIM actually is, the problem it solves in construction, and who does what on a BIM project.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row is-published"><a href="lesson-1-1-what-is-bim.html">1.1 What BIM actually is (and common misconceptions)</a></div>
+                        <div class="lesson-row">1.2 The problem BIM solves in construction</div>
+                        <div class="lesson-row">1.3 BIM dimensions explained practically (3D–7D)</div>
+                        <div class="lesson-row">1.4 Who does what — roles in a BIM project</div>
+                        <div class="lesson-row">1.5 Common BIM uses (clash detection, takeoff, scheduling, FM handover)</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">02</span>
-                <div class="module-body">
-                    <h3>OpenBIM</h3>
-                    <p>Open standards vs. proprietary lock-in, buildingSMART, and where IFC, BCF, IDS, and MVD fit.</p>
+            <div class="module-card" data-module="2">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">02</span>
+                    <div class="module-body">
+                        <h3>OpenBIM</h3>
+                        <p>Open standards vs. proprietary lock-in, buildingSMART, and where IFC, BCF, IDS, and MVD fit.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">2.1 Open BIM vs proprietary BIM — the vendor lock-in problem</div>
+                        <div class="lesson-row">2.2 Who is buildingSMART and why they matter</div>
+                        <div class="lesson-row">2.3 The open standards family (IFC, BCF, IDS, MVD — naming/purpose only)</div>
+                        <div class="lesson-row">2.4 What an OpenBIM workflow looks like end-to-end</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">03</span>
-                <div class="module-body">
-                    <h3>IFC Fundamentals</h3>
-                    <p>What an IFC file actually is, IFC2x3 vs. IFC4 vs. IFC4.3, and reading one as plain text.</p>
+            <div class="module-card" data-module="3">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">03</span>
+                    <div class="module-body">
+                        <h3>IFC Fundamentals</h3>
+                        <p>What an IFC file actually is, IFC2x3 vs. IFC4 vs. IFC4.3, and reading one as plain text.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">3.1 What an IFC file actually is</div>
+                        <div class="lesson-row">3.2 IFC2x3 vs IFC4 vs IFC4.3 — practical differences</div>
+                        <div class="lesson-row">3.3 Opening your first IFC file (viewer walkthrough)</div>
+                        <div class="lesson-row">3.4 STEP physical file structure at a glance</div>
+                        <div class="lesson-row">3.5 Reading an IFC file as plain text — the "aha" lesson</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">04</span>
-                <div class="module-body">
-                    <h3>IFC Structure</h3>
-                    <p>Entities, spatial hierarchy, relationships, property sets, base quantities, and types vs. occurrences.</p>
+            <div class="module-card" data-module="4">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">04</span>
+                    <div class="module-body">
+                        <h3>IFC Structure</h3>
+                        <p>Entities, spatial hierarchy, relationships, property sets, base quantities, and types vs. occurrences.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">4.1 Entities — IfcWall, IfcSlab, IfcDoor, etc.</div>
+                        <div class="lesson-row">4.2 Spatial structure hierarchy (Project → Site → Building → Storey → Space)</div>
+                        <div class="lesson-row">4.3 Relationships (IfcRelAggregates, IfcRelContainedInSpatialStructure)</div>
+                        <div class="lesson-row">4.4 Property Sets — standard vs custom</div>
+                        <div class="lesson-row">4.5 Base Quantities — and why they're so often wrong</div>
+                        <div class="lesson-row">4.6 Types vs Occurrences (IfcWallType vs IfcWall)</div>
+                        <div class="lesson-row">4.7 Geometry representation — conceptual only</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">05</span>
-                <div class="module-body">
-                    <h3>IFC Versions &amp; Schema</h3>
-                    <p>Why schema versions matter, EXPRESS basics, official schema docs, and Model View Definitions.</p>
+            <div class="module-card" data-module="5">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">05</span>
+                    <div class="module-body">
+                        <h3>IFC Versions &amp; Schema</h3>
+                        <p>Why schema versions matter, EXPRESS basics, official schema docs, and Model View Definitions.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">5.1 Why schema versions matter practically</div>
+                        <div class="lesson-row">5.2 EXPRESS schema language — reading, not writing</div>
+                        <div class="lesson-row">5.3 Where official schema docs live and how to use them</div>
+                        <div class="lesson-row">5.4 Model View Definitions (MVDs) — what they constrain</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">06</span>
-                <div class="module-body">
-                    <h3>Information Quality &amp; Validation</h3>
-                    <p>Why models fail, levels of validation, the buildingSMART Validation Service, and exporter behavior across tools.</p>
+            <div class="module-card" data-module="6">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">06</span>
+                    <div class="module-body">
+                        <h3>Information Quality &amp; Validation</h3>
+                        <p>Why models fail, levels of validation, the buildingSMART Validation Service, and exporter behavior across tools.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">6.1 Why models fail — real-world causes</div>
+                        <div class="lesson-row">6.2 Levels of validation — syntax, schema, business rules</div>
+                        <div class="lesson-row">6.3 buildingSMART's IFC Validation Service — how to use it</div>
+                        <div class="lesson-row">6.4 Exporter behavior across major tools — comparative, evidence-based</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">07</span>
-                <div class="module-body">
-                    <h3>IDS</h3>
-                    <p>Connecting requirements to verification — IDS facets, authoring your first IDS file, and validating a model against it.</p>
+            <div class="module-card" data-module="7">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">07</span>
+                    <div class="module-body">
+                        <h3>IDS</h3>
+                        <p>Connecting requirements to verification — IDS facets, authoring your first IDS file, and validating a model against it.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">7.1 The problem IDS solves — connecting requirements to verification</div>
+                        <div class="lesson-row">7.2 IDS structure — facets (entity, attribute, property, classification, material)</div>
+                        <div class="lesson-row">7.3 Writing your first IDS file, step by step</div>
+                        <div class="lesson-row">7.4 IDS vs traditional EIR/spec documents</div>
+                        <div class="lesson-row">7.5 Validating an IFC file against an IDS — full walkthrough</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">08</span>
-                <div class="module-body">
-                    <h3>ISO 19650 &amp; CDE</h3>
-                    <p>What ISO 19650 governs, the Common Data Environment, naming conventions as data integrity, and where EIR/OIR connect back to IDS.</p>
+            <div class="module-card" data-module="8">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">08</span>
+                    <div class="module-body">
+                        <h3>ISO 19650 &amp; CDE</h3>
+                        <p>What ISO 19650 governs, the Common Data Environment, naming conventions as data integrity, and where EIR/OIR connect back to IDS.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">8.1 What ISO 19650 actually governs</div>
+                        <div class="lesson-row">8.2 The Common Data Environment concept</div>
+                        <div class="lesson-row">8.3 Naming conventions as data integrity, not bureaucracy</div>
+                        <div class="lesson-row">8.4 Where EIR/OIR connect back to IDS</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">09</span>
-                <div class="module-body">
-                    <h3>IfcOpenShell &amp; Python</h3>
-                    <p>Reading an IFC file programmatically, extracting properties and quantities, and common pitfalls.</p>
+            <div class="module-card" data-module="9">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">09</span>
+                    <div class="module-body">
+                        <h3>IfcOpenShell &amp; Python</h3>
+                        <p>Reading an IFC file programmatically, extracting properties and quantities, and common pitfalls.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">9.1 Environment setup</div>
+                        <div class="lesson-row">9.2 Reading an IFC file programmatically — first script</div>
+                        <div class="lesson-row">9.3 Extracting properties and quantities with code</div>
+                        <div class="lesson-row">9.4 Common pitfalls (units, None values, missing psets)</div>
+                        <div class="lesson-row">9.5 From script to reusable tool — a taste of what StructBOQ automates</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">10</span>
-                <div class="module-body">
-                    <h3>Automation &amp; Workflows</h3>
-                    <p>Batch processing IFC files, building a basic automated QA pipeline, and where automation fits a BIM Execution Plan.</p>
+            <div class="module-card" data-module="10">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">10</span>
+                    <div class="module-body">
+                        <h3>Automation &amp; Workflows</h3>
+                        <p>Batch processing IFC files, building a basic automated QA pipeline, and where automation fits a BIM Execution Plan.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">10.1 Batch processing multiple IFC files</div>
+                        <div class="lesson-row">10.2 Building a basic automated QA pipeline</div>
+                        <div class="lesson-row">10.3 Where automation fits inside a BIM Execution Plan</div>
+                        <div class="lesson-row">10.4 CI/CD-style checking as a repeatable pipeline step</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="module-card">
-                <span class="module-num">11</span>
-                <div class="module-body">
-                    <h3>Digital Twins &amp; Advanced Topics</h3>
-                    <p>From static BIM to digital twin, IFC and real-time sensor data, and where open standards are heading.</p>
+            <div class="module-card" data-module="11">
+                <button class="module-toggle" aria-expanded="false">
+                    <span class="module-num">11</span>
+                    <div class="module-body">
+                        <h3>Digital Twins &amp; Advanced Topics</h3>
+                        <p>From static BIM to digital twin, IFC and real-time sensor data, and where open standards are heading.</p>
+                    </div>
+                    <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="module-lessons">
+                    <div class="module-lessons-inner">
+                        <div class="lesson-row">11.1 From static BIM to Digital Twin — what changes</div>
+                        <div class="lesson-row">11.2 IFC and real-time/sensor data — current state, limitations</div>
+                        <div class="lesson-row">11.3 Interoperability challenges nobody talks about</div>
+                        <div class="lesson-row">11.4 Where open standards are heading</div>
+                    </div>
                 </div>
             </div>
 
@@ -314,6 +485,14 @@
         hamburger.addEventListener('click',()=>{navMenu.classList.toggle('open');hamburger.classList.toggle('active');});
         document.addEventListener('click',e=>{if(!hamburger.contains(e.target)&&!navMenu.contains(e.target)){navMenu.classList.remove('open');hamburger.classList.remove('active');}});
         navMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{navMenu.classList.remove('open');hamburger.classList.remove('active');}));
+
+        document.querySelectorAll('.module-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const card = btn.closest('.module-card');
+                const open = card.classList.toggle('open');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+        });
     </script>
 </body>
 </html>
