@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1.1 What is BIM? | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 1.1 — What Building Information Modeling actually is, and the common misconceptions that get in the way of understanding it.">
+    <title>1.3 BIM Dimensions Explained Practically (3D–7D) | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 1.3 — What 3D through 7D BIM actually mean, how they differ from BIM maturity Levels 0–3, and why the numbers matter less than the idea behind them.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -319,73 +319,71 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 1 → 1.1</span>
-            <h1 class="lesson-title">1.1 What is BIM?</h1>
+            <span class="lesson-breadcrumb">Module 1 → 1.3</span>
+            <h1 class="lesson-title">1.3 BIM Dimensions Explained Practically (3D–7D)</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Everyone in construction says "use BIM," but ask five people what BIM actually is and you will likely get five different answers. Software. A 3D model. A process. A deliverable. Sometimes all four from the same person in the same conversation.</p>
-                <p>That confusion is not really anyone's fault. The term gets used loosely across the industry, often to mean whatever the speaker's own job touches. This lesson clears that up by separating what BIM actually is from what it is often mistaken for.</p>
+                <p>At some point, almost everyone in construction hears someone say "we're doing 5D on this one" or "the client wants full 6D." It sounds precise, almost official, like a spec you could look up in a standard somewhere.</p>
+                <p>You can't. BIM dimensions are industry shorthand, not a formally defined part of ISO 19650 or any other official standard. That doesn't make the idea useless. It just means the numbers are a convention the industry adopted for convenience, and conventions are worth understanding on their own terms rather than treating as fixed rules.</p>
 
-                <h2>The Traditional Misconception</h2>
-                <p>A few beliefs about BIM come up constantly, and each one is only part of the story.</p>
-                <p><strong>"BIM is Revit."</strong> Revit is one BIM authoring tool among many, alongside ArchiCAD, Allplan, Tekla Structures, and others. BIM is not the software itself. It is the approach to creating, managing, and exchanging information throughout a project's lifecycle. Software simply makes that possible.</p>
-                <p><strong>"BIM is just a 3D model."</strong> A 3D model is the visible part of BIM, not the purpose of it. You can build an impressive-looking model with almost none of the information that makes BIM valuable.</p>
-                <p><strong>"BIM means making beautiful models."</strong> Visual quality and information quality are two different things. A model can look perfect while still containing missing data, incorrect classifications, inconsistent properties, or unreliable quantities.</p>
-                <p><strong>"BIM is only for architects."</strong> Architects may create much of the initial model, but structural engineers, MEP consultants, quantity surveyors, contractors, and facility managers all depend on the same information, each using it for different purposes throughout the project.</p>
+                <h2>Where the Dimension Idea Came From</h2>
+                <p>The basic idea is simple. A 3D model gives you geometry. Everything beyond that, time, cost, sustainability data, maintenance information, is additional information layered onto the same model. At some point, the industry started giving each layer a number, mostly as a way to talk about it quickly. "5D BIM" is faster to say than "a model that also carries cost and quantity data."</p>
+                <p>The numbering caught on because it is genuinely useful shorthand. The risk is that shorthand can start to sound more official than it actually is, and people begin treating the numbers as though they were handed down by a standards body.</p>
 
-                <h2>The Actual Definition</h2>
-                <p>A practical way to think about BIM, consistent with the principles described by BSI and the ISO 19650 series, is this:</p>
-                <p><strong>Building Information Modeling is the process of creating, managing, and exchanging information about a built asset throughout its lifecycle.</strong></p>
-                <p>Three words carry almost all of that meaning.</p>
-                <p><strong>Building</strong> refers to the built asset itself. It might be a building, a bridge, a tunnel, a railway, or any other piece of infrastructure.</p>
-                <p><strong>Information</strong> refers to the data attached to that asset. Not just what it looks like, but what it is made from, how it performs, what it costs, how it should be maintained, and much more.</p>
-                <p><strong>Modeling</strong> refers to the continuous process of creating, updating, and managing that information. It is not simply producing one model and handing it over at the end of a project.</p>
-                <p>Of those three words, information is by far the most important.</p>
+                <h2>Dimensions Are Not the Same as BIM Levels</h2>
+                <p>Before going through the dimensions themselves, it is worth clearing up a separate but frequently confused idea: BIM maturity levels.</p>
+                <p>BIM Levels, numbered 0 through 3, describe how collaboratively and digitally a project team actually works, not what kind of information a model carries. The framework, often called the <strong>Bew-Richards Wedge</strong> after Mark Bew and Mervyn Richards who developed it in 2008, defines four stages.</p>
+                <p><strong>Level 0</strong> is unmanaged CAD. Information is produced as 2D drawings, often paper-based or simple electronic prints, with no digital collaboration between disciplines at all.</p>
+                <p><strong>Level 1</strong> introduces a mix of 3D and 2D. A single discipline might build a 3D model for conceptual design, while 2D drawings still carry the official documentation. Data gets shared through a Common Data Environment, but each party still manages and owns its own files independently. This stage is sometimes nicknamed "lonely BIM," since there is a CDE in place but not yet real collaboration.</p>
+                <p><strong>Level 2</strong> is where genuine collaboration starts. Each discipline still builds and owns its own 3D model, but every model is produced in an open, shared file format, IFC being the standard example, so they can be combined into a single coordinated federated model within a CDE. The models stay separate and retain their own identity and ownership, but they can be viewed and checked together at defined points, which is what makes clash detection possible in the first place. This is the level the UK Government mandated for all centrally procured public projects by April 2016, and it forms the basis for what ISO 19650 later formalized internationally.</p>
+                <p><strong>Level 3</strong>, sometimes called iBIM or open BIM, replaces separate federated models with a single shared model that every discipline works on directly, live, in the same environment. In theory this removes an entire category of coordination risk, since there is no longer a separate file per discipline that could fall out of sync with the others.</p>
+                <p>In practice, Level 3 has stayed mostly aspirational. Concurrent editing of a single live model at this level of complexity is a genuinely difficult problem, not just a matter of better software. Clear ownership and accountability get harder when a model is not divided into files that belong to specific disciplines, which matters when professional liability depends on knowing exactly who is responsible for what. Level 2's federation step, publishing your model before it affects anyone else, also acts as a natural checkpoint, giving the team a moment to review before a change propagates. A single live model removes that checkpoint by design. For these reasons, almost the entire industry, including UK government-mandated projects, has stayed at Level 2 rather than moving to Level 3. It is better understood as the direction the industry is still working out how to pursue safely, not a straightforward upgrade over Level 2.</p>
+                <p>BIM Dimensions describe something different: what kind of information the model carries, regardless of which level the project is working at. A project can be at Level 2 while also working in 5D, because Level 2 describes the collaboration process and 5D describes one category of information inside it. The two frameworks answer different questions, and mixing them up is a common source of confusion, even among people who have worked with BIM for years.</p>
 
-                <h2>The Most Important Word: Information</h2>
-                <p>Geometry is only one part of BIM.</p>
-                <p>Imagine selecting a wall inside a BIM model. You do not just see a rectangle with a height, width, and thickness. You can also access information such as material, fire rating, thickness, manufacturer, thermal performance, cost, and acoustic properties.</p>
-                <p>None of this information is visible just by looking at the wall. It is stored as data attached to the object itself. For example, The B1M often shows how selecting a model element reveals manufacturer, cost, and performance information, rather than just geometry.</p>
-                <p>That is the real difference. The geometry tells you what something looks like. The information tells you what it actually is.</p>
+                <h2>The Dimensions, One at a Time</h2>
+                <p><strong>3D — Geometry.</strong> The shape of the building itself: walls, slabs, columns, everything you would expect to see in a 3D model. This is the part most people mean when they say "BIM model," which, as the last two lessons covered, is only one part of the picture.</p>
+                <p><strong>4D — Time.</strong> The model gets linked to a construction schedule, so you can see not just what the building looks like, but the order and timing in which it gets built. This is what lets a team simulate a construction sequence before a single foundation is poured.</p>
+                <p><strong>5D — Cost.</strong> Quantities extracted from the model get tied to cost data, so estimates and budgets update as the design changes, instead of being recalculated by hand every time something moves.</p>
+                <p><strong>6D and 7D — where the industry disagrees.</strong> Most current sources define 6D as sustainability and energy performance, and 7D as facility management and asset handover information. But this is not universal. The B1M, a widely referenced construction education source, has described 6D as facility management in some of its own material, effectively swapping the two. At least one specialist BIM reference site has openly noted this exact disagreement, stating there is ongoing debate over whether sustainability or facility management should be 6D, and has chosen to keep its original position until the industry settles the question.</p>
+                <p>In practice, this means that if someone tells you a project is "doing 6D," the honest response is to ask what they mean by it, rather than assume. The number alone does not tell you which category of information they are referring to.</p>
+                <p><strong>Beyond 7D.</strong> Some sources describe further dimensions such as 8D for safety, 9D for lean construction principles, and 10D for industrialized or prefabricated construction methods. These appear far less consistently across the industry and are worth knowing exist, without needing to memorize exact definitions that are not widely agreed upon in the first place.</p>
 
-                <h2>BIM Is More Than a Model</h2>
-                <p>When people talk about BIM, they often focus on the model because it is the easiest part to see.</p>
-                <p>In reality, BIM combines people, processes, standards, information, and software into a coordinated way of working. The 3D model is only one component of that wider system.</p>
-                <p>Over the next lessons, we will explore each of those components individually and see how they work together.</p>
+                <h2>Why the Numbers Matter Less Than the Idea</h2>
+                <p>The specific number attached to a category of information is far less important than understanding the underlying pattern: a model can carry many layers of information beyond geometry, and each layer serves a different group of people working on the same project.</p>
+                <p>This connects directly to the point made in the first lesson of this series. Information is what gives a model its value, not the geometry alone. Dimensions are simply a way of naming which category of information is being added at a given point.</p>
 
-                <h2>Why People Use BIM</h2>
-                <p>Construction projects involve many different disciplines working on the same asset. Without reliable information, mistakes are discovered late, coordination becomes difficult, and costs increase.</p>
-                <p>BIM exists to improve how information is created, shared, and managed so that better decisions can be made throughout a project's lifecycle.</p>
-                <p>The next lesson looks at the problems BIM was created to solve and why the industry moved away from traditional workflows.</p>
+                <h2>A Practical Example</h2>
+                <p>Take the same wall from the first lesson in this series. As geometry, it is a 3D shape with a height, width, and thickness. Link that wall to a construction schedule, and it becomes part of a 4D sequence, telling you when it gets built relative to everything around it. Attach a cost per square metre, and it becomes part of a 5D estimate. Add its embodied carbon or thermal performance data, and depending on who you ask, that is either 6D or 7D information. Attach its maintenance schedule and manufacturer warranty details for use after handover, and that is the other one.</p>
+                <p>The wall itself does not change. What changes is which category of information is currently attached to it, and which discipline is using that information at that moment.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>BIM is not software.</li>
-                        <li>BIM is more than a 3D model.</li>
-                        <li>Information gives a model its value.</li>
-                        <li>BIM combines people, processes, standards, and technology.</li>
-                        <li>Understanding information is the foundation for everything that follows.</li>
+                        <li>BIM dimensions are industry shorthand describing categories of information layered onto a model, not a formally defined standard.</li>
+                        <li>3D through 5D have strong industry-wide agreement: geometry, time, and cost.</li>
+                        <li>6D and 7D are genuinely disputed across the industry, with sustainability and facility management swapped depending on the source.</li>
+                        <li>BIM Levels (0 to 3) describe how collaboratively a team works, while BIM Dimensions describe the type of information a model carries. Level 2 uses separate, federated models with clear ownership. Level 3 aims for one shared model but remains mostly aspirational due to real accountability and coordination challenges.</li>
+                        <li>The number attached to a dimension matters less than understanding that a model can carry many layers of information beyond geometry.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li>BSI guidance on ISO 19650</li>
-                        <li>buildingSMART International — free Entry-level openBIM training</li>
-                        <li>The B1M — What is a BIM Model</li>
+                        <li>The B1M — BIM Maturity explained</li>
+                        <li>Designing Buildings Wiki — the Bew-Richards BIM Maturity Model</li>
+                        <li>ViBIM — BIM Maturity Levels explained</li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <span class="disabled">← Prev</span>
-                <a href="lesson-1-2-problem-bim-solves.html">Next →</a>
+                <a href="lesson-1-2-problem-bim-solves.html">← Prev</a>
+                <a href="lesson-1-4-roles-in-a-bim-project.html">Next →</a>
             </div>
 
         </div>

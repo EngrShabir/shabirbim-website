@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1.1 What is BIM? | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 1.1 — What Building Information Modeling actually is, and the common misconceptions that get in the way of understanding it.">
+    <title>1.4 Who Does What — Roles in a BIM Project | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 1.4 — The client, the model builders, the coordinators and managers, and the downstream roles that all depend on the same BIM model.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -319,73 +319,63 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 1 → 1.1</span>
-            <h1 class="lesson-title">1.1 What is BIM?</h1>
+            <span class="lesson-breadcrumb">Module 1 → 1.4</span>
+            <h1 class="lesson-title">1.4 Who Does What — Roles in a BIM Project</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Everyone in construction says "use BIM," but ask five people what BIM actually is and you will likely get five different answers. Software. A 3D model. A process. A deliverable. Sometimes all four from the same person in the same conversation.</p>
-                <p>That confusion is not really anyone's fault. The term gets used loosely across the industry, often to mean whatever the speaker's own job touches. This lesson clears that up by separating what BIM actually is from what it is often mistaken for.</p>
+                <p>A BIM project involves far more people than the model itself might suggest. Behind every wall, duct, and cost line sits a specific person responsible for that piece of information, and understanding who those people are makes the rest of this series easier to follow. This lesson maps the roles you will actually encounter on a real project, in plain terms, without assuming you already know the titles.</p>
 
-                <h2>The Traditional Misconception</h2>
-                <p>A few beliefs about BIM come up constantly, and each one is only part of the story.</p>
-                <p><strong>"BIM is Revit."</strong> Revit is one BIM authoring tool among many, alongside ArchiCAD, Allplan, Tekla Structures, and others. BIM is not the software itself. It is the approach to creating, managing, and exchanging information throughout a project's lifecycle. Software simply makes that possible.</p>
-                <p><strong>"BIM is just a 3D model."</strong> A 3D model is the visible part of BIM, not the purpose of it. You can build an impressive-looking model with almost none of the information that makes BIM valuable.</p>
-                <p><strong>"BIM means making beautiful models."</strong> Visual quality and information quality are two different things. A model can look perfect while still containing missing data, incorrect classifications, inconsistent properties, or unreliable quantities.</p>
-                <p><strong>"BIM is only for architects."</strong> Architects may create much of the initial model, but structural engineers, MEP consultants, quantity surveyors, contractors, and facility managers all depend on the same information, each using it for different purposes throughout the project.</p>
+                <h2>Who Sets the Requirements: The Client</h2>
+                <p>Before any model gets built, someone has to define what information the project actually needs. That is the client, sometimes called the employer. They are not usually hands-on with the model itself, but every requirement that shapes how the project gets delivered starts with them. The formal mechanism for this, called an EIR, belongs properly to a later lesson on ISO 19650. For now, it is enough to know that the client's role exists at the very start of the chain, before design work begins.</p>
 
-                <h2>The Actual Definition</h2>
-                <p>A practical way to think about BIM, consistent with the principles described by BSI and the ISO 19650 series, is this:</p>
-                <p><strong>Building Information Modeling is the process of creating, managing, and exchanging information about a built asset throughout its lifecycle.</strong></p>
-                <p>Three words carry almost all of that meaning.</p>
-                <p><strong>Building</strong> refers to the built asset itself. It might be a building, a bridge, a tunnel, a railway, or any other piece of infrastructure.</p>
-                <p><strong>Information</strong> refers to the data attached to that asset. Not just what it looks like, but what it is made from, how it performs, what it costs, how it should be maintained, and much more.</p>
-                <p><strong>Modeling</strong> refers to the continuous process of creating, updating, and managing that information. It is not simply producing one model and handing it over at the end of a project.</p>
-                <p>Of those three words, information is by far the most important.</p>
+                <h2>The People Who Build the Model</h2>
+                <p><strong>Architect.</strong> Usually the first to produce a model, the architect owns overall design intent and sets expectations for how much detail the model should carry at each stage of the project.</p>
+                <p><strong>Structural engineer.</strong> Owns the structural systems, columns, beams, slabs, footings, and the model that represents them.</p>
+                <p><strong>MEP engineer.</strong> Owns mechanical, electrical, and plumbing systems, one of the most information-dense parts of any model. On large projects, the MEP contractor's own BIM team often ends up doing more day-to-day modelling and coordination work than the original design consultant, since MEP systems tend to need the most adjustment as construction actually proceeds.</p>
+                <p><strong>BIM Modeller.</strong> A distinct role from the architect or engineer themselves. The modeller is the person actually building the discipline-specific model in software, following the level of detail and standards the project requires.</p>
 
-                <h2>The Most Important Word: Information</h2>
-                <p>Geometry is only one part of BIM.</p>
-                <p>Imagine selecting a wall inside a BIM model. You do not just see a rectangle with a height, width, and thickness. You can also access information such as material, fire rating, thickness, manufacturer, thermal performance, cost, and acoustic properties.</p>
-                <p>None of this information is visible just by looking at the wall. It is stored as data attached to the object itself. For example, The B1M often shows how selecting a model element reveals manufacturer, cost, and performance information, rather than just geometry.</p>
-                <p>That is the real difference. The geometry tells you what something looks like. The information tells you what it actually is.</p>
+                <h2>The People Who Coordinate Everything</h2>
+                <p><strong>BIM Coordinator.</strong> Works at the project level, day to day. Checks the federated model for clashes, verifies data quality and consistency between disciplines, and keeps the team aligned with the project's BIM Execution Plan. This is a hands-on, technical role, deep in the model itself.</p>
+                <p><strong>BIM Manager.</strong> Works at a broader level, often across an entire organisation or the whole project rather than one discipline. Owns the BIM Execution Plan itself, sets standards and protocols, manages software and licensing decisions, and typically supervises the coordinators. Where the coordinator solves problems inside the model, the manager decides how the model process should work in the first place.</p>
+                <p>On the contractor side, particularly in the US, this same function is often called a VDC Manager, short for Virtual Design and Construction. The responsibilities are close to identical to a BIM Manager's, the different title mostly reflects which side of the project, design or construction, the role sits on.</p>
+                <p>It is worth being honest that these titles are not applied consistently across the industry. One experienced BIM manager, writing for Autodesk University, put it plainly: a lack of consistency in job titles makes it difficult to hire, to maintain morale, and to communicate the value of the role at all. The same function has been listed under titles including CAD/BIM Manager, Digital Design Director, BIM Technologist, and Process Manager, depending on the firm. On smaller projects, the Coordinator and Manager roles are sometimes combined into a single hybrid position entirely. The underlying split, project-level execution versus organisation-level strategy, is the part worth understanding. The exact title attached to it varies by firm and by country.</p>
 
-                <h2>BIM Is More Than a Model</h2>
-                <p>When people talk about BIM, they often focus on the model because it is the easiest part to see.</p>
-                <p>In reality, BIM combines people, processes, standards, information, and software into a coordinated way of working. The 3D model is only one component of that wider system.</p>
-                <p>Over the next lessons, we will explore each of those components individually and see how they work together.</p>
+                <h2>The People Who Use the Model Downstream</h2>
+                <p><strong>Quantity Surveyor.</strong> Uses the model, and specifically the quantities extracted from it, to produce cost estimates and manage the project's financial and contractual position. This is the role most directly tied to the 5D cost dimension covered in the last lesson.</p>
+                <p><strong>Contractor.</strong> Uses the coordinated model to plan construction sequencing, logistics, and buildability, tying directly into the 4D scheduling dimension.</p>
+                <p><strong>Facility Manager.</strong> Receives the model at handover and uses it for operations and maintenance once the building is in use, the role most closely tied to the 7D dimension from the last lesson.</p>
 
-                <h2>Why People Use BIM</h2>
-                <p>Construction projects involve many different disciplines working on the same asset. Without reliable information, mistakes are discovered late, coordination becomes difficult, and costs increase.</p>
-                <p>BIM exists to improve how information is created, shared, and managed so that better decisions can be made throughout a project's lifecycle.</p>
-                <p>The next lesson looks at the problems BIM was created to solve and why the industry moved away from traditional workflows.</p>
+                <h2>Why This Matters Beyond Just Knowing the Titles</h2>
+                <p>Each of these roles depends on the same underlying model, just filtered through a different lens. The quantity surveyor is reading cost data. The facility manager is reading maintenance data. The structural engineer is reading geometry and material properties. None of these people are looking at a different model. They are looking at the same one, asking a different question of it each time.</p>
+                <p>That means the model is only as useful to any one of these roles as the information behind their particular question actually is. A coordinator checking for clashes and a quantity surveyor pricing a wall are relying on completely different parts of the same file, and one of them being satisfied says nothing about whether the other will be. This is a thread worth keeping in mind as the series moves forward, since it shapes how information actually gets checked, and by whom, at each stage of a project.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>BIM is not software.</li>
-                        <li>BIM is more than a 3D model.</li>
-                        <li>Information gives a model its value.</li>
-                        <li>BIM combines people, processes, standards, and technology.</li>
-                        <li>Understanding information is the foundation for everything that follows.</li>
+                        <li>A BIM project involves distinct roles from client through design, coordination, construction, and facility management, not just the person building the 3D model.</li>
+                        <li>BIM Coordinators work at the project level, day to day, catching clashes and verifying model quality. BIM Managers work at the organisational or whole-project level, setting standards and owning the BIM Execution Plan.</li>
+                        <li>Job titles for these same functions vary significantly across firms and countries, and this inconsistency is a documented, acknowledged problem in the industry, not something you are missing.</li>
+                        <li>Every role reads a different slice of the same model, which means one role's needs being met says nothing about whether another role's needs are.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li>BSI guidance on ISO 19650</li>
-                        <li>buildingSMART International — free Entry-level openBIM training</li>
-                        <li>The B1M — What is a BIM Model</li>
+                        <li>BIMcollab — Key BIM Roles and Responsibilities</li>
+                        <li>Autodesk University — Habits of Highly Effective BIM Managers</li>
+                        <li>SpringerLink — Roles and Responsibilities of Construction Players in Projects Using BIM</li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <span class="disabled">← Prev</span>
-                <a href="lesson-1-2-problem-bim-solves.html">Next →</a>
+                <a href="lesson-1-3-bim-dimensions-explained.html">← Prev</a>
+                <a href="lesson-1-5-common-bim-uses.html">Next →</a>
             </div>
 
         </div>

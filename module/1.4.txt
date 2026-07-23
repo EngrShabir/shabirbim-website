@@ -1,0 +1,63 @@
+Knowledge Hub — Module 1.4
+
+Who Does What: Roles in a BIM Project
+
+Introduction
+
+A BIM project involves far more people than the model itself might suggest. Behind every wall, duct, and cost line sits a specific person responsible for that piece of information, and understanding who those people are makes the rest of this series easier to follow. This lesson maps the roles you will actually encounter on a real project, in plain terms, without assuming you already know the titles.
+
+Who Sets the Requirements: The Client
+
+Before any model gets built, someone has to define what information the project actually needs. That is the client, sometimes called the employer. They are not usually hands-on with the model itself, but every requirement that shapes how the project gets delivered starts with them. The formal mechanism for this, called an EIR, belongs properly to a later lesson on ISO 19650. For now, it is enough to know that the client's role exists at the very start of the chain, before design work begins.
+
+The People Who Build the Model
+
+Architect. Usually the first to produce a model, the architect owns overall design intent and sets expectations for how much detail the model should carry at each stage of the project.
+
+Structural engineer. Owns the structural systems, columns, beams, slabs, footings, and the model that represents them.
+
+MEP engineer. Owns mechanical, electrical, and plumbing systems, one of the most information-dense parts of any model. On large projects, the MEP contractor's own BIM team often ends up doing more day-to-day modelling and coordination work than the original design consultant, since MEP systems tend to need the most adjustment as construction actually proceeds.
+
+BIM Modeller. A distinct role from the architect or engineer themselves. The modeller is the person actually building the discipline-specific model in software, following the level of detail and standards the project requires.
+
+The People Who Coordinate Everything
+
+BIM Coordinator. Works at the project level, day to day. Checks the federated model for clashes, verifies data quality and consistency between disciplines, and keeps the team aligned with the project's BIM Execution Plan. This is a hands-on, technical role, deep in the model itself.
+
+BIM Manager. Works at a broader level, often across an entire organisation or the whole project rather than one discipline. Owns the BIM Execution Plan itself, sets standards and protocols, manages software and licensing decisions, and typically supervises the coordinators. Where the coordinator solves problems inside the model, the manager decides how the model process should work in the first place.
+
+On the contractor side, particularly in the US, this same function is often called a VDC Manager, short for Virtual Design and Construction. The responsibilities are close to identical to a BIM Manager's, the different title mostly reflects which side of the project, design or construction, the role sits on.
+
+It is worth being honest that these titles are not applied consistently across the industry. One experienced BIM manager, writing for Autodesk University, put it plainly: a lack of consistency in job titles makes it difficult to hire, to maintain morale, and to communicate the value of the role at all. The same function has been listed under titles including CAD/BIM Manager, Digital Design Director, BIM Technologist, and Process Manager, depending on the firm. On smaller projects, the Coordinator and Manager roles are sometimes combined into a single hybrid position entirely. The underlying split, project-level execution versus organisation-level strategy, is the part worth understanding. The exact title attached to it varies by firm and by country.
+
+The People Who Use the Model Downstream
+
+Quantity Surveyor. Uses the model, and specifically the quantities extracted from it, to produce cost estimates and manage the project's financial and contractual position. This is the role most directly tied to the 5D cost dimension covered in the last lesson.
+
+Contractor. Uses the coordinated model to plan construction sequencing, logistics, and buildability, tying directly into the 4D scheduling dimension.
+
+Facility Manager. Receives the model at handover and uses it for operations and maintenance once the building is in use, the role most closely tied to the 7D dimension from the last lesson.
+
+Why This Matters Beyond Just Knowing the Titles
+
+Each of these roles depends on the same underlying model, just filtered through a different lens. The quantity surveyor is reading cost data. The facility manager is reading maintenance data. The structural engineer is reading geometry and material properties. None of these people are looking at a different model. They are looking at the same one, asking a different question of it each time.
+
+That means the model is only as useful to any one of these roles as the information behind their particular question actually is. A coordinator checking for clashes and a quantity surveyor pricing a wall are relying on completely different parts of the same file, and one of them being satisfied says nothing about whether the other will be. This is a thread worth keeping in mind as the series moves forward, since it shapes how information actually gets checked, and by whom, at each stage of a project.
+
+Key Takeaways
+
+A BIM project involves distinct roles from client through design, coordination, construction, and facility management, not just the person building the 3D model.
+
+BIM Coordinators work at the project level, day to day, catching clashes and verifying model quality. BIM Managers work at the organisational or whole-project level, setting standards and owning the BIM Execution Plan.
+
+Job titles for these same functions vary significantly across firms and countries, and this inconsistency is a documented, acknowledged problem in the industry, not something you are missing.
+
+Every role reads a different slice of the same model, which means one role's needs being met says nothing about whether another role's needs are.
+
+Further Reading
+
+BIMcollab — Key BIM Roles and Responsibilities
+
+Autodesk University — Habits of Highly Effective BIM Managers
+
+SpringerLink — Roles and Responsibilities of Construction Players in Projects Using BIM

@@ -1,0 +1,61 @@
+Knowledge Hub — Module 1.5
+
+Common BIM Uses (Clash Detection, Takeoff, Scheduling, FM Handover)
+
+Introduction
+
+Everything covered so far in this series, what BIM actually is, the problem it solves, the dimensions and levels people talk about, and the roles involved, comes together in a handful of practical activities that happen on real projects every day. This lesson looks at four of the most common ones, and how each connects to what you already know from earlier in this series.
+
+Clash Detection
+
+The clash example used earlier in this series, a beam running through a duct, is the most familiar BIM use case, so it is worth understanding how it actually works in practice.
+
+Once discipline models are federated into one coordinated environment, as described in the Level 2 workflow from an earlier lesson, software can automatically scan for conflicts. There are three distinct types worth knowing. A hard clash is a genuine physical overlap, two elements trying to occupy the same space. A soft clash is not an overlap but a clearance violation, elements close enough that there is not enough room for insulation, access, or maintenance space around them. A workflow clash, sometimes called a 4D clash, is different again. It is not a geometry problem at all, it happens when two trades are scheduled to work in the same physical zone at the same time, creating a conflict on site even though nothing in the 3D model overlaps.
+
+The general process follows a consistent cycle: models get federated, clash rules and tolerances get configured, tests run, results get prioritised and assigned to the responsible discipline, issues get resolved, and the test runs again to confirm the fix worked. This loop continues until the model is clean. Common tools for this include Navisworks, one of the most established options, and newer cloud-based platforms like Revizto, which puts the federated model, clash results, and issue tracking in one shared, live environment rather than a desktop file.
+
+Quantity Takeoff
+
+The Quantity Surveyor role from the last lesson centres on this activity. The word itself is worth knowing where it comes from: a takeoff is literally the act of taking off, or extracting, quantities from a drawing or model to prepare a cost estimate. The term predates BIM by decades, it was originally used for manual measurement off paper drawings, long before software could do it automatically.
+
+In a BIM workflow, quantities such as area, volume, length, and count get extracted directly from the model's own embedded data rather than measured by hand from 2D drawings. This is the practical mechanism behind the 5D cost dimension covered earlier in this series. It only works as well as the information behind those quantities is accurate, since an automated extraction is only ever as reliable as what it is extracting from.
+
+Scheduling
+
+This is the practical side of the 4D time dimension. Once a model is linked to a construction schedule, a team can simulate the order in which a building will actually go up, which trade needs access to which zone and when, before any of it happens on site. This is also where the workflow clashes mentioned above get caught, since a scheduling conflict is invisible to a purely geometric clash check but very visible once time is added to the model.
+
+The Contractor role from the last lesson relies most directly on this use, since construction sequencing and buildability planning both depend on having a realistic, coordinated schedule tied to the actual model rather than a separate document maintained by hand.
+
+FM Handover
+
+This is where the 7D facility management dimension and the Facility Manager role from the last two lessons meet in practice, and it is also the stage where BIM's promise tends to break down most visibly.
+
+Multiple independent sources cite a consistent figure: up to 30 percent of a building's lifecycle data gets lost at the handover point between construction and operations, forcing facility teams to manually re-enter information that technically already existed somewhere in the project. This is not usually a software failure. It happens when the structured data that should have been built up throughout the project simply was not maintained consistently along the way.
+
+The standard mechanism meant to prevent this is called COBie, short for Construction Operations Building Information Exchange. Unlike the 3D model itself, COBie is a structured, non-graphical dataset, typically a spreadsheet or IFC export, covering categories like Facilities, Floors, Spaces, Types, Components, Systems, and Documents. It is meant to be populated progressively as the project proceeds, architects and engineers contribute classification and design data early, contractors add manufacturer details, serial numbers, and warranty information later, rather than being assembled all at once at the very end. One academic study found that a BIM and COBie based handover approach can reduce facility work order processing time by around 8.7 percent, a meaningful efficiency gain, but one that depends entirely on the underlying data actually being complete and correct by the time it reaches the facility manager.
+
+These Are Uses, Not Separate Systems
+
+Clash detection, takeoff, scheduling, and handover can feel like four unrelated activities, run by different people at different points in a project. In practice, they all draw from the same coordinated model discussed throughout this series, just at different stages and for different purposes. A model that clashes cleanly says nothing about whether its quantities are accurate. A schedule that runs smoothly says nothing about whether the handover data will be complete. Each use depends on the model actually holding the right information for that specific purpose, not just existing.
+
+That idea, what a model actually contains versus what it appears to do, is the thread this series will keep returning to as it moves beyond BIM fundamentals into IFC itself.
+
+Key Takeaways
+
+Clash detection covers three distinct conflict types: hard clashes (physical overlap), soft clashes (clearance violations), and workflow clashes (scheduling conflicts, tied to 4D).
+
+Quantity takeoff automates what was historically a manual measurement process, extracting quantities directly from the model's own data.
+
+Scheduling simulates construction sequencing using the 4D dimension, and is also where workflow clashes get caught.
+
+FM handover is where BIM's practical value is most at risk of being lost, with data loss figures around 30 percent commonly cited when structured handover processes like COBie are not maintained consistently throughout the project.
+
+All four uses draw from the same underlying model. Each one depends on that model holding accurate, complete information for its specific purpose, not merely existing.
+
+Further Reading
+
+Solibri — BIM Clash Detection and Coordination Workflows
+
+BibLus — What is Quantity Takeoff and What Is It For?
+
+MDPI — BIM for Facilities Management: An Investigation into the Asset Information Delivery Process
