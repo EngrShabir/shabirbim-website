@@ -115,11 +115,10 @@
         .lesson-wrap::before {
             content: '';
             position: absolute; inset: 0; z-index: 0;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: 260px 260px;
-            mix-blend-mode: multiply;
-            opacity: 0.48;
+            background-image: url("assets/background.jpg");
+            background-size: cover;
+            background-position: center 30%;
+            background-repeat: no-repeat;
             pointer-events: none;
         }
 
@@ -128,7 +127,12 @@
             z-index: 1;
             max-width: 880px;
             margin: 0 auto;
-            background: var(--paper);
+            --text-primary: #E8E5DE;
+            --text-secondary: #B8B4AC;
+            --paper-divider: rgba(255, 255, 255, 0.15);
+            background-image: linear-gradient(rgba(10, 10, 10, 0.35), rgba(10, 10, 10, 0.35)), url("assets/dark.jpg");
+            background-size: cover;
+            background-position: center;
             border: 1px solid var(--paper-border);
             box-shadow: 0 4px 28px var(--paper-shadow);
             border-radius: 12px;
@@ -161,7 +165,7 @@
             font-weight: 800;
             letter-spacing: -0.02em;
             line-height: 1.18;
-            color: var(--text-primary);
+            color: #FFFFFF;
             margin-bottom: 22px;
         }
 
@@ -176,7 +180,7 @@
         .lesson-content h2 {
             font-size: 1.4rem;
             font-weight: 800;
-            color: var(--text-primary);
+            color: #FFFFFF;
             letter-spacing: -0.01em;
             margin-top: 52px;
             margin-bottom: 18px;
@@ -201,8 +205,8 @@
 
         .key-takeaways {
             margin-top: 52px;
-            background: rgba(15, 14, 10, 0.025);
-            border: 1px solid var(--paper-border);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--paper-divider);
             border-radius: 10px;
             padding: 30px 34px;
         }
@@ -219,7 +223,7 @@
         .further-reading {
             margin-top: 56px;
             padding-top: 32px;
-            border-top: 1px solid var(--paper-border);
+            border-top: 1px solid var(--paper-divider);
         }
         .further-reading h3 {
             font-size: 1.05rem;
@@ -254,7 +258,7 @@
             align-items: center;
             margin-top: 56px;
             padding-top: 28px;
-            border-top: 1px solid var(--paper-border);
+            border-top: 1px solid var(--paper-divider);
         }
         .lesson-nav a {
             font-size: 0.9rem;
