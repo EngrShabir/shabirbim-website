@@ -241,6 +241,12 @@
             position: absolute; left: 0;
         }
         .further-reading li:last-child { margin-bottom: 0; }
+        .further-reading li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .further-reading li a:hover { color: var(--accent-gold); }
 
         .lesson-nav {
             display: flex;
@@ -338,8 +344,8 @@
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li>[Reference]</li>
-                        <!-- add more <li>[Reference]</li> items as needed -->
+                        <li><a href="[URL]" target="_blank" rel="noopener noreferrer">[Reference]</a></li>
+                        <!-- add more <li><a href="[URL]" target="_blank" rel="noopener noreferrer">[Reference]</a></li> items as needed -->
                     </ul>
                 </div>
 

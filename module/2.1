@@ -1,0 +1,58 @@
+Knowledge Hub — Module 2.1
+
+Open BIM vs Proprietary BIM: The Vendor Lock-In Problem
+
+Introduction
+
+The last module covered whether a model's information is coordinated and accurate. This one starts from a different, quieter question. Even a perfectly accurate model is only useful if the people who need it can actually open it, today and years from now. That is the problem this lesson looks at.
+
+How Proprietary Formats Work
+
+Most BIM authoring tools save their work in a format built specifically for that software. Revit saves as .rvt. ArchiCAD saves as .pln. Tekla Structures uses .tekla files. Allplan uses .ndw and .npl. Bentley's MicroStation uses .dgn. Each of these formats is designed for tight integration with its own software, which is exactly why they work so well inside that one program. It is also exactly why they are difficult to use anywhere else.
+
+A proprietary format stores data in a way that is only fully accessible through the software that created it. Opening it in a different program, if that is even possible, usually requires some form of conversion, and conversions do not always preserve everything. Performance data, detailed specifications, and other structured information can get stripped out along the way, since the receiving format was never designed to carry that particular kind of data in the first place.
+
+The Vendor Lock-In Problem
+
+None of this matters much on a short project using one piece of software from start to finish. It matters a great deal on a project involving multiple disciplines, multiple firms, and a building that will exist for decades after the project itself is finished.
+
+If a project's information lives only in one vendor's proprietary format, that information's future depends on that vendor. If the software changes significantly, becomes prohibitively expensive, or is discontinued, the people who own and operate the building may find themselves unable to properly access their own asset's information. This is not a hypothetical concern. It is precisely why buildingSMART, the organisation most responsible for developing open standards in construction, states plainly that open formats exist to guarantee access to building information records decades into the future, and to prevent lock-in to any single vendor's proprietary format.
+
+This connects directly to the facility management handover problem covered in the last module. A building's operational life is typically far longer than any single piece of software's commercial life. Data trapped in a format only one company controls is a real risk to that building's long-term management, not just an inconvenience during design.
+
+What "Open" Actually Means
+
+An open, or non-proprietary, format is designed to be read and written by many different pieces of software, not owned or controlled by a single vendor. The best known example in construction is IFC, Industry Foundation Classes, developed and maintained by buildingSMART. Over 200 BIM software products are now certified as compatible with it, spanning architecture, engineering, construction, and facility management tools.
+
+It is worth knowing where this actually came from, since the terminology can sound more official than its history suggests. buildingSMART itself began in 1994 as the International Alliance for Interoperability, a consortium of twelve US companies invited by Autodesk to develop shared technical standards. It was renamed buildingSMART in 2005. IFC's own technical roots go back further still, adapted originally from STEP, a data format used in mechanical engineering, which itself descended from a 1979 CAD format called IGES. Even the term "openBIM" is newer than it sounds. It was first registered by a group of CAD vendors in 2012, and only formally trademarked by buildingSMART itself in the early 2020s. None of this makes the standard any less real or useful today. It simply means, like the dimension numbers covered earlier in this series, that the terminology evolved gradually through industry collaboration rather than arriving as a single, official invention.
+
+What does make IFC different from most industry conventions is that it carries real legal weight. It has been published as an ISO standard since 2013, and the IFC4 version specifically has been recognised as a European standard, EN ISO 16739. That status matters directly in public procurement, where consistent, auditable data exchange is increasingly a formal requirement, not just good practice.
+
+Why This Matters Practically, Not Just Philosophically
+
+This is not simply an argument that open is good and proprietary is bad. Proprietary formats exist because they let software do things an open, generalised format cannot always do as well, which is a real and legitimate tradeoff, not a flaw.
+
+The practical case for open formats shows up clearly once a project involves more than one discipline or more than one piece of software, which is true of nearly every real construction project. Architecture, structural engineering, and MEP teams rarely all use the same authoring tool, and a shared open format is what allows their separate models to actually be combined and checked against each other, the federation process covered in the last module.
+
+Governments have reached similar conclusions at a larger scale. Spain runs a progressive public procurement plan requiring increasing levels of open BIM through 2030. Estonia built IFC directly into its national building permitting process. The UK's 2016 public sector mandate specifically required model-based BIM, not simply any digital deliverable. It is worth being honest, though, that this is not yet universal. Despite the EU's own procurement rules calling for BIM based on open standards, actual enforcement varies enormously across member states, with only some countries actively requiring it in practice. The direction is clear. The current reality is still uneven.
+
+Key Takeaways
+
+Proprietary formats like RVT, PLN, and DGN are built for tight integration with one piece of software, which creates real long-term risk if that software becomes unavailable, unaffordable, or incompatible.
+
+Open, non-proprietary formats like IFC are designed to be read and written by many different tools, not controlled by a single vendor.
+
+IFC and buildingSMART's history developed gradually through industry collaboration starting in 1994, not as a single official standard handed down from the start, though IFC does now carry real legal status as an ISO and European standard.
+
+This is a practical concern, not just a philosophical one. Multi-discipline projects need interoperability regardless of ideology, and a growing number of governments now require open formats for long-term public asset ownership, though this requirement is still inconsistently enforced worldwide.
+
+Further Reading
+
+buildingSMART — openBIM, official overview and principles
+https://www.buildingsmart.org/about/openbim/
+
+buildingSMART — openBIM for Government and Policy Makers
+https://www.buildingsmart.org/government-policy-makers/
+
+Wikipedia — buildingSMART, organisational history
+https://en.wikipedia.org/wiki/BuildingSMART

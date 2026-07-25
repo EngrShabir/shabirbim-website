@@ -241,6 +241,12 @@
             position: absolute; left: 0;
         }
         .further-reading li:last-child { margin-bottom: 0; }
+        .further-reading li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .further-reading li a:hover { color: var(--accent-gold); }
 
         .lesson-nav {
             display: flex;
@@ -361,9 +367,9 @@
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li>NIST — Cost Analysis of Inadequate Interoperability in the U.S. Capital Facilities Industry</li>
-                        <li>Construction Industry Institute — research on rework and project performance</li>
-                        <li>Designing Buildings Wiki — Construction 2025 and the UK Government Construction Strategy</li>
+                        <li><a href="https://www.nist.gov/publications/cost-analysis-inadequate-interoperability-us-capital-facilities-industry-0" target="_blank" rel="noopener noreferrer">NIST — Cost Analysis of Inadequate Interoperability in the U.S. Capital Facilities Industry</a></li>
+                        <li><a href="https://www.construction-institute.org/research" target="_blank" rel="noopener noreferrer">Construction Industry Institute — research on rework and project performance</a></li>
+                        <li><a href="https://www.designingbuildings.co.uk/wiki/Construction_2025" target="_blank" rel="noopener noreferrer">Designing Buildings Wiki — Construction 2025 and the UK Government Construction Strategy</a></li>
                     </ul>
                 </div>
 

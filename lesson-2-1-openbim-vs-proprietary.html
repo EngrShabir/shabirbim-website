@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1.5 Common BIM Uses (Clash Detection, Takeoff, Scheduling, FM Handover) | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 1.5 — Clash detection, quantity takeoff, scheduling, and FM handover: the four everyday BIM uses and how they connect to what came before.">
+    <title>2.1 Open BIM vs Proprietary BIM — The Vendor Lock-In Problem | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 2.1 — Why proprietary BIM formats create long-term risk, what open, non-proprietary formats like IFC actually solve, and where the tradeoff is real.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -325,62 +325,58 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 1 → 1.5</span>
-            <h1 class="lesson-title">1.5 Common BIM Uses (Clash Detection, Takeoff, Scheduling, FM Handover)</h1>
+            <span class="lesson-breadcrumb">Module 2 → 2.1</span>
+            <h1 class="lesson-title">2.1 Open BIM vs Proprietary BIM: The Vendor Lock-In Problem</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Everything covered so far in this series, what BIM actually is, the problem it solves, the dimensions and levels people talk about, and the roles involved, comes together in a handful of practical activities that happen on real projects every day. This lesson looks at four of the most common ones, and how each connects to what you already know from earlier in this series.</p>
+                <p>The last module covered whether a model's information is coordinated and accurate. This one starts from a different, quieter question. Even a perfectly accurate model is only useful if the people who need it can actually open it, today and years from now. That is the problem this lesson looks at.</p>
 
-                <h2>Clash Detection</h2>
-                <p>The clash example used earlier in this series, a beam running through a duct, is the most familiar BIM use case, so it is worth understanding how it actually works in practice.</p>
-                <p>Once discipline models are federated into one coordinated environment, as described in the Level 2 workflow from an earlier lesson, software can automatically scan for conflicts. There are three distinct types worth knowing. A <strong>hard clash</strong> is a genuine physical overlap, two elements trying to occupy the same space. A <strong>soft clash</strong> is not an overlap but a clearance violation, elements close enough that there is not enough room for insulation, access, or maintenance space around them. A <strong>workflow clash</strong>, sometimes called a 4D clash, is different again. It is not a geometry problem at all, it happens when two trades are scheduled to work in the same physical zone at the same time, creating a conflict on site even though nothing in the 3D model overlaps.</p>
-                <p>The general process follows a consistent cycle: models get federated, clash rules and tolerances get configured, tests run, results get prioritised and assigned to the responsible discipline, issues get resolved, and the test runs again to confirm the fix worked. This loop continues until the model is clean. Common tools for this include Navisworks, one of the most established options, and newer cloud-based platforms like Revizto, which puts the federated model, clash results, and issue tracking in one shared, live environment rather than a desktop file.</p>
+                <h2>How Proprietary Formats Work</h2>
+                <p>Most BIM authoring tools save their work in a format built specifically for that software. Revit saves as .rvt. ArchiCAD saves as .pln. Tekla Structures uses .tekla files. Allplan uses .ndw and .npl. Bentley's MicroStation uses .dgn. Each of these formats is designed for tight integration with its own software, which is exactly why they work so well inside that one program. It is also exactly why they are difficult to use anywhere else.</p>
+                <p>A proprietary format stores data in a way that is only fully accessible through the software that created it. Opening it in a different program, if that is even possible, usually requires some form of conversion, and conversions do not always preserve everything. Performance data, detailed specifications, and other structured information can get stripped out along the way, since the receiving format was never designed to carry that particular kind of data in the first place.</p>
 
-                <h2>Quantity Takeoff</h2>
-                <p>The Quantity Surveyor role from the last lesson centres on this activity. The word itself is worth knowing where it comes from: a takeoff is literally the act of taking off, or extracting, quantities from a drawing or model to prepare a cost estimate. The term predates BIM by decades, it was originally used for manual measurement off paper drawings, long before software could do it automatically.</p>
-                <p>In a BIM workflow, quantities such as area, volume, length, and count get extracted directly from the model's own embedded data rather than measured by hand from 2D drawings. This is the practical mechanism behind the 5D cost dimension covered earlier in this series. It only works as well as the information behind those quantities is accurate, since an automated extraction is only ever as reliable as what it is extracting from.</p>
+                <h2>The Vendor Lock-In Problem</h2>
+                <p>None of this matters much on a short project using one piece of software from start to finish. It matters a great deal on a project involving multiple disciplines, multiple firms, and a building that will exist for decades after the project itself is finished.</p>
+                <p>If a project's information lives only in one vendor's proprietary format, that information's future depends on that vendor. If the software changes significantly, becomes prohibitively expensive, or is discontinued, the people who own and operate the building may find themselves unable to properly access their own asset's information. This is not a hypothetical concern. It is precisely why buildingSMART, the organisation most responsible for developing open standards in construction, states plainly that open formats exist to guarantee access to building information records decades into the future, and to prevent lock-in to any single vendor's proprietary format.</p>
+                <p>This connects directly to the facility management handover problem covered in the last module. A building's operational life is typically far longer than any single piece of software's commercial life. Data trapped in a format only one company controls is a real risk to that building's long-term management, not just an inconvenience during design.</p>
 
-                <h2>Scheduling</h2>
-                <p>This is the practical side of the 4D time dimension. Once a model is linked to a construction schedule, a team can simulate the order in which a building will actually go up, which trade needs access to which zone and when, before any of it happens on site. This is also where the workflow clashes mentioned above get caught, since a scheduling conflict is invisible to a purely geometric clash check but very visible once time is added to the model.</p>
-                <p>The Contractor role from the last lesson relies most directly on this use, since construction sequencing and buildability planning both depend on having a realistic, coordinated schedule tied to the actual model rather than a separate document maintained by hand.</p>
+                <h2>What "Open" Actually Means</h2>
+                <p>An open, or non-proprietary, format is designed to be read and written by many different pieces of software, not owned or controlled by a single vendor. The best known example in construction is <strong>IFC</strong>, Industry Foundation Classes, developed and maintained by buildingSMART. Over 200 BIM software products are now certified as compatible with it, spanning architecture, engineering, construction, and facility management tools.</p>
+                <p>It is worth knowing where this actually came from, since the terminology can sound more official than its history suggests. buildingSMART itself began in 1994 as the International Alliance for Interoperability, a consortium of twelve US companies invited by Autodesk to develop shared technical standards. It was renamed buildingSMART in 2005. IFC's own technical roots go back further still, adapted originally from STEP, a data format used in mechanical engineering, which itself descended from a 1979 CAD format called IGES. Even the term "openBIM" is newer than it sounds. It was first registered by a group of CAD vendors in 2012, and only formally trademarked by buildingSMART itself in the early 2020s. None of this makes the standard any less real or useful today. It simply means, like the dimension numbers covered earlier in this series, that the terminology evolved gradually through industry collaboration rather than arriving as a single, official invention.</p>
+                <p>What does make IFC different from most industry conventions is that it carries real legal weight. It has been published as an ISO standard since 2013, and the IFC4 version specifically has been recognised as a European standard, EN ISO 16739. That status matters directly in public procurement, where consistent, auditable data exchange is increasingly a formal requirement, not just good practice.</p>
 
-                <h2>FM Handover</h2>
-                <p>This is where the 7D facility management dimension and the Facility Manager role from the last two lessons meet in practice, and it is also the stage where BIM's promise tends to break down most visibly.</p>
-                <p>Multiple independent sources cite a consistent figure: up to 30 percent of a building's lifecycle data gets lost at the handover point between construction and operations, forcing facility teams to manually re-enter information that technically already existed somewhere in the project. This is not usually a software failure. It happens when the structured data that should have been built up throughout the project simply was not maintained consistently along the way.</p>
-                <p>The standard mechanism meant to prevent this is called <strong>COBie</strong>, short for Construction Operations Building Information Exchange. Unlike the 3D model itself, COBie is a structured, non-graphical dataset, typically a spreadsheet or IFC export, covering categories like Facilities, Floors, Spaces, Types, Components, Systems, and Documents. It is meant to be populated progressively as the project proceeds, architects and engineers contribute classification and design data early, contractors add manufacturer details, serial numbers, and warranty information later, rather than being assembled all at once at the very end. One academic study found that a BIM and COBie based handover approach can reduce facility work order processing time by around 8.7 percent, a meaningful efficiency gain, but one that depends entirely on the underlying data actually being complete and correct by the time it reaches the facility manager.</p>
-
-                <h2>These Are Uses, Not Separate Systems</h2>
-                <p>Clash detection, takeoff, scheduling, and handover can feel like four unrelated activities, run by different people at different points in a project. In practice, they all draw from the same coordinated model discussed throughout this series, just at different stages and for different purposes. A model that clashes cleanly says nothing about whether its quantities are accurate. A schedule that runs smoothly says nothing about whether the handover data will be complete. Each use depends on the model actually holding the right information for that specific purpose, not just existing.</p>
-                <p>That idea, what a model actually contains versus what it appears to do, is the thread this series will keep returning to as it moves beyond BIM fundamentals into IFC itself.</p>
+                <h2>Why This Matters Practically, Not Just Philosophically</h2>
+                <p>This is not simply an argument that open is good and proprietary is bad. Proprietary formats exist because they let software do things an open, generalised format cannot always do as well, which is a real and legitimate tradeoff, not a flaw.</p>
+                <p>The practical case for open formats shows up clearly once a project involves more than one discipline or more than one piece of software, which is true of nearly every real construction project. Architecture, structural engineering, and MEP teams rarely all use the same authoring tool, and a shared open format is what allows their separate models to actually be combined and checked against each other, the federation process covered in the last module.</p>
+                <p>Governments have reached similar conclusions at a larger scale. Spain runs a progressive public procurement plan requiring increasing levels of open BIM through 2030. Estonia built IFC directly into its national building permitting process. The UK's 2016 public sector mandate specifically required model-based BIM, not simply any digital deliverable. It is worth being honest, though, that this is not yet universal. Despite the EU's own procurement rules calling for BIM based on open standards, actual enforcement varies enormously across member states, with only some countries actively requiring it in practice. The direction is clear. The current reality is still uneven.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>Clash detection covers three distinct conflict types: hard clashes (physical overlap), soft clashes (clearance violations), and workflow clashes (scheduling conflicts, tied to 4D).</li>
-                        <li>Quantity takeoff automates what was historically a manual measurement process, extracting quantities directly from the model's own data.</li>
-                        <li>Scheduling simulates construction sequencing using the 4D dimension, and is also where workflow clashes get caught.</li>
-                        <li>FM handover is where BIM's practical value is most at risk of being lost, with data loss figures around 30 percent commonly cited when structured handover processes like COBie are not maintained consistently throughout the project.</li>
-                        <li>All four uses draw from the same underlying model. Each one depends on that model holding accurate, complete information for its specific purpose, not merely existing.</li>
+                        <li>Proprietary formats like RVT, PLN, and DGN are built for tight integration with one piece of software, which creates real long-term risk if that software becomes unavailable, unaffordable, or incompatible.</li>
+                        <li>Open, non-proprietary formats like IFC are designed to be read and written by many different tools, not controlled by a single vendor.</li>
+                        <li>IFC and buildingSMART's history developed gradually through industry collaboration starting in 1994, not as a single official standard handed down from the start, though IFC does now carry real legal status as an ISO and European standard.</li>
+                        <li>This is a practical concern, not just a philosophical one. Multi-discipline projects need interoperability regardless of ideology, and a growing number of governments now require open formats for long-term public asset ownership, though this requirement is still inconsistently enforced worldwide.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://www.solibri.com/solutions/bim-quality-assurance/clash-detection" target="_blank" rel="noopener noreferrer">Solibri — BIM Clash Detection and Coordination Workflows</a></li>
-                        <li><a href="https://biblus.accasoftware.com/en/what-is-quantity-takeoff-and-what-is-it-for/" target="_blank" rel="noopener noreferrer">BibLus — What is Quantity Takeoff and What Is It For?</a></li>
-                        <li><a href="https://www.mdpi.com/2076-3417/12/19/9542" target="_blank" rel="noopener noreferrer">MDPI — BIM for Facilities Management: An Investigation into the Asset Information Delivery Process</a></li>
+                        <li><a href="https://www.buildingsmart.org/about/openbim/" target="_blank" rel="noopener noreferrer">buildingSMART — openBIM, official overview and principles</a></li>
+                        <li><a href="https://www.buildingsmart.org/government-policy-makers/" target="_blank" rel="noopener noreferrer">buildingSMART — openBIM for Government and Policy Makers</a></li>
+                        <li><a href="https://en.wikipedia.org/wiki/BuildingSMART" target="_blank" rel="noopener noreferrer">Wikipedia — buildingSMART, organisational history</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-1-4-roles-in-a-bim-project.html">← Prev</a>
-                <a href="lesson-2-1-openbim-vs-proprietary.html">Next →</a>
+                <a href="lesson-1-5-common-bim-uses.html">← Prev</a>
+                <span class="disabled">Next →</span>
             </div>
 
         </div>

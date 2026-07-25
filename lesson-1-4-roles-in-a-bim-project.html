@@ -241,6 +241,12 @@
             position: absolute; left: 0;
         }
         .further-reading li:last-child { margin-bottom: 0; }
+        .further-reading li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .further-reading li a:hover { color: var(--accent-gold); }
 
         .lesson-nav {
             display: flex;
@@ -365,9 +371,9 @@
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li>BIMcollab — Key BIM Roles and Responsibilities</li>
-                        <li>Autodesk University — Habits of Highly Effective BIM Managers</li>
-                        <li>SpringerLink — Roles and Responsibilities of Construction Players in Projects Using BIM</li>
+                        <li><a href="https://www.bimcollab.com/en/resources/blog/key-bim-roles-and-responsibilities/" target="_blank" rel="noopener noreferrer">BIMcollab — Key BIM Roles and Responsibilities</a></li>
+                        <li><a href="https://www.autodesk.com/autodesk-university/article/Habits-Highly-Effective-BIM-Managers-2017" target="_blank" rel="noopener noreferrer">Autodesk University — Habits of Highly Effective BIM Managers</a></li>
+                        <li><a href="https://link.springer.com/chapter/10.1007/978-3-319-33111-9_16" target="_blank" rel="noopener noreferrer">SpringerLink — Roles and Responsibilities of Construction Players in Projects Using BIM</a></li>
                     </ul>
                 </div>
 

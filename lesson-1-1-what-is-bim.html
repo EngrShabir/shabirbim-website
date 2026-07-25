@@ -241,6 +241,12 @@
             position: absolute; left: 0;
         }
         .further-reading li:last-child { margin-bottom: 0; }
+        .further-reading li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .further-reading li a:hover { color: var(--accent-gold); }
 
         .lesson-nav {
             display: flex;
@@ -375,9 +381,9 @@
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li>BSI guidance on ISO 19650</li>
-                        <li>buildingSMART International — free Entry-level openBIM training</li>
-                        <li>The B1M — What is a BIM Model</li>
+                        <li><a href="https://www.bsigroup.com/en-GB/products-and-services/standards/iso-19650-building-information-modelling-bim/" target="_blank" rel="noopener noreferrer">BSI guidance on ISO 19650</a></li>
+                        <li><a href="https://education.buildingsmart.org/entry-level-introduction/" target="_blank" rel="noopener noreferrer">buildingSMART International — free Entry-level openBIM training</a></li>
+                        <li><a href="https://www.theb1m.com/video/what-is-a-bim-model" target="_blank" rel="noopener noreferrer">The B1M — What is a BIM Model</a></li>
                     </ul>
                 </div>
 

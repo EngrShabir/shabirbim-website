@@ -104,6 +104,12 @@
   </url>
 
   <url>
+    <loc>https://shabirbim.com/lesson-2-1-openbim-vs-proprietary.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>https://shabirbim.com/services.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
