@@ -1,0 +1,63 @@
+Knowledge Hub — Module 2.3
+
+The Open Standards Family (IFC, BCF, IDS, MVD)
+
+Introduction
+
+Across the last two lessons, four names have come up again and again, IFC, BCF, IDS, and MVD, usually mentioned in passing rather than explained properly. This lesson puts them side by side. The goal here is naming and purpose only, understanding what each one is for and how they connect. Going deeper into any single one comes later in this series, IFC's own version differences get a full lesson in Module 3, IDS gets an entire module to itself later on, and MVD gets revisited with real technical depth once there's more schema literacy to build on.
+
+IFC — The Model Itself
+
+IFC, covered already in the last two lessons, is the data schema at the centre of all of this. It defines how a building's elements, walls, columns, spaces, and the information attached to them get structured into a file that different software can read and write. Everything else in this lesson exists to support IFC in some way, either by helping people communicate about a model, define what it must contain, or agree on which part of it actually needs to be exchanged for a given task.
+
+BCF — The Conversation About the Model
+
+An IFC file describes a model. It does not describe a conversation about that model, and construction projects generate a lot of those conversations. A structural beam clashing with a duct needs to be flagged, discussed, and resolved by people who may be using entirely different software.
+
+This is what BCF, the BIM Collaboration Format, exists to solve. Development started in 2009, conceived jointly by two software companies, Solibri and Tekla, working with the Institute for Applied Building Informatics at the Technical University of Munich, before being adopted formally as a buildingSMART standard. Before BCF existed, the standard way of flagging a clash was to take a screenshot and write it into a PDF report by hand, a workflow one industry source bluntly calls "not a very intelligent way of working."
+
+A BCF file carries a screenshot, a camera viewpoint showing exactly where in the model the issue sits, and a reference to the specific IFC elements involved, identified by their unique IFC ID. What it deliberately does not carry is the model geometry itself. BCF is a conversation layered on top of a model, not a copy of the model. This is the mechanism that actually makes the clash detection workflow from earlier in this series possible: one tool finds a clash, exports it as BCF, and a completely different tool on someone else's desk can open that same issue, see exactly where it is, and respond, all without either side needing to open the other's native software.
+
+IDS — The Checklist Against the Model
+
+IDS, the Information Delivery Specification, solves a different problem again. A model being structurally valid, and even being reasonably coordinated, says nothing about whether it actually contains the specific information a particular project or client requires. Traditionally, those requirements lived in written documents, specifications, execution plans, that had to be checked manually against a model, a slow and inconsistent process.
+
+IDS is a machine-readable way of stating those requirements instead, so a model can be checked against them automatically rather than described in a document someone has to read and interpret. At the naming and purpose level, that is the whole idea: a checklist for a model, written in a language software can actually verify, not just a human. What that checklist can look like in practice, and how to build one, is the subject of an entire later module in this series.
+
+MVD — Agreeing on Which Part of the Model Matters
+
+The full IFC schema is large, and no single exchange between two people or two pieces of software ever needs all of it. An architect handing a model to a structural engineer needs different information than a model being handed over to a facility manager for maintenance purposes. A Model View Definition, or MVD, is buildingSMART's answer to this: a defined, named subset of the IFC schema built for one specific kind of exchange.
+
+A few real examples make this concrete. Coordination View 2.0, based on the older IFC2x3 schema, is described by industry sources as the most widely implemented MVD in construction, built specifically to support architecture, structural, and MEP teams coordinating a model together. Under IFC4, this idea split into two more specific views. The Reference View supports a mostly one-directional exchange, useful when a model is being viewed and coordinated rather than edited. The Design Transfer View supports an actual handoff between disciplines, such as an architect passing a model to a structural engineer who then needs to build directly on top of it.
+
+It is worth mentioning COBie here too, since it was introduced back in an earlier lesson in this series without this context. COBie functions very much like an MVD, a defined, purpose-specific subset of IFC data, built for facility management handover. It is not officially recognised as a buildingSMART MVD, since it originated as a US standard rather than an international one, but the underlying idea is the same.
+
+How These Four Fit Together
+
+These are not four separate, competing standards. They are four layers of one connected system, and buildingSMART's own technical documentation states the relationship between two of them plainly: with IDS, project teams have the freedom to define exchange requirements however they need to, while software vendors implementing a given MVD can be confident they are building toward something that guarantees real interoperability with everyone else doing the same.
+
+A single practical scenario shows how all four actually work together. An architect builds a model in IFC. A Design Transfer View, an MVD, defines exactly which part of that model gets handed to the structural engineer for further work. During coordination, a BIM coordinator spots a clash between a beam and a duct and logs it as a BCF issue, which a completely different piece of software on someone else's desk can open and respond to directly. Separately, the client's IDS file automatically checks whether the finished model actually contains the specific information their project requires, catching gaps a purely visual review would miss. Four standards, one connected workflow.
+
+Where This Is Heading
+
+It is worth knowing, briefly, that IFC itself is not finished evolving. buildingSMART is actively developing IFC5, a genuinely different, modular architecture intended to support closer integration with digital twins, GIS data, and real-time sensor information, the same territory this series will return to properly in its final module. IFC5 is still in an early, alpha stage of development at the time of writing, openly described by buildingSMART itself as a work in progress, not something in production use yet. It is a direction, not a current reality.
+
+Key Takeaways
+
+IFC is the model schema itself. BCF, IDS, and MVD all exist to support it, not compete with it.
+
+BCF carries conversations about a model, screenshots, viewpoints, and element references, without carrying the model's geometry, solving the problem of discussing issues across different software.
+
+IDS is a machine-readable checklist of information requirements, checked automatically against a model rather than reviewed manually against a document.
+
+An MVD is a named, purpose-specific subset of the full IFC schema, such as Coordination View 2.0 or the IFC4 Reference View, so software only needs to support the part of IFC relevant to a given exchange.
+
+IFC itself continues to evolve, with IFC5 currently in early, alpha-stage development toward a more modular, digital-twin-ready architecture.
+
+Further Reading
+
+buildingSMART International — Industry Foundation Classes (IFC)
+
+buildingSMART International — BIM Collaboration Format (BCF)
+
+BibLus — Model View Definition (MVD) and BIM Data Exchange

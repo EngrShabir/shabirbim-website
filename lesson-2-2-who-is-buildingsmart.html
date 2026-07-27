@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2.1 Open BIM vs Proprietary BIM — The Vendor Lock-In Problem | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 2.1 — Why proprietary BIM formats create long-term risk, what open, non-proprietary formats like IFC actually solve, and where the tradeoff is real.">
+    <title>2.2 Who is buildingSMART and Why They Matter | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 2.2 — What buildingSMART actually is, how it's organised and funded, who sits at the table, and why firms follow its standards without being legally required to.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -329,58 +329,63 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 2 → 2.1</span>
-            <h1 class="lesson-title">2.1 Open BIM vs Proprietary BIM: The Vendor Lock-In Problem</h1>
+            <span class="lesson-breadcrumb">Module 2 → 2.2</span>
+            <h1 class="lesson-title">2.2 Who is buildingSMART and Why They Matter</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>The last module covered whether a model's information is coordinated and accurate. This one starts from a different, quieter question. Even a perfectly accurate model is only useful if the people who need it can actually open it, today and years from now. That is the problem this lesson looks at.</p>
+                <p>The last lesson mentioned buildingSMART briefly, the organisation behind IFC, and touched on its origin as a twelve-company consortium back in 1994. This lesson goes further. buildingSMART's name comes up constantly in construction, in job titles, in software marketing, in conversations about standards, but few people outside the BIM world could actually explain what the organisation does, or why an entire industry follows its standards without being legally required to.</p>
 
-                <h2>How Proprietary Formats Work</h2>
-                <p>Most BIM authoring tools save their work in a format built specifically for that software. Revit saves as .rvt. ArchiCAD saves as .pln. Tekla Structures uses .tekla files. Allplan uses .ndw and .npl. Bentley's MicroStation uses .dgn. Each of these formats is designed for tight integration with its own software, which is exactly why they work so well inside that one program. It is also exactly why they are difficult to use anywhere else.</p>
-                <p>A proprietary format stores data in a way that is only fully accessible through the software that created it. Opening it in a different program, if that is even possible, usually requires some form of conversion, and conversions do not always preserve everything. Performance data, detailed specifications, and other structured information can get stripped out along the way, since the receiving format was never designed to carry that particular kind of data in the first place.</p>
+                <h2>What buildingSMART Actually Is</h2>
+                <p><strong>buildingSMART</strong> is a not-for-profit, member-based organisation, not a government body and not a software company. It has no authority to fine anyone or enforce anything by law. Its own staff numbers are small, well under a hundred people, which is a modest size for an organisation whose standards now shape workflows across a global industry.</p>
+                <p>That smallness is not accidental. buildingSMART's own membership documentation states plainly that it is reliant on its members to fund and run its work, projects are co-developed with the industry itself, not handed down independently. The organisation's actual reach comes from its membership base: companies representing owners, architects, engineers, contractors, software vendors, and academic institutions, spread across national chapters worldwide.</p>
 
-                <h2>The Vendor Lock-In Problem</h2>
-                <p>None of this matters much on a short project using one piece of software from start to finish. It matters a great deal on a project involving multiple disciplines, multiple firms, and a building that will exist for decades after the project itself is finished.</p>
-                <p>If a project's information lives only in one vendor's proprietary format, that information's future depends on that vendor. If the software changes significantly, becomes prohibitively expensive, or is discontinued, the people who own and operate the building may find themselves unable to properly access their own asset's information. This is not a hypothetical concern. It is precisely why buildingSMART, the organisation most responsible for developing open standards in construction, states plainly that open formats exist to guarantee access to building information records decades into the future, and to prevent lock-in to any single vendor's proprietary format.</p>
-                <p>This connects directly to the facility management handover problem covered in the last module. A building's operational life is typically far longer than any single piece of software's commercial life. Data trapped in a format only one company controls is a real risk to that building's long-term management, not just an inconvenience during design.</p>
+                <h2>How buildingSMART Is Organised</h2>
+                <p>Beyond the international body itself, buildingSMART operates through national chapters, buildingSMART UK &amp; Ireland, buildingSMART Deutschland, buildingSMART USA, and many others. As of today, there are 40 national chapters spanning Europe, Asia, North and South America, and Africa, a number that has grown steadily as more countries establish their own chapter. These chapters are not simply local franchises. buildingSMART's own documentation describes them as organisations whose purpose is to "promote and drive forward the active use of open data standards" within their own country, and to identify the specific standards or compliance needs relevant to that market.</p>
+                <p>This structure explains something worth connecting back to the last lesson. Government adoption of open standards varies significantly from country to country, and that unevenness is not incidental. Each chapter is specifically tasked with pushing adoption forward in its own territory, at its own pace, shaped by its own government relationships and industry maturity. A chapter's not-for-profit status is not just a technicality either. buildingSMART states this directly: that status is "crucial to recognition by governments of the independence of a chapter from any dominating commercial influence," a guarantee that no single software vendor or company is steering the standard for its own benefit.</p>
 
-                <h2>What "Open" Actually Means</h2>
-                <p>An open, or non-proprietary, format is designed to be read and written by many different pieces of software, not owned or controlled by a single vendor. The best known example in construction is <strong>IFC</strong>, Industry Foundation Classes, developed and maintained by buildingSMART. Over 200 BIM software products are now certified as compatible with it, spanning architecture, engineering, construction, and facility management tools.</p>
-                <p>It is worth knowing where this actually came from, since the terminology can sound more official than its history suggests. buildingSMART itself began in 1994 as the International Alliance for Interoperability, a consortium of twelve US companies invited by Autodesk to develop shared technical standards. It was renamed buildingSMART in 2005. IFC's own technical roots go back further still, adapted originally from STEP, a data format used in mechanical engineering, which itself descended from a 1979 CAD format called IGES. Even the term "openBIM" is newer than it sounds. It was first registered by a group of CAD vendors in 2012, and only formally trademarked by buildingSMART itself in the early 2020s. None of this makes the standard any less real or useful today. It simply means, like the dimension numbers covered earlier in this series, that the terminology evolved gradually through industry collaboration rather than arriving as a single, official invention.</p>
-                <p>What does make IFC different from most industry conventions is that it carries real legal weight. It has been published as an ISO standard since 2013, and the IFC4 version specifically has been recognised as a European standard, EN ISO 16739. That status matters directly in public procurement, where consistent, auditable data exchange is increasingly a formal requirement, not just good practice.</p>
+                <h2>How buildingSMART Is Actually Funded</h2>
+                <p>It is worth being precise about where the money flows, since it explains a lot about who has influence over the standards you use every day. Member organisations pay annual dues directly to buildingSMART, ranging from roughly €8,000 for a small standard membership up to €100,000 for the highest strategic tier. National chapters pay their own fees to the international body too, up to €20,000 a year for a full chapter. None of this money flows back to members as payment. What paying members receive instead is influence: voting rights over how standards like IFC and IDS actually develop, membership in multiple national chapters, certification benefits, and visibility, since being listed as a member or as certified software functions as public proof of commitment to open standards, in an industry where tenders increasingly check for exactly that.</p>
 
-                <h2>Why This Matters Practically, Not Just Philosophically</h2>
-                <p>This is not simply an argument that open is good and proprietary is bad. Proprietary formats exist because they let software do things an open, generalised format cannot always do as well, which is a real and legitimate tradeoff, not a flaw.</p>
-                <p>The practical case for open formats shows up clearly once a project involves more than one discipline or more than one piece of software, which is true of nearly every real construction project. Architecture, structural engineering, and MEP teams rarely all use the same authoring tool, and a shared open format is what allows their separate models to actually be combined and checked against each other, the federation process covered in the last module.</p>
-                <p>Governments have reached similar conclusions at a larger scale. Spain runs a progressive public procurement plan requiring increasing levels of open BIM through 2030. Estonia built IFC directly into its national building permitting process. The UK's 2016 public sector mandate specifically required model-based BIM, not simply any digital deliverable. It is worth being honest, though, that this is not yet universal. Despite the EU's own procurement rules calling for BIM based on open standards, actual enforcement varies enormously across member states, with only some countries actively requiring it in practice. The direction is clear. The current reality is still uneven.</p>
+                <h2>Who Actually Pays to Be at the Table</h2>
+                <p>The membership list at the top tiers reads like a map of the entire BIM software industry. Strategic members, the highest and most expensive tier, include ARUP, Siemens, Oracle, and Nemetschek Group, the company that owns ArchiCAD, Allplan, Vectorworks, Solibri, and Bluebeam. Multinational members include Autodesk, Bentley Systems, Trimble, Graphisoft, Dassault Systèmes, and WSP, one of the largest engineering consultancies in the world.</p>
+                <p>This is not a coincidence. Every major authoring tool in common use, Revit, ArchiCAD, Allplan, Tekla, traces back to a company paying to sit inside buildingSMART's governance structure and vote on how the standard evolves. The companies building the software people use to create IFC files are, in large part, the same companies funding and shaping what IFC actually is.</p>
+
+                <h2>What They Actually Produce</h2>
+                <p>buildingSMART's core output is IFC, covered in the last lesson, but IFC is only one part of a wider standards family. <strong>BCF</strong>, short for BIM Collaboration Format, is a format for tracking coordination issues, like clashes, between different software tools. <strong>IDS</strong>, the Information Delivery Specification, defines what information a model actually needs to contain for a given project. <strong>bSDD</strong>, the buildingSMART Data Dictionary, standardises the terminology and property names used across all of this, so that "fire rating" means the same thing regardless of which software or country a project sits in. Each of these gets covered properly later in this series. For now, it is enough to know they exist and that buildingSMART maintains all of them as one connected family of standards, not separate, unrelated products.</p>
+
+                <h2>Why Firms Actually Follow buildingSMART's Standards Voluntarily</h2>
+                <p>Since buildingSMART has no regulatory power, it is worth asking honestly why software vendors and firms bother complying with its standards at all, beyond simply paying to join.</p>
+                <p>Part of the answer is a formal Software Certification Program, separate from general membership. Vendors pay to have their software's IFC import and export tested against buildingSMART's official criteria, €1,500 per tool per IFC version for import, €2,500 for export. This is not a token exercise. Revit received IFC2x3 certification in 2013. Vectorworks has been certified for IFC4 export. This matters because certified software gets listed publicly, and that list gets used directly in real procurement. One industry source puts it plainly: the certified software list is "quite often referenced in tenders to avoid usage of unknown tools," specifically to reduce the risk of a project being unable to collaborate properly across different software. A newer mechanism reinforces this further. buildingSMART's IFC Validation Service now automatically generates public "scorecards" for software tools based on real files uploaded by actual users, not vendor self-reporting, giving buyers an independent, continuously updated view of how well a tool really performs.</p>
+                <p>Put simply, buildingSMART's standards get followed not because they are mandatory, but because avoiding them creates a real, practical risk: a tool or firm that can't demonstrate compliance becomes a harder sell in an industry where interoperability increasingly gets written directly into contracts and tender requirements. And the firms with the most influence over what "compliance" actually means are, quite directly, the ones paying the most to have a vote in the room.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>Proprietary formats like RVT, PLN, and DGN are built for tight integration with one piece of software, which creates real long-term risk if that software becomes unavailable, unaffordable, or incompatible.</li>
-                        <li>Open, non-proprietary formats like IFC are designed to be read and written by many different tools, not controlled by a single vendor.</li>
-                        <li>IFC and buildingSMART's history developed gradually through industry collaboration starting in 1994, not as a single official standard handed down from the start, though IFC does now carry real legal status as an ISO and European standard.</li>
-                        <li>This is a practical concern, not just a philosophical one. Multi-discipline projects need interoperability regardless of ideology, and a growing number of governments now require open formats for long-term public asset ownership, though this requirement is still inconsistently enforced worldwide.</li>
+                        <li>buildingSMART is a not-for-profit, member-funded organisation, not a government body, with no legal power to mandate compliance.</li>
+                        <li>It operates through 40 national chapters, each responsible for driving open standards adoption in its own country, which helps explain why global adoption remains uneven.</li>
+                        <li>Members pay annual dues, from around €8,000 to €100,000 depending on tier, and in return receive voting influence, chapter access, and public certification, not payment. Major names like Autodesk, Bentley, Nemetschek Group, Siemens, and WSP sit at the highest tiers.</li>
+                        <li>Beyond IFC, buildingSMART maintains a connected family of standards, including BCF, IDS, and bSDD, each covered in more depth later in this series.</li>
+                        <li>Firms and software vendors follow buildingSMART's standards voluntarily largely because of real, practical incentives, particularly certification programs whose results get referenced directly in procurement and tenders, not out of goodwill alone.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://www.buildingsmart.org/about/openbim/" target="_blank" rel="noopener noreferrer">buildingSMART — openBIM, official overview and principles</a></li>
-                        <li><a href="https://www.buildingsmart.org/government-policy-makers/" target="_blank" rel="noopener noreferrer">buildingSMART — openBIM for Government and Policy Makers</a></li>
-                        <li><a href="https://en.wikipedia.org/wiki/BuildingSMART" target="_blank" rel="noopener noreferrer">Wikipedia — buildingSMART, organisational history</a></li>
+                        <li><a href="https://www.buildingsmart.org/community/chapter-directory/" target="_blank" rel="noopener noreferrer">buildingSMART International — Chapter Directory</a></li>
+                        <li><a href="https://www.buildingsmart.org/compliance/software-certification/" target="_blank" rel="noopener noreferrer">buildingSMART International — Software Certification Program</a></li>
+                        <li><a href="https://en.wikipedia.org/wiki/BuildingSMART" target="_blank" rel="noopener noreferrer">Wikipedia — buildingSMART</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-1-5-common-bim-uses.html">← Prev</a>
-                <a href="lesson-2-2-who-is-buildingsmart.html">Next →</a>
+                <a href="lesson-2-1-openbim-vs-proprietary.html">← Prev</a>
+                <a href="lesson-2-3-open-standards-family.html">Next →</a>
             </div>
 
         </div>

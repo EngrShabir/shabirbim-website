@@ -1,0 +1,51 @@
+Knowledge Hub — Module 2.4
+
+What an OpenBIM Workflow Looks Like End-to-End
+
+Introduction
+
+The last three lessons covered pieces, open formats versus proprietary ones, who buildingSMART is, and the standards family itself, IFC, BCF, IDS, and MVD. This lesson shows how those pieces actually operate together on a real project, start to finish.
+
+OpenBIM is not a single software package or a single file format. It is a workflow in which multiple independent standards work together throughout a project's lifecycle. buildingSMART states this directly on its own site: "the openBIM workflow is not a single, universal process but rather a flexible approach to Building Information Modeling using open standards." There is no one correct sequence every project follows. What follows is the core pattern most multi-disciplinary projects actually use.
+
+The Workflow, Stage by Stage
+
+Design. Each discipline works in whatever authoring tool it prefers, an architect in one package, a structural engineer in another, an MEP consultant in a third. Rather than forcing everyone onto the same software, each discipline exports its own model as IFC, the open format covered earlier in this series, so the model itself is never locked to one vendor's tool.
+
+Coordination. The separate IFC models get federated into one combined view, the Level 2 workflow covered earlier in Module 1. Not all of a model's information is relevant to every exchange, though, which is where an MVD comes in. A Model View Definition defines exactly which subset of the full IFC schema actually needs to move for a given purpose, so a coordination exchange only carries what coordination actually requires.
+
+Issue resolution. During coordination, someone finds a clash, a beam running through a duct, say. That issue gets logged as a BCF file: a screenshot, a camera position, and a reference to the specific elements involved, without needing to hand over the model itself. A completely different piece of software on someone else's desk can open that same BCF file and see exactly what was found.
+
+Verification. Once the model reaches a milestone, it gets checked against the client's IDS file, a machine-readable statement of exactly what information the project actually requires. This check runs automatically rather than being reviewed by hand against a written specification, confirming whether the required data is actually present, not just whether the model looks complete.
+
+The governance backdrop. None of this happens in a vacuum. IFC, BCF, IDS, and MVD are all standards buildingSMART maintains, funded in large part by the same software vendors and engineering firms whose tools and projects rely on them, as covered in the last two lessons.
+
+A Real Example
+
+This is not just a theoretical sequence. At the 2024 IHEEP Conference, buildingSMART USA presented the Musmeci Bridge in Potenza as a working case, showing how an actual bridge's IFC model was managed through openBIM tools across its lifecycle, from initial coordination through long-term maintenance planning. The specific tools and disciplines vary from project to project, but the underlying pattern, open model, defined exchange subset, tracked issues, checked requirements, is the same one described above.
+
+What OpenBIM Doesn't Guarantee
+
+It is worth being precise about what this workflow actually promises. OpenBIM guarantees that different software can talk to each other. It does not by itself guarantee that what gets exchanged is correct.
+
+One industry analysis puts this plainly: IFC validation tools mostly check formal conformity, whether a file is syntactically valid and schema-compliant, not the actual quality of its content. The same source warns this creates "a false sense of security in many projects," since technically the exchange works while the underlying information may still be insufficient. A separate academic review of openBIM literature spanning 2009 to 2024 identified genuine, persistent limitations even after fifteen years of adoption, including domain knowledge gaps and unresolved liability questions between the parties exchanging data.
+
+None of this means the workflow is broken. It means openBIM solves the problem of getting data from one tool to another reliably. Whether that data was ever right in the first place is a separate question, one this series will come back to properly.
+
+Key Takeaways
+
+OpenBIM is not one piece of software or one file format. It is a workflow where independent standards, maintained by the same organisation and funded largely by the same firms, work together across a project's life.
+
+A typical sequence runs: author in IFC, narrow the exchange with an MVD, track issues in BCF, verify against requirements with IDS, all sitting inside standards buildingSMART governs.
+
+Real projects, including infrastructure like the Musmeci Bridge, follow this same underlying pattern even when the specific tools involved differ.
+
+OpenBIM guarantees that different software can exchange data successfully. It does not by itself guarantee that the exchanged data is actually correct or complete, a genuine, documented limitation even after over a decade of industry adoption.
+
+Further Reading
+
+buildingSMART International — About openBIM
+
+BibLus — BIM Application Bridge: Benefits of an OpenBIM Workflow
+
+Taylor & Francis — OpenBIM in the global AEC industry: a literature review of academic research

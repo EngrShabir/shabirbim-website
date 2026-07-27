@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2.1 Open BIM vs Proprietary BIM — The Vendor Lock-In Problem | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 2.1 — Why proprietary BIM formats create long-term risk, what open, non-proprietary formats like IFC actually solve, and where the tradeoff is real.">
+    <title>2.3 The Open Standards Family — IFC, BCF, IDS, MVD | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 2.3 — What IFC, BCF, IDS, and MVD each actually do, and how they fit together as one connected system rather than four competing standards.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -329,58 +329,64 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 2 → 2.1</span>
-            <h1 class="lesson-title">2.1 Open BIM vs Proprietary BIM: The Vendor Lock-In Problem</h1>
+            <span class="lesson-breadcrumb">Module 2 → 2.3</span>
+            <h1 class="lesson-title">2.3 The Open Standards Family (IFC, BCF, IDS, MVD)</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>The last module covered whether a model's information is coordinated and accurate. This one starts from a different, quieter question. Even a perfectly accurate model is only useful if the people who need it can actually open it, today and years from now. That is the problem this lesson looks at.</p>
+                <p>Across the last two lessons, four names have come up again and again, IFC, BCF, IDS, and MVD, usually mentioned in passing rather than explained properly. This lesson puts them side by side. The goal here is naming and purpose only, understanding what each one is for and how they connect. Going deeper into any single one comes later in this series, IFC's own version differences get a full lesson in Module 3, IDS gets an entire module to itself later on, and MVD gets revisited with real technical depth once there's more schema literacy to build on.</p>
 
-                <h2>How Proprietary Formats Work</h2>
-                <p>Most BIM authoring tools save their work in a format built specifically for that software. Revit saves as .rvt. ArchiCAD saves as .pln. Tekla Structures uses .tekla files. Allplan uses .ndw and .npl. Bentley's MicroStation uses .dgn. Each of these formats is designed for tight integration with its own software, which is exactly why they work so well inside that one program. It is also exactly why they are difficult to use anywhere else.</p>
-                <p>A proprietary format stores data in a way that is only fully accessible through the software that created it. Opening it in a different program, if that is even possible, usually requires some form of conversion, and conversions do not always preserve everything. Performance data, detailed specifications, and other structured information can get stripped out along the way, since the receiving format was never designed to carry that particular kind of data in the first place.</p>
+                <h2>IFC — The Model Itself</h2>
+                <p><strong>IFC</strong>, covered already in the last two lessons, is the data schema at the centre of all of this. It defines how a building's elements, walls, columns, spaces, and the information attached to them get structured into a file that different software can read and write. Everything else in this lesson exists to support IFC in some way, either by helping people communicate about a model, define what it must contain, or agree on which part of it actually needs to be exchanged for a given task.</p>
 
-                <h2>The Vendor Lock-In Problem</h2>
-                <p>None of this matters much on a short project using one piece of software from start to finish. It matters a great deal on a project involving multiple disciplines, multiple firms, and a building that will exist for decades after the project itself is finished.</p>
-                <p>If a project's information lives only in one vendor's proprietary format, that information's future depends on that vendor. If the software changes significantly, becomes prohibitively expensive, or is discontinued, the people who own and operate the building may find themselves unable to properly access their own asset's information. This is not a hypothetical concern. It is precisely why buildingSMART, the organisation most responsible for developing open standards in construction, states plainly that open formats exist to guarantee access to building information records decades into the future, and to prevent lock-in to any single vendor's proprietary format.</p>
-                <p>This connects directly to the facility management handover problem covered in the last module. A building's operational life is typically far longer than any single piece of software's commercial life. Data trapped in a format only one company controls is a real risk to that building's long-term management, not just an inconvenience during design.</p>
+                <h2>BCF — The Conversation About the Model</h2>
+                <p>An IFC file describes a model. It does not describe a conversation about that model, and construction projects generate a lot of those conversations. A structural beam clashing with a duct needs to be flagged, discussed, and resolved by people who may be using entirely different software.</p>
+                <p>This is what <strong>BCF</strong>, the BIM Collaboration Format, exists to solve. Development started in 2009, conceived jointly by two software companies, Solibri and Tekla, working with the Institute for Applied Building Informatics at the Technical University of Munich, before being adopted formally as a buildingSMART standard. Before BCF existed, the standard way of flagging a clash was to take a screenshot and write it into a PDF report by hand, a workflow one industry source bluntly calls "not a very intelligent way of working."</p>
+                <p>A BCF file carries a screenshot, a camera viewpoint showing exactly where in the model the issue sits, and a reference to the specific IFC elements involved, identified by their unique IFC ID. What it deliberately does not carry is the model geometry itself. BCF is a conversation layered on top of a model, not a copy of the model. This is the mechanism that actually makes the clash detection workflow from earlier in this series possible: one tool finds a clash, exports it as BCF, and a completely different tool on someone else's desk can open that same issue, see exactly where it is, and respond, all without either side needing to open the other's native software.</p>
 
-                <h2>What "Open" Actually Means</h2>
-                <p>An open, or non-proprietary, format is designed to be read and written by many different pieces of software, not owned or controlled by a single vendor. The best known example in construction is <strong>IFC</strong>, Industry Foundation Classes, developed and maintained by buildingSMART. Over 200 BIM software products are now certified as compatible with it, spanning architecture, engineering, construction, and facility management tools.</p>
-                <p>It is worth knowing where this actually came from, since the terminology can sound more official than its history suggests. buildingSMART itself began in 1994 as the International Alliance for Interoperability, a consortium of twelve US companies invited by Autodesk to develop shared technical standards. It was renamed buildingSMART in 2005. IFC's own technical roots go back further still, adapted originally from STEP, a data format used in mechanical engineering, which itself descended from a 1979 CAD format called IGES. Even the term "openBIM" is newer than it sounds. It was first registered by a group of CAD vendors in 2012, and only formally trademarked by buildingSMART itself in the early 2020s. None of this makes the standard any less real or useful today. It simply means, like the dimension numbers covered earlier in this series, that the terminology evolved gradually through industry collaboration rather than arriving as a single, official invention.</p>
-                <p>What does make IFC different from most industry conventions is that it carries real legal weight. It has been published as an ISO standard since 2013, and the IFC4 version specifically has been recognised as a European standard, EN ISO 16739. That status matters directly in public procurement, where consistent, auditable data exchange is increasingly a formal requirement, not just good practice.</p>
+                <h2>IDS — The Checklist Against the Model</h2>
+                <p><strong>IDS</strong>, the Information Delivery Specification, solves a different problem again. A model being structurally valid, and even being reasonably coordinated, says nothing about whether it actually contains the specific information a particular project or client requires. Traditionally, those requirements lived in written documents, specifications, execution plans, that had to be checked manually against a model, a slow and inconsistent process.</p>
+                <p>IDS is a machine-readable way of stating those requirements instead, so a model can be checked against them automatically rather than described in a document someone has to read and interpret. At the naming and purpose level, that is the whole idea: a checklist for a model, written in a language software can actually verify, not just a human. What that checklist can look like in practice, and how to build one, is the subject of an entire later module in this series.</p>
 
-                <h2>Why This Matters Practically, Not Just Philosophically</h2>
-                <p>This is not simply an argument that open is good and proprietary is bad. Proprietary formats exist because they let software do things an open, generalised format cannot always do as well, which is a real and legitimate tradeoff, not a flaw.</p>
-                <p>The practical case for open formats shows up clearly once a project involves more than one discipline or more than one piece of software, which is true of nearly every real construction project. Architecture, structural engineering, and MEP teams rarely all use the same authoring tool, and a shared open format is what allows their separate models to actually be combined and checked against each other, the federation process covered in the last module.</p>
-                <p>Governments have reached similar conclusions at a larger scale. Spain runs a progressive public procurement plan requiring increasing levels of open BIM through 2030. Estonia built IFC directly into its national building permitting process. The UK's 2016 public sector mandate specifically required model-based BIM, not simply any digital deliverable. It is worth being honest, though, that this is not yet universal. Despite the EU's own procurement rules calling for BIM based on open standards, actual enforcement varies enormously across member states, with only some countries actively requiring it in practice. The direction is clear. The current reality is still uneven.</p>
+                <h2>MVD — Agreeing on Which Part of the Model Matters</h2>
+                <p>The full IFC schema is large, and no single exchange between two people or two pieces of software ever needs all of it. An architect handing a model to a structural engineer needs different information than a model being handed over to a facility manager for maintenance purposes. A <strong>Model View Definition</strong>, or MVD, is buildingSMART's answer to this: a defined, named subset of the IFC schema built for one specific kind of exchange.</p>
+                <p>A few real examples make this concrete. Coordination View 2.0, based on the older IFC2x3 schema, is described by industry sources as the most widely implemented MVD in construction, built specifically to support architecture, structural, and MEP teams coordinating a model together. Under IFC4, this idea split into two more specific views. The Reference View supports a mostly one-directional exchange, useful when a model is being viewed and coordinated rather than edited. The Design Transfer View supports an actual handoff between disciplines, such as an architect passing a model to a structural engineer who then needs to build directly on top of it.</p>
+                <p>It is worth mentioning COBie here too, since it was introduced back in an earlier lesson in this series without this context. COBie functions very much like an MVD, a defined, purpose-specific subset of IFC data, built for facility management handover. It is not officially recognised as a buildingSMART MVD, since it originated as a US standard rather than an international one, but the underlying idea is the same.</p>
+
+                <h2>How These Four Fit Together</h2>
+                <p>These are not four separate, competing standards. They are four layers of one connected system, and buildingSMART's own technical documentation states the relationship between two of them plainly: with IDS, project teams have the freedom to define exchange requirements however they need to, while software vendors implementing a given MVD can be confident they are building toward something that guarantees real interoperability with everyone else doing the same.</p>
+                <p>A single practical scenario shows how all four actually work together. An architect builds a model in IFC. A Design Transfer View, an MVD, defines exactly which part of that model gets handed to the structural engineer for further work. During coordination, a BIM coordinator spots a clash between a beam and a duct and logs it as a BCF issue, which a completely different piece of software on someone else's desk can open and respond to directly. Separately, the client's IDS file automatically checks whether the finished model actually contains the specific information their project requires, catching gaps a purely visual review would miss. Four standards, one connected workflow.</p>
+
+                <h2>Where This Is Heading</h2>
+                <p>It is worth knowing, briefly, that IFC itself is not finished evolving. buildingSMART is actively developing IFC5, a genuinely different, modular architecture intended to support closer integration with digital twins, GIS data, and real-time sensor information, the same territory this series will return to properly in its final module. IFC5 is still in an early, alpha stage of development at the time of writing, openly described by buildingSMART itself as a work in progress, not something in production use yet. It is a direction, not a current reality.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>Proprietary formats like RVT, PLN, and DGN are built for tight integration with one piece of software, which creates real long-term risk if that software becomes unavailable, unaffordable, or incompatible.</li>
-                        <li>Open, non-proprietary formats like IFC are designed to be read and written by many different tools, not controlled by a single vendor.</li>
-                        <li>IFC and buildingSMART's history developed gradually through industry collaboration starting in 1994, not as a single official standard handed down from the start, though IFC does now carry real legal status as an ISO and European standard.</li>
-                        <li>This is a practical concern, not just a philosophical one. Multi-discipline projects need interoperability regardless of ideology, and a growing number of governments now require open formats for long-term public asset ownership, though this requirement is still inconsistently enforced worldwide.</li>
+                        <li>IFC is the model schema itself. BCF, IDS, and MVD all exist to support it, not compete with it.</li>
+                        <li>BCF carries conversations about a model, screenshots, viewpoints, and element references, without carrying the model's geometry, solving the problem of discussing issues across different software.</li>
+                        <li>IDS is a machine-readable checklist of information requirements, checked automatically against a model rather than reviewed manually against a document.</li>
+                        <li>An MVD is a named, purpose-specific subset of the full IFC schema, such as Coordination View 2.0 or the IFC4 Reference View, so software only needs to support the part of IFC relevant to a given exchange.</li>
+                        <li>IFC itself continues to evolve, with IFC5 currently in early, alpha-stage development toward a more modular, digital-twin-ready architecture.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://www.buildingsmart.org/about/openbim/" target="_blank" rel="noopener noreferrer">buildingSMART — openBIM, official overview and principles</a></li>
-                        <li><a href="https://www.buildingsmart.org/government-policy-makers/" target="_blank" rel="noopener noreferrer">buildingSMART — openBIM for Government and Policy Makers</a></li>
-                        <li><a href="https://en.wikipedia.org/wiki/BuildingSMART" target="_blank" rel="noopener noreferrer">Wikipedia — buildingSMART, organisational history</a></li>
+                        <li><a href="https://www.buildingsmart.org/standards/bsi-standards/industry-foundation-classes/" target="_blank" rel="noopener noreferrer">buildingSMART International — Industry Foundation Classes (IFC)</a></li>
+                        <li><a href="https://www.buildingsmart.org/standards/bsi-standards/bim-collaboration-format/" target="_blank" rel="noopener noreferrer">buildingSMART International — BIM Collaboration Format (BCF)</a></li>
+                        <li><a href="https://biblus.accasoftware.com/en/model-view-definition-mvd-and-bim-data-exchange/" target="_blank" rel="noopener noreferrer">BibLus — Model View Definition (MVD) and BIM Data Exchange</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-1-5-common-bim-uses.html">← Prev</a>
-                <a href="lesson-2-2-who-is-buildingsmart.html">Next →</a>
+                <a href="lesson-2-2-who-is-buildingsmart.html">← Prev</a>
+                <a href="lesson-2-4-openbim-workflow-end-to-end.html">Next →</a>
             </div>
 
         </div>

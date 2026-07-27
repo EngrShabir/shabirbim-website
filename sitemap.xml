@@ -110,6 +110,24 @@
   </url>
 
   <url>
+    <loc>https://shabirbim.com/lesson-2-2-who-is-buildingsmart.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-2-3-open-standards-family.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-2-4-openbim-workflow-end-to-end.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>https://shabirbim.com/services.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
