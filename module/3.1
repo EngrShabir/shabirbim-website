@@ -1,0 +1,43 @@
+Knowledge Hub — Module 3.1
+
+What an IFC File Actually Is
+
+Introduction
+
+Module 2 introduced IFC as one piece of the open standards family, alongside BCF, IDS, and MVD, the format that carries the model itself while the others carry issues, requirements, and exchange rules around it. This lesson starts a new module built entirely around that one piece, beginning with the most basic question first. What an IFC file actually is, and what problem it was created to solve.
+
+A Common Misconception
+
+The file extension does not help here. An IFC file opens in a 3D viewer and carries the ".ifc" extension, so it is easy to assume it works like a 3D format such as an OBJ or an FBX, a container for shapes and little else. That assumption is backwards. IFC is a full data schema that happens to be delivered as a file. The shape you see on screen is only the smallest part of what the file is actually carrying, as the next two sections show.
+
+What IFC Actually Is
+
+IFC stands for Industry Foundation Classes. It is a standardized way of digitally describing a building, developed and maintained by buildingSMART International and published as the open international standard ISO 16739. Unlike a format built around one company's software, no single vendor owns or controls IFC. It is a shared, neutral description of a building, and increasingly of infrastructure too, that any compliant software can read and write.
+
+That neutrality is the entire reason IFC exists. Work on the standard began in 1994 through the same twelve-company consortium Module 2 traced buildingSMART back to, at a time when a project's design information was usually trapped inside whichever software had created it. The practical problem has not changed since. What happens when a project needs a tool different from the one that built the model, when a client wants to move the model onto a different platform, or when the same building needs reopening years later using software that may no longer exist in its original form. IFC is what lets the model outlive any single piece of software.
+
+Data and Relationships
+
+An IFC file describes far more than what a wall or a door looks like. Alongside geometry, it can carry element identity and material and performance properties. It can also hold spatial location, ownership, connections to other elements, cost information, and scheduling data. The file does not just say "here is a shape." It says this is a wall, made of this material, sitting on this floor, connected to that door, carrying this fire rating.
+
+The relationships between elements matter just as much as the elements themselves. IFC does not leave software to guess how things connect by looking at geometry alone. Those connections, a door belonging to a wall, a wall belonging to a storey, a group of elements forming one system, are written directly into the file as explicit relationships. Nothing about how the pieces fit together needs to be reconstructed by whatever software opens the file next.
+
+Where This Fits in a Project
+
+An IFC file is typically a snapshot rather than a live connection. An authoring tool exports a model to IFC at a given point, that file gets shared, opened, checked, or combined with models from other disciplines, and the cycle repeats as the project moves forward. This is the exchange point that makes the workflow from Module 2 possible in practice, a place where separate teams working in separate tools can meet on genuinely open ground.
+
+Key Takeaways
+
+IFC is a full data schema, not a 3D format. Geometry is only one part of what it carries.
+
+It exists to solve a practical problem, keeping project data usable outside any single vendor's software, now and years into the future.
+
+An IFC file describes objects, their properties, and the relationships between them, not only their shapes.
+
+Further Reading
+
+buildingSMART, Industry Foundation Classes (IFC)
+
+AEC Magazine, IFC: what is it and why is it needed?
+
+NBS, What is IFC?

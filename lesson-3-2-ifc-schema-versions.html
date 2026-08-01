@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2.4 What an OpenBIM Workflow Looks Like End-to-End | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 2.4 — How IFC, MVD, BCF, and IDS actually work together on a real project, stage by stage, and what the openBIM workflow does and doesn't guarantee.">
+    <title>3.2 IFC2x3 vs IFC4 vs IFC4.3 — Practical Differences | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 3.2 — Why IFC schema versions coexist in practice, what actually changed between IFC2x3, IFC4, and IFC4.3, and why newer is not automatically the right choice.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -329,55 +329,64 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 2 → 2.4</span>
-            <h1 class="lesson-title">2.4 What an OpenBIM Workflow Looks Like End-to-End</h1>
+            <span class="lesson-breadcrumb">Module 3 → 3.2</span>
+            <h1 class="lesson-title">3.2 IFC2x3 vs IFC4 vs IFC4.3 — Practical Differences</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>The last three lessons covered pieces, open formats versus proprietary ones, who buildingSMART is, and the standards family itself, IFC, BCF, IDS, and MVD. This lesson shows how those pieces actually operate together on a real project, start to finish.</p>
-                <p>OpenBIM is not a single software package or a single file format. It is a workflow in which multiple independent standards work together throughout a project's lifecycle. buildingSMART states this directly on its own site: "the openBIM workflow is not a single, universal process but rather a flexible approach to Building Information Modeling using open standards." There is no one correct sequence every project follows. What follows is the core pattern most multi-disciplinary projects actually use.</p>
+                <p>Module 3.1 established that an IFC file is a data schema, not a shape container. What that lesson left out is that the schema itself is not fixed. Like any standard, IFC has changed over time, and each change is released as a new schema version. Three versions show up constantly in real projects today, IFC2x3, IFC4, and IFC4.3, and the actual reasons teams choose one over another turn out to be far more practical than "newer is better."</p>
 
-                <h2>The Workflow, Stage by Stage</h2>
-                <p><strong>Design.</strong> Each discipline works in whatever authoring tool it prefers, an architect in one package, a structural engineer in another, an MEP consultant in a third. Rather than forcing everyone onto the same software, each discipline exports its own model as IFC, the open format covered earlier in this series, so the model itself is never locked to one vendor's tool.</p>
-                <p><strong>Coordination.</strong> The separate IFC models get federated into one combined view, the Level 2 workflow covered earlier in Module 1. Not all of a model's information is relevant to every exchange, though, which is where an MVD comes in. A Model View Definition defines exactly which subset of the full IFC schema actually needs to move for a given purpose, so a coordination exchange only carries what coordination actually requires.</p>
-                <p><strong>Issue resolution.</strong> During coordination, someone finds a clash, a beam running through a duct, say. That issue gets logged as a BCF file: a screenshot, a camera position, and a reference to the specific elements involved, without needing to hand over the model itself. A completely different piece of software on someone else's desk can open that same BCF file and see exactly what was found.</p>
-                <p><strong>Verification.</strong> Once the model reaches a milestone, it gets checked against the client's IDS file, a machine-readable statement of exactly what information the project actually requires. This check runs automatically rather than being reviewed by hand against a written specification, confirming whether the required data is actually present, not just whether the model looks complete.</p>
-                <p><strong>The governance backdrop.</strong> None of this happens in a vacuum. IFC, BCF, IDS, and MVD are all standards buildingSMART maintains, funded in large part by the same software vendors and engineering firms whose tools and projects rely on them, as covered in the last two lessons.</p>
+                <h2>What a Schema Version Means</h2>
+                <p>A schema version defines what kinds of information an IFC file can represent, and how that information is organised. A newer version does not retire an older one the way a software update replaces the last release. Versions coexist for years, sometimes decades, because a file only works if the software receiving it can actually read what was used to write it. That single fact, whether the receiving software can read it, turns out to explain almost everything in this lesson.</p>
 
-                <h2>A Real Example</h2>
-                <p>This is not just a theoretical sequence. At the 2024 IHEEP Conference, buildingSMART USA presented the Musmeci Bridge in Potenza as a working case, showing how an actual bridge's IFC model was managed through openBIM tools across its lifecycle, from initial coordination through long-term maintenance planning. The specific tools and disciplines vary from project to project, but the underlying pattern, open model, defined exchange subset, tracked issues, checked requirements, is the same one described above.</p>
+                <h2>IFC2x3</h2>
+                <p><strong>IFC2x3</strong> arrived in 2006 and has been the industry's default for nearly two decades. The reason has less to do with age than with what happens when software vendors try to move past it.</p>
+                <p>Getting software certified by buildingSMART is not free. Certifying a single application for a single exchange type has cost vendors on the order of fifty to a hundred thousand US dollars, and that cost applies separately for import and for export, and separately again for each specific workflow the certification covers. Faced with that cost, vendors picked up IFC4 certification slowly and piece by piece. Autodesk began working toward it for Revit in 2017, Graphisoft for ArchiCAD in 2018, and Nemetschek for Allplan in 2020, roughly four to seven years after IFC4 itself was finished. Even then, certification often arrived in fragments. ArchiCAD reached certification for IFC4 import specifically in 2023, with export following separately, so "certified for IFC4" never meant the whole picture was solved at once.</p>
+                <p>Those gaps are not just administrative. They show up as real data loss. Allplan users have reported IFC4 files where entire categories of elements, columns, beams, and others, get silently placed into an "ignored elements" list on import, with the same file opening correctly in other IFC viewers. The problem runs in both directions, with Revit also reported to struggle loading IFC4 models generated by Allplan. When two applications interpret the same schema version differently, the safest choice is whichever version both of them have already proven they handle the same way, and that has kept IFC2x3 the practical default even now.</p>
+                <p>Two real examples show this decision being made deliberately. A technical report on exchanging models between Revit and Allplan, produced through a BIM4INFRA research project at TUM, states plainly that the newer IFC4 Design Transfer View would have been the more appropriate choice for the work, but Allplan did not support importing IFC4 at the time, so IFC2x3 Coordination View 2.0 was the version actually used. Graphisoft's own current interoperability add-in for Revit and ArchiCAD makes the identical call today, exporting only IFC2x3 because, in their words, it is currently the latest worldwide-certified IFC standard and the recommended version for model sharing across disciplines and systems. Neither decision reflects a preference for older technology. Both reflect a refusal to risk a newer version that could not yet be trusted to arrive intact.</p>
 
-                <h2>What OpenBIM Doesn't Guarantee</h2>
-                <p>It is worth being precise about what this workflow actually promises. OpenBIM guarantees that different software can talk to each other. It does not by itself guarantee that what gets exchanged is correct.</p>
-                <p>One industry analysis puts this plainly: IFC validation tools mostly check formal conformity, whether a file is syntactically valid and schema-compliant, not the actual quality of its content. The same source warns this creates "a false sense of security in many projects," since technically the exchange works while the underlying information may still be insufficient. A separate academic review of openBIM literature spanning 2009 to 2024 identified genuine, persistent limitations even after fifteen years of adoption, including domain knowledge gaps and unresolved liability questions between the parties exchanging data.</p>
-                <p>None of this means the workflow is broken. It means openBIM solves the problem of getting data from one tool to another reliably. Whether that data was ever right in the first place is a separate question, one this series will come back to properly.</p>
+                <h2>IFC4</h2>
+                <p><strong>IFC4</strong> became an ISO standard in 2013, built as an extension of IFC2x3 rather than a replacement for it. The technical improvements are real: better geometry handling, richer property sets, and smaller file sizes, with one direct comparison finding pure geometry files around 30 percent smaller under IFC4 than the equivalent IFC2x3 export.</p>
+                <p>IFC4 also changed how certification itself works, and this is part of why adoption took so long. Earlier certification had allowed one broad exchange definition to cover both coordination and full model handover, which led to inconsistent results, since nothing forced software to handle every part of it correctly. IFC4 split this into two separate, stricter certifications, one for Reference View, used for viewing and coordination, and one for Design Transfer View, used when a model actually needs to be edited further downstream. A vendor can only apply for Design Transfer View certification after already passing Reference View, and each requires full compliance rather than partial credit. That stricter process improved consistency once achieved, but made the certificate itself considerably harder to earn, which slowed how quickly it spread across the industry.</p>
+                <p>The result is a gap between the official schema and what is actually produced day to day. Most Revit and ArchiCAD installations exporting "IFC4" today are still producing IFC4 Add2 TC1, the 2018 edition, because tool adoption of a new schema release tends to lag the official ISO standard by one to three years. IFC4's story is less about one headline project and more about the ordinary, uneven way software vendors caught up to a standard that had already been finished for years.</p>
+
+                <h2>IFC4.3</h2>
+                <p><strong>IFC4.3</strong> is a larger jump than IFC4 was. Earlier versions refined how buildings were described. IFC4.3 extends the schema into infrastructure for the first time, adding proper support for roads, railways, bridges, ports, and tunnels, domains the schema had no real classes for before.</p>
+                <p>Certification for IFC4.3 also works differently than it did for IFC4. Rather than one central process and price, domain and jurisdiction-specific certification, such as separate criteria for bridges in the United States versus bridges in Norway, is being left to accredited third parties, with requirements varying by jurisdiction and use case. It is worth being direct about a genuine gap here: buildingSMART's own public list of IFC4.3 software implementations is explicitly self-reported by vendors and is not a list of certified tools, so a vendor claiming IFC4.3 support there is not the same thing as that support being independently verified.</p>
+                <p>HS2 shows what adopting IFC4.3 early actually looks like in practice. As the main works civil contractor for HS2 Area North, Balfour Beatty VINCI's BIM team was tasked with delivering several thousand digital infrastructure assets as IFC4.3, at a time when the schema was newly released and industry software support was still catching up, which pushed the team to build much of its own process in-house to meet the requirement. That work saw the team shortlisted for Digital Team of the Year at the Digital Construction Awards 2026. Several countries, including the UK, Germany, and the Nordic countries, are also moving toward mandating IFC4.3 specifically for infrastructure work.</p>
+                <p>That last point matters for how this section should be read. IFC4.3 is not simply replacing IFC4 the way IFC4 slowly replaced IFC2x3. Most Revit and ArchiCAD installations still default to IFC4 Add2 TC1 for ordinary building projects, and IFC4.3 becomes genuinely necessary specifically where infrastructure entities are involved, since it is the only version that defines them at all.</p>
+
+                <h2>Why This Matters in Practice</h2>
+                <p>Not every application supports every version, or every exchange within a version, equally. Import and export behaviour can vary noticeably even between two applications that both claim support for the same schema. Project requirements often specify a version outright, and two IFC files can look identical in a viewer while behaving very differently underneath, depending on which version, and which certified exchange, actually produced them.</p>
+                <p>That leads to the one habit worth taking from this lesson. It is tempting to assume newer is always better, IFC4.3 over IFC4 over IFC2x3, and to therefore always export the newest version available. In practice, the right version depends entirely on context, and on what has actually been proven to work reliably between the two applications involved. A client may specifically require IFC2x3 because it is the version guaranteed to arrive intact. A coordination platform may only fully support one particular exchange within IFC4. An infrastructure project may specifically require IFC4.3, as HS2 does, because it is the only version with the entity types that work needs. Choosing an IFC version is a decision shaped by what the recipient's software can actually handle, not a straightforward upgrade path.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>OpenBIM is not one piece of software or one file format. It is a workflow where independent standards, maintained by the same organisation and funded largely by the same firms, work together across a project's life.</li>
-                        <li>A typical sequence runs: author in IFC, narrow the exchange with an MVD, track issues in BCF, verify against requirements with IDS, all sitting inside standards buildingSMART governs.</li>
-                        <li>Real projects, including infrastructure like the Musmeci Bridge, follow this same underlying pattern even when the specific tools involved differ.</li>
-                        <li>OpenBIM guarantees that different software can exchange data successfully. It does not by itself guarantee that the exchanged data is actually correct or complete, a genuine, documented limitation even after over a decade of industry adoption.</li>
+                        <li>A schema version defines what an IFC file can represent, and newer versions do not retire older ones. Files only work if the receiving software can actually read them.</li>
+                        <li>IFC2x3 remains the most reliable version specifically because certifying newer versions is expensive and has happened slowly and unevenly across vendors, leaving real gaps that cause data loss on import.</li>
+                        <li>IFC4 introduced real technical improvements alongside a stricter, harder-to-earn certification process, which is part of why industry-wide adoption took years longer than the schema itself.</li>
+                        <li>IFC4.3 is the first version built for infrastructure, genuinely required in that domain, but it has not replaced IFC4 for ordinary building work, and its own certification model is still less standardised than IFC4's.</li>
+                        <li>The newest version is not automatically the right one. The right version is whichever one the project, the recipient, and the software involved have actually proven they can handle together.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://www.buildingsmart.org/about/openbim/" target="_blank" rel="noopener noreferrer">buildingSMART International — About openBIM</a></li>
-                        <li><a href="https://biblus.accasoftware.com/en/bim-application-bridge-benefits-of-an-openbim-workflow/" target="_blank" rel="noopener noreferrer">BibLus — BIM Application Bridge: Benefits of an OpenBIM Workflow</a></li>
-                        <li><a href="https://www.tandfonline.com/doi/full/10.1080/15623599.2024.2392302" target="_blank" rel="noopener noreferrer">Taylor &amp; Francis — OpenBIM in the global AEC industry: a literature review of academic research</a></li>
+                        <li><a href="https://www.buildingsmart.org/compliance/software-certification/" target="_blank" rel="noopener noreferrer">buildingSMART — IFC Software Certification</a></li>
+                        <li><a href="https://constructionmanagement.co.uk/digital-team-of-the-year-shortlist-2026/" target="_blank" rel="noopener noreferrer">Construction Management — Digital Team of the Year shortlist 2026</a></li>
+                        <li><a href="https://datadrivenaec.com/insights/iso-16739-ifc4-3-what-architects-need-to-know" target="_blank" rel="noopener noreferrer">DataDrivenAEC — ISO 16739-1:2024 (IFC4.3): Architects' Guide to the IFC Schema Standard</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-2-3-open-standards-family.html">← Prev</a>
-                <a href="lesson-3-1-what-is-an-ifc-file.html">Next →</a>
+                <a href="lesson-3-1-what-is-an-ifc-file.html">← Prev</a>
+                <span class="disabled">Next →</span>
             </div>
 
         </div>
