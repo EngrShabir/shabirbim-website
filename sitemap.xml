@@ -140,6 +140,12 @@
   </url>
 
   <url>
+    <loc>https://shabirbim.com/lesson-3-3-opening-your-first-ifc-file.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>https://shabirbim.com/services.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
