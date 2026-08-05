@@ -1,0 +1,133 @@
+Knowledge Hub — Module 3.5
+Reading an IFC File as Plain Text
+Introduction
+
+Module 3.4 showed the shape of an IFC file: three sections, thousands of numbered lines, and a few strange symbols sitting inside them without explaining what they meant. This lesson finishes that. By the end, you'll be able to look at any line in this file and read exactly what it's saying, including following its references by hand.
+
+The Grammar of One Line
+
+Here's the beam again, from line 11,567:
+
+#20374= IFCBEAM('3tCgZT92j6fw8fXgwCL3Jm',#12,'Unterzug-1',$,'Radial Gradient Fill 1515460218 200 x 240',#20340,#20370,'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9',$);
+
+Almost every entity in an IFC file follows this same overall pattern:
+
+#number = ENTITYNAME(attribute1, attribute2, attribute3, ...);
+
+Once you recognise that pattern, you've recognised the basic structure of nearly every line in an IFC file.
+
+Every symbol here means something specific, and once you know the rules, they apply to every line in every IFC file, not just this one.
+
+Anything in single quotes, 'Unterzug-1', 'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9', is plain text, a string.
+
+Anything starting with # followed by a number, #12, #20340, #20370, is a reference. It isn't a value describing this beam directly, it's an address pointing at wherever that numbered entity is defined elsewhere in the file. buildingSMART's own IFC documentation calls these ordered, unnamed attribute values, and the ISO standard itself refers to the number as the entity's instance name.
+
+A bare $ means exactly one thing: this attribute simply wasn't given a value. Not zero, not blank text, genuinely nothing here.
+
+A word wrapped in dots, .ADDED., is an enumeration, a fixed keyword chosen from a defined list of allowed options, not free text someone typed in.
+
+And one more, worth knowing before the next section: sometimes what sits inside the parentheses isn't a single reference, but a whole list of them. You'll see this shortly, and it looks exactly like you'd expect, several # references sitting together, separated by commas, all inside one set of parentheses, one attribute holding many references at once instead of just one.
+
+References Are Addresses, Not Line Numbers
+
+One easy mistake is to assume a reference like #20374 means "go to line 20,374." It doesn't.
+
+It means "go to the entity whose instance name is #20374."
+
+In this file, that entity happens to appear on line 11,567. Those are two completely different numbers. The instance name identifies the entity; the line number simply tells you where your text editor happens to display it. Exporting software can write entities in different orders, but their references continue to work because they point to entity numbers, not physical line numbers.
+
+What a Name Already Tells You
+
+One more piece of grammar, and it's a genuinely useful shortcut.
+
+Look at the entity name itself, the word immediately after the equals sign.
+
+IFCBEAM is a physical thing, a real object in the building.
+
+But plenty of lines in this file start with IFCREL, and that prefix is a direct signal: this line isn't an object at all, it's a relationship connecting two or more other things together.
+
+You can often tell what kind of line you're looking at before reading a single value inside it, simply from that one prefix.
+
+Following One Reference by Hand
+
+Take the second value in the beam's line, #12. Search the file for where #12= is actually defined, and here's what's sitting there:
+
+#12= IFCOWNERHISTORY(#7,#11,$,.ADDED.,$,$,$,1482339244);
+
+That's a real entity, IFCOWNERHISTORY, and the beam's reference to #12 wasn't decoration. It was a genuine, followable address, and you just followed it.
+
+One More Hop
+
+This entity has its own references too.
+
+#11 sits right there in its second slot.
+
+Search for #11=, and it leads here:
+
+#11= IFCAPPLICATION(#10,'20.0.0','ARCHICAD-64','IFC2x3 add-on version: 4009 GER FULL');
+
+Follow one reference from a beam, then one more from what it pointed to, and you land on the exact software that created this file: ArchiCAD, version 20.0.0.
+
+You've now followed two links manually, by hand, with nothing but the raw text and the knowledge of what # means.
+
+Going the Other Direction
+
+Every reference so far has pointed outward, from the beam to something else.
+
+It works the other way too.
+
+Somewhere in this file, a line exists that points back at the beam's own number, #20374.
+
+Search the file for that number, and one of the results is this:
+
+#14517= IFCRELCONTAINEDINSPATIALSTRUCTURE('13J1BKcWxmCqHLM0nJ4nFJ',#12,$,$,(#14502,#15042,...,#20374,...,#35053),#479);
+
+Notice the name first, IFCRELCONTAINEDINSPATIALSTRUCTURE.
+
+That IFCREL prefix already told you this is a relationship, and once you read it, the name is almost self-explanatory: something contained in a spatial structure.
+
+Inside the parentheses sits exactly the kind of list mentioned earlier, dozens of # references bundled together, and the beam's own number, #20374, is one of them.
+
+That whole list points at a single value at the end, #479.
+
+Search for that, and it resolves to:
+
+#479= IFCBUILDINGSTOREY('2eyxpyOx95m90jmsXLOuR0',#12,'Erdgeschoss',$,$,#477,$,'ACID00000001-0000-0000-0000-000000000000',.ELEMENT.,0.);
+
+Erdgeschoss.
+
+The exact storey Bonsai's Spatial Container field told you this beam belonged to back in 3.3.
+
+Only this time, you didn't read it off a panel.
+
+You found the relationship line, recognised it from its own name, located the beam inside its list of references, and traced it to the storey yourself.
+
+At this point, you've manually done exactly what IFC software does automatically.
+
+What This Actually Means
+
+A viewer's tree was never magic.
+
+Bonsai, or any IFC-reading tool, does precisely what you just did, thousands of times over, the instant a file opens: read every line, follow every reference, match every IFCREL line against the objects it connects, and quietly assemble the result into something readable.
+
+You've now seen the raw material that process runs on and proven, by hand, that it holds together exactly as claimed.
+
+Where This Leads
+
+Module 3 closes here.
+
+You can now open an IFC file, read its metadata, search it directly, understand the grammar of an entity, and follow its internal references by hand.
+
+What's still missing is the vocabulary: what an IFCBEAM is actually allowed to contain, what IFCRELCONTAINEDINSPATIALSTRUCTURE and its relatives are really for, how property sets and quantities are defined, and how all of those entities fit together inside the IFC schema.
+
+That's Module 4.
+
+Key Takeaways
+Every IFC entity follows the same basic pattern: #number = ENTITYNAME(attributes);.
+Every symbol has a fixed meaning: quotes for text, # for references, $ for unset values, dots for enumerations, and parentheses that can hold either one value or a whole list.
+Entity numbers are not line numbers. References point to entity instance names, regardless of where those entities appear in the file.
+An entity's name tells you what kind of line it is before you read its contents. Anything beginning with IFCREL describes relationships rather than physical objects.
+Following references manually is exactly what IFC software does automatically. There is no hidden process—just entities connected together through references.
+Further Reading
+buildingSMART, IFC4.3 Introduction
+IfcOpenShell, Introduction to IFC

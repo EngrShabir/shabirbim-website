@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3.4 STEP Physical File Structure at a Glance | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 3.4 — Opening the same IFC file as plain text: the three-section STEP structure, why there's no field labels or tree, and finding one element in 44,000 lines by search.">
+    <title>3.5 Reading an IFC File as Plain Text | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 3.5 — The grammar of a single IFC entity line, and following its references by hand, from a beam to its storey, to prove a viewer's tree is nothing but this.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -365,84 +365,106 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 3 → 3.4</span>
-            <h1 class="lesson-title">3.4 STEP Physical File Structure at a Glance</h1>
+            <span class="lesson-breadcrumb">Module 3 → 3.5</span>
+            <h1 class="lesson-title">3.5 Reading an IFC File as Plain Text</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Module 3.3 opened this same file in a viewer and showed a clean tree, a house rendered in 3D, a beam with its own identity, a spatial hierarchy laid out for easy reading. All of that came from somewhere. This lesson opens the exact same file with nothing standing between you and it, no tree, no panels, just plain text, and ends with something genuinely useful: finding one specific thing yourself, in a file with over forty thousand lines, in seconds.</p>
+                <p>Module 3.4 showed the shape of an IFC file: three sections, thousands of numbered lines, and a few strange symbols sitting inside them without explaining what they meant. This lesson finishes that. By the end, you'll be able to look at any line in this file and read exactly what it's saying, including following its references by hand.</p>
 
-                <h2>A Format IFC Didn't Invent</h2>
-                <p>The file extension is ".ifc," but the structure underneath it isn't specific to IFC at all. buildingSMART's own technical documentation is direct about this: the STEP Physical File format is the most widely used way of exchanging IFC data in practice, and it is based on an existing international standard, <strong>ISO 10303-21</strong>, a clear text encoding method originally built for exchanging general product data, not building data specifically. IFC borrows this format rather than inventing its own.</p>
-
-                <h2>Three Sections, and Only Three</h2>
-                <p>Open the file in a plain text editor and it breaks into three parts. Right at the top:</p>
-                <pre><code>ISO-10303-21;
-HEADER;
-FILE_DESCRIPTION(...);
-FILE_NAME('...AC20-FZK-Haus.ifc','2016-12-21T17:54:06',('Architect'),('Building Designer Office'),...);
-FILE_SCHEMA(('IFC4'));
-ENDSEC;</code></pre>
-                <p>This is the header, and it's carrying facts you've already seen. The schema, the author, the exact save timestamp, all sitting here as plain text, the actual source of everything Bonsai's Project Overview panel showed you in 3.3.</p>
-                <img src="assets/lessons/3-4/1.png" alt="Plain text editor showing the STEP file header section: ISO-10303-21, the FILE_DESCRIPTION export options, FILE_NAME with the save timestamp 2016-12-21T17:54:06 and author details, FILE_SCHEMA declaring IFC4, and the closing ENDSEC line.">
-
-                <h2>The Data Section: Thousands of Lines, One Thing Each</h2>
-                <p>After the header comes the data section, where nearly the entire file lives. In a typical building model, the large majority of these lines describe geometry rather than anything else, one academic analysis of a similarly sized public sample file found over 70 percent of entities were geometric. Every line follows the same shape: a number, an equals sign, an entity name in capitals, and a set of values in brackets.</p>
-                <p>The beam from 3.3 is still here, unchanged, at line 11,567 of this file's 44,259 total lines:</p>
+                <h2>The Grammar of One Line</h2>
+                <p>Here's the beam again, from line 11,567:</p>
                 <pre><code>#20374= IFCBEAM('3tCgZT92j6fw8fXgwCL3Jm',#12,'Unterzug-1',$,'Radial Gradient Fill 1515460218 200 x 240',#20340,#20370,'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9',$);</code></pre>
-                <p>The values match Bonsai's panel exactly, not similarly, identically. <code>'3tCgZT92j6fw8fXgwCL3Jm'</code> is the same GlobalId. <code>'Unterzug-1'</code> is the same Name. This line is the object. What 3.3 showed you was simply a friendlier way of displaying this exact text.</p>
-                <p>Around it, other lines describe things connected to this beam, its material, its property references, even the relationship tying the material to it. None of it is grouped together or indented to show that connection. It's just more numbered lines, sitting wherever the exporting software happened to place them.</p>
-                <p>Notice too that there are no field labels anywhere. No "GlobalId:" written out, no "Name:" buildingSMART's own IFC documentation confirms this is by design, describing it as a clear-text encoding of entity instances in which attribute values are provided as an ordered sequence of unnamed values. Position is what carries meaning here, first slot is always GlobalId, third slot is always Name, for every IFCBEAM in every IFC file anywhere.</p>
-                <img src="assets/lessons/3-4/2.png" alt="Plain text editor showing data-section lines around line #20374, the IFCBEAM entry for 'Unterzug-1' with its GlobalId, surrounded by unindented, unlabelled numbered lines describing its material and property references.">
+                <p>Almost every entity in an IFC file follows this same overall pattern:</p>
+                <pre><code>#number = ENTITYNAME(attribute1, attribute2, attribute3, ...);</code></pre>
+                <p>Once you recognise that pattern, you've recognised the basic structure of nearly every line in an IFC file.</p>
+                <p>Every symbol here means something specific, and once you know the rules, they apply to every line in every IFC file, not just this one.</p>
+                <p>Anything in single quotes, <code>'Unterzug-1'</code>, <code>'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9'</code>, is plain text, a string.</p>
+                <p>Anything starting with # followed by a number, <code>#12</code>, <code>#20340</code>, <code>#20370</code>, is a reference. It isn't a value describing this beam directly, it's an address pointing at wherever that numbered entity is defined elsewhere in the file. buildingSMART's own IFC documentation calls these ordered, unnamed attribute values, and the ISO standard itself refers to the number as the entity's instance name.</p>
+                <p>A bare <code>$</code> means exactly one thing: this attribute simply wasn't given a value. Not zero, not blank text, genuinely nothing here.</p>
+                <p>A word wrapped in dots, <code>.ADDED.</code>, is an enumeration, a fixed keyword chosen from a defined list of allowed options, not free text someone typed in.</p>
+                <p>And one more, worth knowing before the next section: sometimes what sits inside the parentheses isn't a single reference, but a whole list of them. You'll see this shortly, and it looks exactly like you'd expect, several # references sitting together, separated by commas, all inside one set of parentheses, one attribute holding many references at once instead of just one.</p>
 
-                <h2>Numbers Pointing at Other Numbers</h2>
-                <p>Inside that same line sit a few values that aren't text and aren't plain numbers either, <code>#12</code>, <code>#20340</code>, <code>#20370</code>. These are references, called instance names by the ISO standard itself, and each points to a different numbered line elsewhere in this file. This lesson won't follow one yet, that's what 3.5 is for. For now, simply notice they're there.</p>
+                <h2>References Are Addresses, Not Line Numbers</h2>
+                <p>One easy mistake is to assume a reference like <code>#20374</code> means "go to line 20,374." It doesn't.</p>
+                <p>It means "go to the entity whose instance name is #20374."</p>
+                <p>In this file, that entity happens to appear on line 11,567. Those are two completely different numbers. The instance name identifies the entity; the line number simply tells you where your text editor happens to display it. Exporting software can write entities in different orders, but their references continue to work because they point to entity numbers, not physical line numbers.</p>
 
-                <h2>There Is No Tree in Here</h2>
-                <p>The Project → Site → Building → Storey structure that appeared so cleanly in Bonsai does not exist anywhere in this file as a shape. No indentation, no nesting. It's a flat list of numbered lines, one after another, in whatever order the exporting software wrote them.</p>
-                <p>The hierarchy you saw wasn't saved into the file as a tree. The viewer rebuilt it from the references every time it opened the file.</p>
+                <h2>What a Name Already Tells You</h2>
+                <p>One more piece of grammar, and it's a genuinely useful shortcut.</p>
+                <p>Look at the entity name itself, the word immediately after the equals sign.</p>
+                <p><code>IFCBEAM</code> is a physical thing, a real object in the building.</p>
+                <p>But plenty of lines in this file start with <code>IFCREL</code>, and that prefix is a direct signal: this line isn't an object at all, it's a relationship connecting two or more other things together.</p>
+                <p>You can often tell what kind of line you're looking at before reading a single value inside it, simply from that one prefix.</p>
 
-                <h2>The End</h2>
-                <p>Scroll to the very bottom and the file closes with almost no ceremony:</p>
-                <pre><code>#79107= IFCRELSPACEBOUNDARY('13UjdmCIGNmNY28Gtm7OlY',#12,'2ndLevel','2a',#76214,#67536,#79106,.PHYSICAL.,.EXTERNAL.);
-ENDSEC;
+                <h2>Following One Reference by Hand</h2>
+                <p>Take the second value in the beam's line, <code>#12</code>. Search the file for where <code>#12=</code> is actually defined, and here's what's sitting there:</p>
+                <pre><code>#12= IFCOWNERHISTORY(#7,#11,$,.ADDED.,$,$,$,1482339244);</code></pre>
+                <p>That's a real entity, IFCOWNERHISTORY, and the beam's reference to #12 wasn't decoration. It was a genuine, followable address, and you just followed it.</p>
 
-END-ISO-10303-21;</code></pre>
-                <p>One last data line, the section closes, and two lines later the file is finished.</p>
-                <img src="assets/lessons/3-4/3.png" alt="Plain text editor showing the very end of the file: the final IFCRELSPACEBOUNDARY data line, the ENDSEC closing tag, and the END-ISO-10303-21 line that terminates the file.">
+                <h2>One More Hop</h2>
+                <p>This entity has its own references too.</p>
+                <p><code>#11</code> sits right there in its second slot.</p>
+                <p>Search for <code>#11=</code>, and it leads here:</p>
+                <pre><code>#11= IFCAPPLICATION(#10,'20.0.0','ARCHICAD-64','IFC2x3 add-on version: 4009 GER FULL');</code></pre>
+                <p>Follow one reference from a beam, then one more from what it pointed to, and you land on the exact software that created this file: ArchiCAD, version 20.0.0.</p>
+                <p>You've now followed two links manually, by hand, with nothing but the raw text and the knowledge of what # means.</p>
 
-                <h2>Finding One Thing in Forty-Four Thousand Lines</h2>
-                <p>Here's why all of this actually matters, not as an abstract point, but as something you can do right now.</p>
-                <p>This file has 44,259 lines. Nobody scrolls through that looking for one beam. But you don't need to. You already know something useful about it from 3.3, its Name, "Unterzug-1," and its GlobalId. Both are just text, and a flat list of text can be searched. Open the file in any editor and use its search function, <code>Ctrl+F</code> on most of them, then search for <code>Unterzug-1</code>. One result comes back: line <code>#20374</code>, the exact beam, found in seconds, no scrolling, no tree to navigate.</p>
-                <p>This is the real, practical reason any of this is worth knowing. A viewer shows you an interpretation of a file, a rendering built for readability. When something looks wrong in that rendering, a missing material, an odd property, an element that shouldn't be there, the file itself is the only place to check whether the problem is real or whether the tool is misreading it. And now you know how to get there directly: not by browsing a structure that doesn't actually exist on disk, but by searching for the one piece of text you already know, and landing exactly where you need to be.</p>
+                <h2>Going the Other Direction</h2>
+                <p>Every reference so far has pointed outward, from the beam to something else.</p>
+                <p>It works the other way too.</p>
+                <p>Somewhere in this file, a line exists that points back at the beam's own number, #20374.</p>
+                <p>Search the file for that number, and one of the results is this:</p>
+                <pre><code>#14517= IFCRELCONTAINEDINSPATIALSTRUCTURE('13J1BKcWxmCqHLM0nJ4nFJ',#12,$,$,(#14502,#15042,...,#20374,...,#35053),#479);</code></pre>
+                <p>Notice the name first, IFCRELCONTAINEDINSPATIALSTRUCTURE.</p>
+                <p>That <code>IFCREL</code> prefix already told you this is a relationship, and once you read it, the name is almost self-explanatory: something contained in a spatial structure.</p>
+                <p>Inside the parentheses sits exactly the kind of list mentioned earlier, dozens of # references bundled together, and the beam's own number, #20374, is one of them.</p>
+                <p>That whole list points at a single value at the end, <code>#479</code>.</p>
+                <p>Search for that, and it resolves to:</p>
+                <pre><code>#479= IFCBUILDINGSTOREY('2eyxpyOx95m90jmsXLOuR0',#12,'Erdgeschoss',$,$,#477,$,'ACID00000001-0000-0000-0000-000000000000',.ELEMENT.,0.);</code></pre>
+                <p>Erdgeschoss.</p>
+                <p>The exact storey Bonsai's Spatial Container field told you this beam belonged to back in 3.3.</p>
+                <p>Only this time, you didn't read it off a panel.</p>
+                <p>You found the relationship line, recognised it from its own name, located the beam inside its list of references, and traced it to the storey yourself.</p>
+                <p>At this point, you've manually done exactly what IFC software does automatically.</p>
+
+                <h2>What This Actually Means</h2>
+                <p>A viewer's tree was never magic.</p>
+                <p>Bonsai, or any IFC-reading tool, does precisely what you just did, thousands of times over, the instant a file opens: read every line, follow every reference, match every IFCREL line against the objects it connects, and quietly assemble the result into something readable.</p>
+                <p>You've now seen the raw material that process runs on and proven, by hand, that it holds together exactly as claimed.</p>
 
                 <h2>Where This Leads</h2>
-                <p>This lesson showed the shape of the file and how to find your way to any specific point in it by search. The next lesson goes further, teaching you to actually read a line's grammar and follow one of its references by hand, proving that the tree Bonsai drew for you is really just this, thousands of lines quietly pointing at each other, one search away from being checked yourself.</p>
+                <p>Module 3 closes here.</p>
+                <p>You can now open an IFC file, read its metadata, search it directly, understand the grammar of an entity, and follow its internal references by hand.</p>
+                <p>What's still missing is the vocabulary: what an IFCBEAM is actually allowed to contain, what IFCRELCONTAINEDINSPATIALSTRUCTURE and its relatives are really for, how property sets and quantities are defined, and how all of those entities fit together inside the IFC schema.</p>
+                <p>That's Module 4.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An IFC file's structure isn't unique to IFC. It's built on ISO 10303-21, an existing standard for exchanging product data, adopted rather than invented.</li>
-                        <li>Every line in the data section holds its values in a fixed order with no labels. Position, not naming, is what makes each value meaningful.</li>
-                        <li>The file is a flat, searchable list, not a stored tree. Knowing one piece of text, a Name or a GlobalId, is enough to find any element directly, without ever needing to browse a structure that doesn't exist on disk.</li>
+                        <li>Every IFC entity follows the same basic pattern: <code>#number = ENTITYNAME(attributes);</code></li>
+                        <li>Every symbol has a fixed meaning: quotes for text, # for references, $ for unset values, dots for enumerations, and parentheses that can hold either one value or a whole list.</li>
+                        <li>Entity numbers are not line numbers. References point to entity instance names, regardless of where those entities appear in the file.</li>
+                        <li>An entity's name tells you what kind of line it is before you read its contents. Anything beginning with IFCREL describes relationships rather than physical objects.</li>
+                        <li>Following references manually is exactly what IFC software does automatically. There is no hidden process — just entities connected together through references.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/ifc-formats/" target="_blank" rel="noopener noreferrer">buildingSMART — IFC Formats</a></li>
-                        <li><a href="https://en.wikipedia.org/wiki/ISO_10303-21" target="_blank" rel="noopener noreferrer">Wikipedia — ISO 10303-21</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/content/introduction.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IFC4.3 Introduction</a></li>
+                        <li><a href="https://docs.ifcopenshell.org/introduction/introduction_to_ifc.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Introduction to IFC</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-3-3-opening-your-first-ifc-file.html">← Prev</a>
-                <a href="lesson-3-5-reading-ifc-as-plain-text.html">Next →</a>
+                <a href="lesson-3-4-step-physical-file-structure.html">← Prev</a>
+                <span class="disabled">Next →</span>
             </div>
 
         </div>
