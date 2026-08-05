@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3.3 Opening Your First IFC File | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 3.3 — A hands-on first look inside a real IFC file, what the file and each element volunteer about themselves, and where that generosity runs out.">
+    <title>3.4 STEP Physical File Structure at a Glance | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 3.4 — Opening the same IFC file as plain text: the three-section STEP structure, why there's no field labels or tree, and finding one element in 44,000 lines by search.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -213,6 +213,32 @@
             margin: 4px 0 28px;
         }
 
+        .lesson-content pre {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--paper-divider);
+            border-radius: 8px;
+            padding: 18px 22px;
+            margin: 4px 0 28px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .lesson-content code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9em;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .lesson-content pre code {
+            background: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
         .key-takeaways {
             margin-top: 52px;
             background: rgba(255, 255, 255, 0.04);
@@ -339,61 +365,84 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 3 → 3.3</span>
-            <h1 class="lesson-title">3.3 Opening Your First IFC File</h1>
+            <span class="lesson-breadcrumb">Module 3 → 3.4</span>
+            <h1 class="lesson-title">3.4 STEP Physical File Structure at a Glance</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Module 3.2 covered why IFC2x3, IFC4, and IFC4.3 all still exist side by side, and why the right version depends on what both sides of an exchange can actually handle. None of that means much until a file is actually open in front of you. This lesson is the first hands-on moment in the series, opening a real IFC file and looking closely at what it's actually telling you, at three different levels, before drawing any conclusions about what's there.</p>
+                <p>Module 3.3 opened this same file in a viewer and showed a clean tree, a house rendered in 3D, a beam with its own identity, a spatial hierarchy laid out for easy reading. All of that came from somewhere. This lesson opens the exact same file with nothing standing between you and it, no tree, no panels, just plain text, and ends with something genuinely useful: finding one specific thing yourself, in a file with over forty thousand lines, in seconds.</p>
 
-                <h2>The Tool for This Walkthrough</h2>
-                <p>This lesson uses <strong>Bonsai</strong>, a free, open source IFC authoring tool that can also be used purely as a viewer. It isn't the only option. BIMvision is a small, free Windows viewer with a plugin architecture, popular for its light footprint. usBIM.viewer+ runs in the browser, is buildingSMART certified, and can edit models as well as view them. Trimble Connect, which grew out of the earlier Tekla BIMsight, offers a free tier with IFC viewing built into its cloud platform. Newer browser-native options like IFC Lite are also emerging, built to open files instantly with no install at all. The space keeps shifting too, Solibri Anywhere, a long-standing free desktop option, was declared legacy in April 2026. None of these tools change what's actually inside an IFC file. They're simply different windows onto the same data, and this lesson uses Bonsai because it's what the rest of this series will keep coming back to.</p>
+                <h2>A Format IFC Didn't Invent</h2>
+                <p>The file extension is ".ifc," but the structure underneath it isn't specific to IFC at all. buildingSMART's own technical documentation is direct about this: the STEP Physical File format is the most widely used way of exchanging IFC data in practice, and it is based on an existing international standard, <strong>ISO 10303-21</strong>, a clear text encoding method originally built for exchanging general product data, not building data specifically. IFC borrows this format rather than inventing its own.</p>
 
-                <h2>The File, Before You've Looked at the Building</h2>
-                <p>Someone opening an IFC file for the first time usually expects one thing: a 3D model. And there it is, walls, a roof, windows, sitting in the viewport looking exactly like a small house.</p>
-                <p>But look to the right of the model, and the file has already told you something before you've examined a single wall. That panel carries a block of information with nothing to do with geometry at all: which IFC schema the file was written in, IFC4 here, which Model View Definition it was exported against, who authored it, what organisation they worked for, and the exact date and time it was last saved, 2016 in this case, years before you ever opened it. None of that came from measuring the building. It came from the file simply carrying data about its own creation, exactly the kind of thing Module 3.1 pointed at when it said an IFC file describes far more than what something looks like.</p>
-                <img src="assets/lessons/3-3/1.png" alt="Bonsai IFC viewer showing a small house model in the 3D viewport, with the file information panel on the right listing the IFC4 schema version, model view definition, author, organisation, and a 2016 last-saved date.">
+                <h2>Three Sections, and Only Three</h2>
+                <p>Open the file in a plain text editor and it breaks into three parts. Right at the top:</p>
+                <pre><code>ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(...);
+FILE_NAME('...AC20-FZK-Haus.ifc','2016-12-21T17:54:06',('Architect'),('Building Designer Office'),...);
+FILE_SCHEMA(('IFC4'));
+ENDSEC;</code></pre>
+                <p>This is the header, and it's carrying facts you've already seen. The schema, the author, the exact save timestamp, all sitting here as plain text, the actual source of everything Bonsai's Project Overview panel showed you in 3.3.</p>
+                <img src="assets/lessons/3-4/1.png" alt="Plain text editor showing the STEP file header section: ISO-10303-21, the FILE_DESCRIPTION export options, FILE_NAME with the save timestamp 2016-12-21T17:54:06 and author details, FILE_SCHEMA declaring IFC4, and the closing ENDSEC line.">
 
-                <h2>Then One Element, Before You've Looked at Anything Else</h2>
-                <p>The same pattern repeats at a smaller scale. Select a single object, in this case a beam, and a details panel opens with everything the file knows about it. It's dense, and most of it belongs to a later lesson, but two fields are worth focusing on now.</p>
-                <p>Near the top, under Object Attributes, sits a field called GlobalId. This is not something a modeller types in or chooses. It's a permanent, machine-generated identifier assigned automatically the moment the element is created, and by definition it never changes for the life of that object, even if the element is later renamed or moved between files. It's less a label and more a fingerprint, one that stays valid no matter what happens to the model afterward.</p>
-                <p>Further down the same panel sits Spatial Container, stating plainly which storey this exact beam belongs to. The element isn't just floating in space with a shape. Just like the file itself, it carries information about its own identity and its own place in the structure, before anyone has asked it to.</p>
-                <p>Everything else visible in this panel, the Type Attributes block above it, the Property Sets section below, goes considerably deeper than a first look needs to, and that's exactly where Module 4 picks up.</p>
-                <img src="assets/lessons/3-3/3.png" alt="Bonsai element details panel for a selected beam, showing the GlobalId field under Object Attributes and the Spatial Container field naming which storey the beam belongs to.">
+                <h2>The Data Section: Thousands of Lines, One Thing Each</h2>
+                <p>After the header comes the data section, where nearly the entire file lives. In a typical building model, the large majority of these lines describe geometry rather than anything else, one academic analysis of a similarly sized public sample file found over 70 percent of entities were geometric. Every line follows the same shape: a number, an equals sign, an entity name in capitals, and a set of values in brackets.</p>
+                <p>The beam from 3.3 is still here, unchanged, at line 11,567 of this file's 44,259 total lines:</p>
+                <pre><code>#20374= IFCBEAM('3tCgZT92j6fw8fXgwCL3Jm',#12,'Unterzug-1',$,'Radial Gradient Fill 1515460218 200 x 240',#20340,#20370,'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9',$);</code></pre>
+                <p>The values match Bonsai's panel exactly, not similarly, identically. <code>'3tCgZT92j6fw8fXgwCL3Jm'</code> is the same GlobalId. <code>'Unterzug-1'</code> is the same Name. This line is the object. What 3.3 showed you was simply a friendlier way of displaying this exact text.</p>
+                <p>Around it, other lines describe things connected to this beam, its material, its property references, even the relationship tying the material to it. None of it is grouped together or indented to show that connection. It's just more numbered lines, sitting wherever the exporting software happened to place them.</p>
+                <p>Notice too that there are no field labels anywhere. No "GlobalId:" written out, no "Name:" buildingSMART's own IFC documentation confirms this is by design, describing it as a clear-text encoding of entity instances in which attribute values are provided as an ordered sequence of unnamed values. Position is what carries meaning here, first slot is always GlobalId, third slot is always Name, for every IFCBEAM in every IFC file anywhere.</p>
+                <img src="assets/lessons/3-4/2.png" alt="Plain text editor showing data-section lines around line #20374, the IFCBEAM entry for 'Unterzug-1' with its GlobalId, surrounded by unindented, unlabelled numbered lines describing its material and property references.">
 
-                <h2>What All of This Doesn't Tell You</h2>
-                <p>Two levels in, and the pattern so far has been generous: the file describes itself, and every element describes itself too. It would be easy to assume this generosity extends to everything the file lists. It doesn't.</p>
-                <p>Open the full inventory of everything in the file, grouped by type, and one line breaks the pattern. In this file, IfcAnnotation sits at the top with 14 instances, more than the beams, more than the doors. IfcAnnotation elements are not building elements at all. buildingSMART's own schema documentation is specific about this: this entity exists to carry presentation information, things like tag numbers or hatching, that cannot be tied to a single building element's own representation. In practice, this usually means dimension lines and drawing annotations. IFC doesn't have a way to intelligently carry a dimension as dimension data, so when a tool exports one, it falls apart into plain lines and text, stored as IfcAnnotation. ArchiCAD's own documentation confirms this happens by design, not by accident.</p>
-                <p>Fourteen entries in this file's inventory, then, aren't describing the building at all. They're drafting residue, carried along for the ride during export, sitting in the same list as every wall and every door, with no obvious flag to separate them. A file that generously describes itself and every real element inside it can still list things that were never structural to begin with.</p>
-                <img src="assets/lessons/3-3/2.png" alt="Bonsai's file inventory grouped by element type, with IfcAnnotation listed at the top with 14 instances, ahead of the beams and doors in the same model.">
+                <h2>Numbers Pointing at Other Numbers</h2>
+                <p>Inside that same line sit a few values that aren't text and aren't plain numbers either, <code>#12</code>, <code>#20340</code>, <code>#20370</code>. These are references, called instance names by the ISO standard itself, and each points to a different numbered line elsewhere in this file. This lesson won't follow one yet, that's what 3.5 is for. For now, simply notice they're there.</p>
+
+                <h2>There Is No Tree in Here</h2>
+                <p>The Project → Site → Building → Storey structure that appeared so cleanly in Bonsai does not exist anywhere in this file as a shape. No indentation, no nesting. It's a flat list of numbered lines, one after another, in whatever order the exporting software wrote them.</p>
+                <p>The hierarchy you saw wasn't saved into the file as a tree. The viewer rebuilt it from the references every time it opened the file.</p>
+
+                <h2>The End</h2>
+                <p>Scroll to the very bottom and the file closes with almost no ceremony:</p>
+                <pre><code>#79107= IFCRELSPACEBOUNDARY('13UjdmCIGNmNY28Gtm7OlY',#12,'2ndLevel','2a',#76214,#67536,#79106,.PHYSICAL.,.EXTERNAL.);
+ENDSEC;
+
+END-ISO-10303-21;</code></pre>
+                <p>One last data line, the section closes, and two lines later the file is finished.</p>
+                <img src="assets/lessons/3-4/3.png" alt="Plain text editor showing the very end of the file: the final IFCRELSPACEBOUNDARY data line, the ENDSEC closing tag, and the END-ISO-10303-21 line that terminates the file.">
+
+                <h2>Finding One Thing in Forty-Four Thousand Lines</h2>
+                <p>Here's why all of this actually matters, not as an abstract point, but as something you can do right now.</p>
+                <p>This file has 44,259 lines. Nobody scrolls through that looking for one beam. But you don't need to. You already know something useful about it from 3.3, its Name, "Unterzug-1," and its GlobalId. Both are just text, and a flat list of text can be searched. Open the file in any editor and use its search function, <code>Ctrl+F</code> on most of them, then search for <code>Unterzug-1</code>. One result comes back: line <code>#20374</code>, the exact beam, found in seconds, no scrolling, no tree to navigate.</p>
+                <p>This is the real, practical reason any of this is worth knowing. A viewer shows you an interpretation of a file, a rendering built for readability. When something looks wrong in that rendering, a missing material, an odd property, an element that shouldn't be there, the file itself is the only place to check whether the problem is real or whether the tool is misreading it. And now you know how to get there directly: not by browsing a structure that doesn't actually exist on disk, but by searching for the one piece of text you already know, and landing exactly where you need to be.</p>
 
                 <h2>Where This Leads</h2>
-                <p>This lesson looked at what an IFC file volunteers, about itself, about each element, and where that generosity quietly runs out. The next lesson goes underneath the viewer entirely, opening the same file as plain text, to see what all of this actually looks like in its raw form.</p>
+                <p>This lesson showed the shape of the file and how to find your way to any specific point in it by search. The next lesson goes further, teaching you to actually read a line's grammar and follow one of its references by hand, proving that the tree Bonsai drew for you is really just this, thousands of lines quietly pointing at each other, one search away from being checked yourself.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An IFC file carries information about itself, schema version, author, save date, before you've examined a single piece of geometry.</li>
-                        <li>Every element carries a permanent, machine-generated identifier and knows exactly where it sits in the building's structure.</li>
-                        <li>Not everything counted in a file's inventory is genuine building data. Some of it, like IfcAnnotation, is 2D drafting information carried along in the export, sitting alongside the real elements with nothing to tell them apart at a glance.</li>
+                        <li>An IFC file's structure isn't unique to IFC. It's built on ISO 10303-21, an existing standard for exchanging product data, adopted rather than invented.</li>
+                        <li>Every line in the data section holds its values in a fixed order with no labels. Position, not naming, is what makes each value meaningful.</li>
+                        <li>The file is a flat, searchable list, not a stored tree. Knowing one piece of text, a Name or a GlobalId, is enough to find any element directly, without ever needing to browse a structure that doesn't exist on disk.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://standards.buildingsmart.org/IFC/RELEASE/IFC4/ADD2_TC1/HTML/schema/ifcproductextension/lexical/ifcannotation.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcAnnotation</a></li>
-                        <li><a href="https://technical.buildingsmart.org/resources/ifcimplementationguidance/ifc-guid/" target="_blank" rel="noopener noreferrer">buildingSMART — IFC GUID</a></li>
+                        <li><a href="https://technical.buildingsmart.org/standards/ifc/ifc-formats/" target="_blank" rel="noopener noreferrer">buildingSMART — IFC Formats</a></li>
+                        <li><a href="https://en.wikipedia.org/wiki/ISO_10303-21" target="_blank" rel="noopener noreferrer">Wikipedia — ISO 10303-21</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-3-2-ifc-schema-versions.html">← Prev</a>
-                <a href="lesson-3-4-step-physical-file-structure.html">Next →</a>
+                <a href="lesson-3-3-opening-your-first-ifc-file.html">← Prev</a>
+                <span class="disabled">Next →</span>
             </div>
 
         </div>
