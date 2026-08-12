@@ -1,0 +1,62 @@
+4.3 Relationships
+
+Introduction
+
+Relationships in IFC aren't informal links. They're entities in their own right, sharing the same schema root as everything else. This lesson proves that with real lines from AC20-FZK-Haus.ifc, a public buildingSMART benchmark file, and buildingSMART's own schema documentation.
+
+Why Not Just a Direct Pointer
+
+Imagine IFC skipped relationship entities entirely, letting a storey carry an attribute listing every element on that floor directly. It strains almost immediately: a storey can hold six rooms at once, and a single beam can simultaneously belong to a storey, an assembly, and a material, several unrelated facts, in several directions, about the same object.
+
+A Relationship Is Itself a Rooted Entity
+
+Here's a real relationship line, connecting a beam to its storey:
+
+#14517= IFCRELCONTAINEDINSPATIALSTRUCTURE('13J1BKcWxmCqHLM0nJ4nFJ',#12,$,$,(#14502,...,#35053),#479);
+
+The first two values, a string then a reference, are the same GlobalId-then-OwnerHistory shape every rooted entity follows. buildingSMART's schema confirms it directly: IfcRelationship, the abstract ancestor of every relationship type, is a subtype of IfcRoot, adding no attributes beyond what IfcRoot provides.
+
+IFC does not merely store objects. It stores the relationships between objects as objects of their own. The connection between a beam and its storey isn't a footnote on either one; it's a separate, identifiable thing in the model.
+
+Anatomy of This Relationship
+
+GlobalId, inherited: '13J1BKcWxmCqHLM0nJ4nFJ', its own identity, distinct from the beam's or storey's.
+OwnerHistory, inherited: #12.
+Name / Description, inherited: both $, unset.
+RelatedElements, its own: the full list of physical elements on that storey.
+RelatingStructure, its own: #479, the storey itself.
+
+Four inherited slots, two of its own.
+
+Cardinality Is Part of the Meaning
+
+A different relationship, IfcRelAggregates, ties a project to its site:
+
+#400= IFCRELAGGREGATES('1GO86xgv8B470LzUwG9dnQ',#12,$,$,#66,(#389));
+
+RelatingObject holds exactly one value; RelatedObjects holds a set, structurally allowed to hold many. IfcRelContainedInSpatialStructure runs a similar shape in the opposite direction: many RelatedElements, exactly one RelatingStructure. Same underlying pattern, different meaning, and the schema decides which side is plural for each relationship type as part of what it means, not as an incidental detail.
+
+Relationship Families, Briefly
+
+buildingSMART's schema defines 41 instantiable IfcRelationship subtypes, in recognizable categories: spatial decomposition and containment, property and type definition, material and classification association, openings and fills, space boundaries, and element connectivity. One real example worth seeing, since connections aren't only between physical elements:
+
+#17111= IFCRELVOIDSELEMENT('3xfqht94kMnU58M32eCFVW',#12,$,$,#17040,#17106);
+
+RelatingBuildingElement (#17040, a wall) and RelatedOpeningElement (#17106, the hole cut into it), a one-to-one relationship, different cardinality entirely from the aggregation examples above. There isn't one generic relationship in IFC; each family has its own attributes, its own purpose, and its own rule for how many things sit on each side.
+
+A Naming Convention, Not a Formula
+
+Every relationship above fits an IfcRel + [Verb] + [Noun] shape. Treat it as a recognizable signal, not a parsing formula. IfcRel reliably marks a connector rather than a physical thing; the words after it are descriptive names, not a grammar to mechanically decode.
+
+Key Takeaways
+
+A relationship isn't an informal connector. IfcRelationship is a subtype of IfcRoot, so every relationship carries its own GlobalId, OwnerHistory, Name, and Description.
+IFC stores relationships between objects as objects in their own right.
+Cardinality (how many on each side) is part of a relationship's meaning, not incidental. Aggregation, containment, and void relationships each have their own rule.
+There is no single generic relationship entity in IFC, only specialized ones grouped into recognizable families.
+
+Further Reading
+
+buildingSMART — IfcRelationship
+buildingSMART — IfcRelAggregates
+buildingSMART — IfcRelVoidsElement

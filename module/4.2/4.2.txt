@@ -1,0 +1,58 @@
+4.2 Spatial Structure Hierarchy
+
+Introduction
+
+Every IFC model organizes itself into a strict hierarchy, project, site, building, storey, space, and that hierarchy is built entirely through relationships, never through the entities themselves. This lesson demonstrates that using real lines from AC20-FZK-Haus.ifc, a public buildingSMART benchmark file.
+
+The Hierarchy, As Defined
+
+buildingSMART's own documentation states the order plainly, high to low: IfcProject, IfcSite, IfcBuilding, IfcBuildingStorey, IfcSpace. Only IfcProject is mandatory; the rest are optional, present whenever a project has geography, floors, or named rooms.
+
+FZK-Haus has all five:
+
+#66= IFCPROJECT('0lY6P5Ur90TAQnnnI6wtnb',#12,'Projekt-FZK-Haus',...);
+#389= IFCSITE('0KMpiAlnb52RgQuM1CwVfd',#12,'Gelaende',...);
+#434= IFCBUILDING('2hQBAVPOr5VxhS3Jl0O47h',#12,'FZK-Haus',...);
+#479= IFCBUILDINGSTOREY('2eyxpyOx95m90jmsXLOuR0',#12,'Erdgeschoss',...);
+#20909= IFCSPACE('347jFE2yX7IhCEIALmupEH',#12,'4',$,$,#20819,#20904,'Schlafzimmer',...);
+
+One project, one site named "Gelaende" (German: grounds), one building, one storey named "Erdgeschoss" (German: ground floor), and one space, room "4", with a LongName of "Schlafzimmer" (bedroom).
+
+Five Lines Prove Nothing on Their Own
+
+Nothing about those five lines says they're connected. Nothing in the site's own attributes points at the project. If this file only had these five entities, sharing nothing but a common OwnerHistory reference, there would be no hierarchy at all, five unrelated facts.
+
+The hierarchy exists because of a separate relationship entity, IfcRelAggregates:
+
+#400= IFCRELAGGREGATES('1GO86xgv8B470LzUwG9dnQ',#12,$,$,#66,(#389));
+#436= IFCRELAGGREGATES('0FWMHXglS7fAS5ox0icROM',#12,$,$,#389,(#434));
+#481= IFCRELAGGREGATES('1Y0uyqfGvXQyvJl5QblObD',#12,$,$,#434,(#479,#35065));
+#20914= IFCRELAGGREGATES('3XwAdBXgnd6wCOt6sYCOEg',#12,$,$,#479,(#20909,#21283,#21640,#33774,#34191,#34763));
+
+Four lines, each connecting exactly two adjacent levels. #481 ties the building to two storeys at once, Erdgeschoss and a second floor, Dachgeschoss (attic). buildingSMART's own documentation confirms this is deliberate: IfcRelAggregates "establishes the relationship between exactly two levels," one relationship per transition, never one spanning the whole chain.
+
+Entities Plus a Separate Layer Telling You How They Fit
+
+Delete those four relationship lines and the same five entities remain, technically valid, individually complete, structurally meaningless. Nothing says the bedroom belongs to the storey. The relationships aren't decoration; they are the hierarchy.
+
+buildingSMART's documentation also states the structure "shall be acyclic": a site can never sit above a building, a storey can never sit above a space. #481 proves it in practice, listing storeys as parts of the building, never the reverse.
+
+Two Different Relationships, Easy to Conflate
+
+#20914 connects one storey to six rooms at once using IfcRelAggregates. A physical element like a wall or beam reaches the same storey through a completely different relationship entity, IfcRelContainedInSpatialStructure. buildingSMART's own definition of IfcSpace confirms a room is associated to its storey through decomposition, the aggregation mechanism, not spatial containment the way a physical wall is. Two different relationships answer two different questions: what is this storey made of, versus what physical elements sit inside it.
+
+Why This Matters in Practice
+
+A validation tool reading a real IFC file typically reports total concrete volume for a whole building as one number. But every element already carries its own storey link through the containment relationship. Reading that relationship per element, rather than only for classification, is what enables a storey-by-storey breakdown, Level 1 concrete versus Level 2 concrete, from data already sitting in the file. This isn't hypothetical; the data for it exists in files like this one right now.
+
+Key Takeaways
+
+An IFC model isn't a collection of independent entities. It's entities plus a separate relationship layer stating how they connect; delete the relationships, the entities mean nothing.
+The hierarchy runs Project, Site, Building, Storey, Space, high to low. Only Project is mandatory.
+The hierarchy is strictly one-directional; a general level can never sit inside a more specific one.
+A room reaches its storey through aggregation. A physical element reaches its storey through spatial containment. Different relationships, different questions.
+
+Further Reading
+
+buildingSMART — IfcSpatialStructureElement
+buildingSMART — IfcSpace

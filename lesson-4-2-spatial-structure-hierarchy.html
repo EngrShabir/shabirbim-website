@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3.5 Reading an IFC File as Plain Text | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 3.5 — The grammar of a single IFC entity line, and following its references by hand, from a beam to its storey, to prove a viewer's tree is nothing but this.">
+    <title>4.2 Spatial Structure Hierarchy | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 4.2 — Project, Site, Building, Storey, Space: how IFC's spatial hierarchy is built entirely through relationship entities, not through the entities themselves.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -203,6 +203,19 @@
         }
         .lesson-content p:last-child { margin-bottom: 0; }
 
+        .lesson-content ul {
+            margin: 0 0 20px;
+            padding-left: 20px;
+            list-style: disc;
+        }
+        .lesson-content ul li {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .lesson-content ul li:last-child { margin-bottom: 0; }
+
         .lesson-content img {
             display: block;
             width: 100%;
@@ -365,106 +378,67 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 3 → 3.5</span>
-            <h1 class="lesson-title">3.5 Reading an IFC File as Plain Text</h1>
+            <span class="lesson-breadcrumb">Module 4 → 4.2</span>
+            <h1 class="lesson-title">4.2 Spatial Structure Hierarchy</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Module 3.4 showed the shape of an IFC file: three sections, thousands of numbered lines, and a few strange symbols sitting inside them without explaining what they meant. This lesson finishes that. By the end, you'll be able to look at any line in this file and read exactly what it's saying, including following its references by hand.</p>
+                <p>Every IFC model organizes itself into a strict hierarchy, project, site, building, storey, space, and that hierarchy is built entirely through relationships, never through the entities themselves. This lesson demonstrates that using real lines from AC20-FZK-Haus.ifc, a public buildingSMART benchmark file.</p>
 
-                <h2>The Grammar of One Line</h2>
-                <p>Here's the beam again, from line 11,567:</p>
-                <pre><code>#20374= IFCBEAM('3tCgZT92j6fw8fXgwCL3Jm',#12,'Unterzug-1',$,'Radial Gradient Fill 1515460218 200 x 240',#20340,#20370,'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9',$);</code></pre>
-                <p>Almost every entity in an IFC file follows this same overall pattern:</p>
-                <pre><code>#number = ENTITYNAME(attribute1, attribute2, attribute3, ...);</code></pre>
-                <p>Once you recognise that pattern, you've recognised the basic structure of nearly every line in an IFC file.</p>
-                <p>Every symbol here means something specific, and once you know the rules, they apply to every line in every IFC file, not just this one.</p>
-                <p>Anything in single quotes, <code>'Unterzug-1'</code>, <code>'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9'</code>, is plain text, a string.</p>
-                <p>Anything starting with # followed by a number, <code>#12</code>, <code>#20340</code>, <code>#20370</code>, is a reference. It isn't a value describing this beam directly, it's an address pointing at wherever that numbered entity is defined elsewhere in the file. buildingSMART's own IFC documentation calls these ordered, unnamed attribute values, and the ISO standard itself refers to the number as the entity's instance name.</p>
-                <p>A bare <code>$</code> means exactly one thing: this attribute simply wasn't given a value. Not zero, not blank text, genuinely nothing here.</p>
-                <p>A word wrapped in dots, <code>.ADDED.</code>, is an enumeration, a fixed keyword chosen from a defined list of allowed options, not free text someone typed in.</p>
-                <p>And one more, worth knowing before the next section: sometimes what sits inside the parentheses isn't a single reference, but a whole list of them. You'll see this shortly, and it looks exactly like you'd expect, several # references sitting together, separated by commas, all inside one set of parentheses, one attribute holding many references at once instead of just one.</p>
+                <h2>The Hierarchy, As Defined</h2>
+                <p>buildingSMART's own documentation states the order plainly, high to low: IfcProject, IfcSite, IfcBuilding, IfcBuildingStorey, IfcSpace. Only IfcProject is mandatory; the rest are optional, present whenever a project has geography, floors, or named rooms.</p>
+                <p>FZK-Haus has all five:</p>
+                <pre><code>#66= IFCPROJECT('0lY6P5Ur90TAQnnnI6wtnb',#12,'Projekt-FZK-Haus',...);
+#389= IFCSITE('0KMpiAlnb52RgQuM1CwVfd',#12,'Gelaende',...);
+#434= IFCBUILDING('2hQBAVPOr5VxhS3Jl0O47h',#12,'FZK-Haus',...);
+#479= IFCBUILDINGSTOREY('2eyxpyOx95m90jmsXLOuR0',#12,'Erdgeschoss',...);
+#20909= IFCSPACE('347jFE2yX7IhCEIALmupEH',#12,'4',$,$,#20819,#20904,'Schlafzimmer',...);</code></pre>
+                <p>One project, one site named "Gelaende" (German: grounds), one building, one storey named "Erdgeschoss" (German: ground floor), and one space, room "4", with a LongName of "Schlafzimmer" (bedroom).</p>
 
-                <h2>References Are Addresses, Not Line Numbers</h2>
-                <p>One easy mistake is to assume a reference like <code>#20374</code> means "go to line 20,374." It doesn't.</p>
-                <p>It means "go to the entity whose instance name is #20374."</p>
-                <p>In this file, that entity happens to appear on line 11,567. Those are two completely different numbers. The instance name identifies the entity; the line number simply tells you where your text editor happens to display it. Exporting software can write entities in different orders, but their references continue to work because they point to entity numbers, not physical line numbers.</p>
+                <h2>Five Lines Prove Nothing on Their Own</h2>
+                <p>Nothing about those five lines says they're connected. Nothing in the site's own attributes points at the project. If this file only had these five entities, sharing nothing but a common OwnerHistory reference, there would be no hierarchy at all, five unrelated facts.</p>
+                <p>The hierarchy exists because of a separate relationship entity, IfcRelAggregates:</p>
+                <pre><code>#400= IFCRELAGGREGATES('1GO86xgv8B470LzUwG9dnQ',#12,$,$,#66,(#389));
+#436= IFCRELAGGREGATES('0FWMHXglS7fAS5ox0icROM',#12,$,$,#389,(#434));
+#481= IFCRELAGGREGATES('1Y0uyqfGvXQyvJl5QblObD',#12,$,$,#434,(#479,#35065));
+#20914= IFCRELAGGREGATES('3XwAdBXgnd6wCOt6sYCOEg',#12,$,$,#479,(#20909,#21283,#21640,#33774,#34191,#34763));</code></pre>
+                <p>Four lines, each connecting exactly two adjacent levels. <code>#481</code> ties the building to two storeys at once, Erdgeschoss and a second floor, Dachgeschoss (attic). buildingSMART's own documentation confirms this is deliberate: IfcRelAggregates "establishes the relationship between exactly two levels," one relationship per transition, never one spanning the whole chain.</p>
 
-                <h2>What a Name Already Tells You</h2>
-                <p>One more piece of grammar, and it's a genuinely useful shortcut.</p>
-                <p>Look at the entity name itself, the word immediately after the equals sign.</p>
-                <p><code>IFCBEAM</code> is a physical thing, a real object in the building.</p>
-                <p>But plenty of lines in this file start with <code>IFCREL</code>, and that prefix is a direct signal: this line isn't an object at all, it's a relationship connecting two or more other things together.</p>
-                <p>You can often tell what kind of line you're looking at before reading a single value inside it, simply from that one prefix.</p>
+                <h2>Entities Plus a Separate Layer Telling You How They Fit</h2>
+                <p>Delete those four relationship lines and the same five entities remain, technically valid, individually complete, structurally meaningless. Nothing says the bedroom belongs to the storey. The relationships aren't decoration; they are the hierarchy.</p>
+                <p>buildingSMART's documentation also states the structure "shall be acyclic": a site can never sit above a building, a storey can never sit above a space. <code>#481</code> proves it in practice, listing storeys as parts of the building, never the reverse.</p>
 
-                <h2>Following One Reference by Hand</h2>
-                <p>Take the second value in the beam's line, <code>#12</code>. Search the file for where <code>#12=</code> is actually defined, and here's what's sitting there:</p>
-                <pre><code>#12= IFCOWNERHISTORY(#7,#11,$,.ADDED.,$,$,$,1482339244);</code></pre>
-                <p>That's a real entity, IFCOWNERHISTORY, and the beam's reference to #12 wasn't decoration. It was a genuine, followable address, and you just followed it.</p>
+                <h2>Two Different Relationships, Easy to Conflate</h2>
+                <p><code>#20914</code> connects one storey to six rooms at once using IfcRelAggregates. A physical element like a wall or beam reaches the same storey through a completely different relationship entity, IfcRelContainedInSpatialStructure. buildingSMART's own definition of IfcSpace confirms a room is associated to its storey through decomposition, the aggregation mechanism, not spatial containment the way a physical wall is. Two different relationships answer two different questions: what is this storey made of, versus what physical elements sit inside it.</p>
 
-                <h2>One More Hop</h2>
-                <p>This entity has its own references too.</p>
-                <p><code>#11</code> sits right there in its second slot.</p>
-                <p>Search for <code>#11=</code>, and it leads here:</p>
-                <pre><code>#11= IFCAPPLICATION(#10,'20.0.0','ARCHICAD-64','IFC2x3 add-on version: 4009 GER FULL');</code></pre>
-                <p>Follow one reference from a beam, then one more from what it pointed to, and you land on the exact software that created this file: ArchiCAD, version 20.0.0.</p>
-                <p>You've now followed two links manually, by hand, with nothing but the raw text and the knowledge of what # means.</p>
-
-                <h2>Going the Other Direction</h2>
-                <p>Every reference so far has pointed outward, from the beam to something else.</p>
-                <p>It works the other way too.</p>
-                <p>Somewhere in this file, a line exists that points back at the beam's own number, #20374.</p>
-                <p>Search the file for that number, and one of the results is this:</p>
-                <pre><code>#14517= IFCRELCONTAINEDINSPATIALSTRUCTURE('13J1BKcWxmCqHLM0nJ4nFJ',#12,$,$,(#14502,#15042,...,#20374,...,#35053),#479);</code></pre>
-                <p>Notice the name first, IFCRELCONTAINEDINSPATIALSTRUCTURE.</p>
-                <p>That <code>IFCREL</code> prefix already told you this is a relationship, and once you read it, the name is almost self-explanatory: something contained in a spatial structure.</p>
-                <p>Inside the parentheses sits exactly the kind of list mentioned earlier, dozens of # references bundled together, and the beam's own number, #20374, is one of them.</p>
-                <p>That whole list points at a single value at the end, <code>#479</code>.</p>
-                <p>Search for that, and it resolves to:</p>
-                <pre><code>#479= IFCBUILDINGSTOREY('2eyxpyOx95m90jmsXLOuR0',#12,'Erdgeschoss',$,$,#477,$,'ACID00000001-0000-0000-0000-000000000000',.ELEMENT.,0.);</code></pre>
-                <p>Erdgeschoss.</p>
-                <p>The exact storey Bonsai's Spatial Container field told you this beam belonged to back in 3.3.</p>
-                <p>Only this time, you didn't read it off a panel.</p>
-                <p>You found the relationship line, recognised it from its own name, located the beam inside its list of references, and traced it to the storey yourself.</p>
-                <p>At this point, you've manually done exactly what IFC software does automatically.</p>
-
-                <h2>What This Actually Means</h2>
-                <p>A viewer's tree was never magic.</p>
-                <p>Bonsai, or any IFC-reading tool, does precisely what you just did, thousands of times over, the instant a file opens: read every line, follow every reference, match every IFCREL line against the objects it connects, and quietly assemble the result into something readable.</p>
-                <p>You've now seen the raw material that process runs on and proven, by hand, that it holds together exactly as claimed.</p>
-
-                <h2>Where This Leads</h2>
-                <p>Module 3 closes here.</p>
-                <p>You can now open an IFC file, read its metadata, search it directly, understand the grammar of an entity, and follow its internal references by hand.</p>
-                <p>What's still missing is the vocabulary: what an IFCBEAM is actually allowed to contain, what IFCRELCONTAINEDINSPATIALSTRUCTURE and its relatives are really for, how property sets and quantities are defined, and how all of those entities fit together inside the IFC schema.</p>
-                <p>That's Module 4.</p>
+                <h2>Why This Matters in Practice</h2>
+                <p>A validation tool reading a real IFC file typically reports total concrete volume for a whole building as one number. But every element already carries its own storey link through the containment relationship. Reading that relationship per element, rather than only for classification, is what enables a storey-by-storey breakdown, Level 1 concrete versus Level 2 concrete, from data already sitting in the file. This isn't hypothetical; the data for it exists in files like this one right now.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>Every IFC entity follows the same basic pattern: <code>#number = ENTITYNAME(attributes);</code></li>
-                        <li>Every symbol has a fixed meaning: quotes for text, # for references, $ for unset values, dots for enumerations, and parentheses that can hold either one value or a whole list.</li>
-                        <li>Entity numbers are not line numbers. References point to entity instance names, regardless of where those entities appear in the file.</li>
-                        <li>An entity's name tells you what kind of line it is before you read its contents. Anything beginning with IFCREL describes relationships rather than physical objects.</li>
-                        <li>Following references manually is exactly what IFC software does automatically. There is no hidden process — just entities connected together through references.</li>
+                        <li>An IFC model isn't a collection of independent entities. It's entities plus a separate relationship layer stating how they connect; delete the relationships, the entities mean nothing.</li>
+                        <li>The hierarchy runs Project, Site, Building, Storey, Space, high to low. Only Project is mandatory.</li>
+                        <li>The hierarchy is strictly one-directional; a general level can never sit inside a more specific one.</li>
+                        <li>A room reaches its storey through aggregation. A physical element reaches its storey through spatial containment. Different relationships, different questions.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/content/introduction.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IFC4.3 Introduction</a></li>
-                        <li><a href="https://docs.ifcopenshell.org/introduction/introduction_to_ifc.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Introduction to IFC</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcSpatialStructureElement.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcSpatialStructureElement</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcSpace.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcSpace</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-3-4-step-physical-file-structure.html">← Prev</a>
-                <a href="lesson-4-1-what-an-ifc-entity-is.html">Next →</a>
+                <a href="lesson-4-1-what-an-ifc-entity-is.html">← Prev</a>
+                <a href="lesson-4-3-relationships.html">Next →</a>
             </div>
 
         </div>

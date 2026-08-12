@@ -1,0 +1,57 @@
+4.7 Geometry Representation — Conceptual Only
+
+Introduction
+
+Every physical element in an IFC file carries a description of its actual 3D shape, separate entirely from its quantities and separate from its properties. This lesson explains that description at a conceptual level, using a real element from AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART and freely downloadable from its own Sample-Test-Files repository, and shows why reading geometry directly is the last resort for extracting a quantity, not the first choice.
+
+Two Separate Questions About the Same Object
+
+An IfcProduct, the schema branch covering any physical thing with a location, carries two separate attributes for two separate questions: ObjectPlacement answers "where is it," Representation answers "what does it look like." A real beam in FZK-Haus references both:
+
+#20374= IFCBEAM(...,#20340,#20370,...);
+#20340= IFCLOCALPLACEMENT(#477,#20339);
+#20370= IFCPRODUCTDEFINITIONSHAPE($,$,(#20360,#20368));
+
+#20340 is the placement, where this beam sits relative to its storey. #20370 is the shape, and it's worth noticing it holds a list, (#20360, #20368), not one representation but two.
+
+One Object, Multiple Representations
+
+buildingSMART's own documentation explains why an element commonly carries more than one shape description: RepresentationIdentifier labels what kind of representation each one is, 'Body' for the real 3D shape, 'Axis' for a simplified reference line, 'FootPrint' for a 2D ground outline, 'Box' for a simplified bounding box. Different tools need different levels of detail for different jobs, rendering a realistic view versus running a fast clash check.
+
+This beam's two representations confirm exactly that:
+
+#20360= IFCSHAPEREPRESENTATION(#118,'Body','SweptSolid',(#20356));
+#20368= IFCSHAPEREPRESENTATION(#375,'Box','BoundingBox',(#20367));
+
+One real, detailed 3D shape, 'Body', and one simplified bounding box, 'Box', useful for a fast visibility or collision check without needing the real geometry at all. Same beam, two purposes, two representations, both correct simultaneously.
+
+The Concept: A 2D Shape Swept Along a Line
+
+The real shape, #20356, is an IfcExtrudedAreaSolid, confirmed by buildingSMART's schema to represent exactly one idea: take a flat, bounded 2D shape and sweep it in a straight line by some distance. That's the entire concept, no more complex than dragging a stamp shape through space.
+
+#20356= IFCEXTRUDEDAREASOLID(#20346,#20353,#20354,4.07996060195);
+#20346= IFCRECTANGLEPROFILEDEF(.AREA.,'',#20345,0.24,0.2);
+
+The 2D shape being swept, #20346, is a plain rectangle, 0.24 by 0.2 metres. The distance it's swept, the fourth value on the extrusion line, is 4.07996 metres. A rectangle, dragged in a straight line for just over four metres, is the entire geometric description of this beam.
+
+Why Bother, When the Number Is Already There
+
+Multiply it out: 0.24 × 0.2 × 4.07996 = 0.195838 m³. That's the exact volume this beam's own pre-computed Base Quantities already report directly, no geometry math required to get it. This is the real point of this lesson. Reading a quantity that the authoring software already calculated and wrote into the file is one line of code. Deriving that same number from raw geometry means reconstructing a solid shape from a profile and a direction and correctly computing its volume, real computational geometry work, before you even reach the point Base Quantities hand you for free.
+
+Geometry-based extraction is a genuine, necessary capability, but only when there's nothing better to read. A real residential construction project in Kenya needed exactly this: 18 strip footings exported with completely empty Base Quantities, a known limitation of that particular exporter for foundation-level elements. Each footing did carry a real IfcExtrudedAreaSolid, some with as many as eleven separate extrusion segments for a single strip footing. Reading those extrusions directly, summing profile area times depth per segment, recovered real, correct volumes, 16.591 m³ total, where a generic assumed dimension would have produced 12.960 m³, a meaningfully wrong number for real structural concrete.
+
+The Priority, Stated Plainly
+
+The right order for extracting a quantity is: read the pre-computed Base Quantities first, since the authoring software already did the work correctly. Fall back to a descriptive Property Set second, since a modeler-entered dimension is still faster and usually reliable. Only reach for raw geometry, sweeping a profile and computing its resulting volume, when neither of those exists. Geometry is always the most work and the most room for a subtle error, correctly handling multiple segments, correct units, correct extrusion direction, and it should only ever be reached for after confirming nothing simpler is available.
+
+Key Takeaways
+
+ObjectPlacement and Representation answer two separate questions, where something is and what it looks like, and are two separate attributes even on the same element.
+A single element can carry multiple shape representations at once, a detailed 3D body and a simplified bounding box among the common types, each serving a different purpose.
+IfcExtrudedAreaSolid represents one simple concept: a bounded 2D profile swept in a straight line by a given distance.
+Reading a pre-computed Base Quantity is far simpler than deriving the same number from raw geometry, which is exactly why geometry extraction should be the last resort, used only when nothing simpler exists in the file.
+
+Further Reading
+
+buildingSMART — IfcShapeRepresentation
+buildingSMART — IfcExtrudedAreaSolid

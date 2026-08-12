@@ -1,0 +1,69 @@
+4.5 Base Quantities — and Why They're So Often Wrong
+
+Introduction
+
+Base Quantities look structurally identical to Property Sets but serve a completely different purpose: geometry-derived measurement rather than descriptive data, reached through the exact same relationship entity, IfcRelDefinesByProperties, pointed at a different destination, IfcElementQuantity. This lesson shows what that destination looks like when trustworthy, using a real quantity set from AC20-FZK-Haus.ifc, a public buildingSMART benchmark file, then documents, with real numbers from validated construction projects and independently confirmed exporter bugs, the specific ways it commonly isn't.
+
+A Base Quantity Set That Checks Out
+
+A real beam in FZK-Haus carries:
+
+#20495= IFCRELDEFINESBYPROPERTIES('3CxL_sLGMACb_JKSypDyIo',#12,$,$,(#20374),#20493);
+#20493= IFCELEMENTQUANTITY('3xf_OUB$KOlc508dTP$xO6',#12,'BaseQuantities',$,'ARCHICAD BIM Base Quantities',(#20483,...,#20492));
+
+IfcElementQuantity descends from IfcQuantitySet, itself rooted, opening with a real GlobalId, OwnerHistory, Name, Description, plus MethodOfMeasurement and Quantities. Inside:
+
+#20484= IFCQUANTITYLENGTH('Length',$,$,4.07996060195,$);
+#20485= IFCQUANTITYLENGTH('Width',$,$,0.2,$);
+#20486= IFCQUANTITYLENGTH('Depth',$,$,0.24,$);
+#20487= IFCQUANTITYAREA('CrossSectionArea',$,$,0.048,$);
+#20491= IFCQUANTITYVOLUME('GrossVolume',$,$,0.195838108894,$);
+#20492= IFCQUANTITYVOLUME('NetVolume',$,$,0.195838108894,$);
+
+IfcQuantityVolume and its siblings descend from IfcPhysicalSimpleQuantity, not IfcRoot, so none carry a GlobalId. Here, everything agrees: Width × Depth × Length = 0.2 × 0.24 × 4.07996 = 0.195838 m³, matching both GrossVolume and NetVolume exactly, and CrossSectionArea is exactly Width × Depth. No openings, nothing contradictory. Everything past this point is about what happens when it isn't this clean.
+
+Why This File Even Has Them
+
+buildingSMART describes Model View Definitions, MVDs, as filtered schema subsets chosen at export time for a specific purpose. FZK-Haus's own file header declares exactly which one produced it: ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]. It has complete quantities because it was deliberately exported for that purpose. A different export of the same building under a plain Coordination View could carry far less, sometimes none, without the schema itself changing at all. Whether a Base Quantity set exists is often decided before a single wall is drawn.
+
+Missing Entirely
+
+A real residential construction project in Kenya, a Revit IFC2X3 export independently validated across separate engineering reviews, showed all 18 strip footings with zero Base Quantities coverage, while every column, beam, and slab in the same file carried complete quantity sets. This wasn't inconsistent modeling; it's a known limitation specific to foundation-level elements in that exporter, confirmed independently on Autodesk's own IFC exporter documentation and public issue tracker: an "Export base quantities" setting exists as a literal checkbox in Revit's export dialog, and specific categories, distribution elements like pipes and ducts among them, have historically not received quantities regardless of that setting.
+
+Present, But Measuring the Wrong Thing
+
+A ground floor slab in that same Kenyan project reports NetVolume = 60.2249 m³. The real structural concrete in that slab is 13.383 m³. The remaining 46.842 m³ is sand and earth, part of the same multi-layer Revit floor family, folded into one figure because the quantity describes the whole assembly as built, not the structural layer alone. Pricing that number directly added over €8,600 of phantom concrete cost to a real client delivery. Nothing here is a schema bug; NetVolume did exactly what its own definition says. The mistake is assuming that number always means structural material.
+
+Present, But the Numbers Are Wrong
+
+A separate foundation element in the same project reports GrossVolume = 432.0 m³ against NetVolume = 0.432 m³, a factor of exactly 1000, the signature of a units error in the export path. This is independently documented elsewhere too: Autodesk's own issue tracker records a related, separately confirmed failure on the same exporter family, NetVolume and GrossVolume occasionally swapping labels entirely, correct numeric values attached to the wrong name. Two different failure shapes, a scaling error and a label swap, both producing a quantity set that looks structurally perfect and is numerically unusable.
+
+An Internally Impossible Relationship
+
+The sharpest trap needs no external ground truth, only knowing what the two words mean. buildingSMART's own definitions state that GrossArea excludes openings while NetArea accounts for them; NetArea can only ever be equal to or smaller than GrossArea. A systematic pattern across multiple validated Revit exports shows the opposite, NetArea consistently reporting roughly double GrossArea on floor slabs, a physically impossible relationship by the schema's own definitions, catchable without ever seeing a drawing.
+
+Other Documented Patterns, Briefly
+
+Pattern	Shape
+Curved/non-standard wall profiles	Exporter skips Base Quantities entirely (independently reported on Autodesk forums)
+Container entities (e.g. a stair)	Never carry quantities themselves; only child elements do
+A validated Allplan project	No IFC-standard Base Quantities at all; proprietary quantity sets used instead
+Composite/constituent-set elements	Combined volume of multiple materials, no fraction split available
+Zero treated as valid	A populated quantity set with a literal 0.0 where real data should be
+A validated Allplan project's CrossSectionArea	Exported in cm² rather than the m² the schema expects
+NetVolume > GrossVolume on stairs	A real, inverted Revit export quirk specific to stair flights
+Sloped elements	Naive length × width × depth math undercounts by an exact trig factor
+Name-implied vs. modeled dimension	An element's name and its real Base Quantities disagree; the quantity wins
+
+Key Takeaways
+
+The relationship connecting an element to a Property Set can point at a quantity set instead. Code must check which one it received.
+Whether trustworthy Base Quantities exist at all is often decided by the Model View Definition chosen at export time, visible in a file's own header.
+Quantities fail in at least four distinct shapes: missing entirely, present but measuring the wrong thing, present with corrupted or mislabeled numbers, and present with an internally impossible relationship between two values.
+Some traps need outside knowledge. Others, like NetArea exceeding GrossArea, are catchable from the schema's own definitions alone.
+
+Further Reading
+
+buildingSMART — IfcElementQuantity
+Autodesk — Export base quantities to IFC
+Autodesk — GitHub issue #198: NetVolume/GrossVolume label bug

@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3.5 Reading an IFC File as Plain Text | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 3.5 — The grammar of a single IFC entity line, and following its references by hand, from a beam to its storey, to prove a viewer's tree is nothing but this.">
+    <title>4.5 Base Quantities — and Why They're So Often Wrong | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 4.5 — What a trustworthy Base Quantity set looks like, and the real, documented ways it commonly isn't: missing, mismeasured, corrupted, or internally impossible.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -203,6 +203,19 @@
         }
         .lesson-content p:last-child { margin-bottom: 0; }
 
+        .lesson-content ul {
+            margin: 0 0 20px;
+            padding-left: 20px;
+            list-style: disc;
+        }
+        .lesson-content ul li {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .lesson-content ul li:last-child { margin-bottom: 0; }
+
         .lesson-content img {
             display: block;
             width: 100%;
@@ -237,6 +250,32 @@
             background: none;
             padding: 0;
             border-radius: 0;
+        }
+
+        .lesson-content .table-wrap {
+            overflow-x: auto;
+            margin: 4px 0 28px;
+        }
+        .lesson-content table {
+            width: 100%;
+            min-width: 480px;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+        .lesson-content th,
+        .lesson-content td {
+            text-align: left;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--paper-divider);
+            color: var(--text-primary);
+            vertical-align: top;
+        }
+        .lesson-content th {
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+        .lesson-content tr:last-child td {
+            border-bottom: none;
         }
 
         .key-takeaways {
@@ -365,106 +404,117 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 3 → 3.5</span>
-            <h1 class="lesson-title">3.5 Reading an IFC File as Plain Text</h1>
+            <span class="lesson-breadcrumb">Module 4 → 4.5</span>
+            <h1 class="lesson-title">4.5 Base Quantities — and Why They're So Often Wrong</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Module 3.4 showed the shape of an IFC file: three sections, thousands of numbered lines, and a few strange symbols sitting inside them without explaining what they meant. This lesson finishes that. By the end, you'll be able to look at any line in this file and read exactly what it's saying, including following its references by hand.</p>
+                <p>Base Quantities look structurally identical to Property Sets but serve a completely different purpose: geometry-derived measurement rather than descriptive data, reached through the exact same relationship entity, IfcRelDefinesByProperties, pointed at a different destination, IfcElementQuantity. This lesson shows what that destination looks like when trustworthy, using a real quantity set from AC20-FZK-Haus.ifc, a public buildingSMART benchmark file, then documents, with real numbers from validated construction projects and independently confirmed exporter bugs, the specific ways it commonly isn't.</p>
 
-                <h2>The Grammar of One Line</h2>
-                <p>Here's the beam again, from line 11,567:</p>
-                <pre><code>#20374= IFCBEAM('3tCgZT92j6fw8fXgwCL3Jm',#12,'Unterzug-1',$,'Radial Gradient Fill 1515460218 200 x 240',#20340,#20370,'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9',$);</code></pre>
-                <p>Almost every entity in an IFC file follows this same overall pattern:</p>
-                <pre><code>#number = ENTITYNAME(attribute1, attribute2, attribute3, ...);</code></pre>
-                <p>Once you recognise that pattern, you've recognised the basic structure of nearly every line in an IFC file.</p>
-                <p>Every symbol here means something specific, and once you know the rules, they apply to every line in every IFC file, not just this one.</p>
-                <p>Anything in single quotes, <code>'Unterzug-1'</code>, <code>'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9'</code>, is plain text, a string.</p>
-                <p>Anything starting with # followed by a number, <code>#12</code>, <code>#20340</code>, <code>#20370</code>, is a reference. It isn't a value describing this beam directly, it's an address pointing at wherever that numbered entity is defined elsewhere in the file. buildingSMART's own IFC documentation calls these ordered, unnamed attribute values, and the ISO standard itself refers to the number as the entity's instance name.</p>
-                <p>A bare <code>$</code> means exactly one thing: this attribute simply wasn't given a value. Not zero, not blank text, genuinely nothing here.</p>
-                <p>A word wrapped in dots, <code>.ADDED.</code>, is an enumeration, a fixed keyword chosen from a defined list of allowed options, not free text someone typed in.</p>
-                <p>And one more, worth knowing before the next section: sometimes what sits inside the parentheses isn't a single reference, but a whole list of them. You'll see this shortly, and it looks exactly like you'd expect, several # references sitting together, separated by commas, all inside one set of parentheses, one attribute holding many references at once instead of just one.</p>
+                <h2>A Base Quantity Set That Checks Out</h2>
+                <p>A real beam in FZK-Haus carries:</p>
+                <pre><code>#20495= IFCRELDEFINESBYPROPERTIES('3CxL_sLGMACb_JKSypDyIo',#12,$,$,(#20374),#20493);
+#20493= IFCELEMENTQUANTITY('3xf_OUB$KOlc508dTP$xO6',#12,'BaseQuantities',$,'ARCHICAD BIM Base Quantities',(#20483,...,#20492));</code></pre>
+                <p>IfcElementQuantity descends from IfcQuantitySet, itself rooted, opening with a real GlobalId, OwnerHistory, Name, Description, plus MethodOfMeasurement and Quantities. Inside:</p>
+                <pre><code>#20484= IFCQUANTITYLENGTH('Length',$,$,4.07996060195,$);
+#20485= IFCQUANTITYLENGTH('Width',$,$,0.2,$);
+#20486= IFCQUANTITYLENGTH('Depth',$,$,0.24,$);
+#20487= IFCQUANTITYAREA('CrossSectionArea',$,$,0.048,$);
+#20491= IFCQUANTITYVOLUME('GrossVolume',$,$,0.195838108894,$);
+#20492= IFCQUANTITYVOLUME('NetVolume',$,$,0.195838108894,$);</code></pre>
+                <p>IfcQuantityVolume and its siblings descend from IfcPhysicalSimpleQuantity, not IfcRoot, so none carry a GlobalId. Here, everything agrees: Width × Depth × Length = 0.2 × 0.24 × 4.07996 = 0.195838 m³, matching both GrossVolume and NetVolume exactly, and CrossSectionArea is exactly Width × Depth. No openings, nothing contradictory. Everything past this point is about what happens when it isn't this clean.</p>
 
-                <h2>References Are Addresses, Not Line Numbers</h2>
-                <p>One easy mistake is to assume a reference like <code>#20374</code> means "go to line 20,374." It doesn't.</p>
-                <p>It means "go to the entity whose instance name is #20374."</p>
-                <p>In this file, that entity happens to appear on line 11,567. Those are two completely different numbers. The instance name identifies the entity; the line number simply tells you where your text editor happens to display it. Exporting software can write entities in different orders, but their references continue to work because they point to entity numbers, not physical line numbers.</p>
+                <h2>Why This File Even Has Them</h2>
+                <p>buildingSMART describes Model View Definitions, MVDs, as filtered schema subsets chosen at export time for a specific purpose. FZK-Haus's own file header declares exactly which one produced it: <code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code>. It has complete quantities because it was deliberately exported for that purpose. A different export of the same building under a plain Coordination View could carry far less, sometimes none, without the schema itself changing at all. Whether a Base Quantity set exists is often decided before a single wall is drawn.</p>
 
-                <h2>What a Name Already Tells You</h2>
-                <p>One more piece of grammar, and it's a genuinely useful shortcut.</p>
-                <p>Look at the entity name itself, the word immediately after the equals sign.</p>
-                <p><code>IFCBEAM</code> is a physical thing, a real object in the building.</p>
-                <p>But plenty of lines in this file start with <code>IFCREL</code>, and that prefix is a direct signal: this line isn't an object at all, it's a relationship connecting two or more other things together.</p>
-                <p>You can often tell what kind of line you're looking at before reading a single value inside it, simply from that one prefix.</p>
+                <h2>Missing Entirely</h2>
+                <p>A real residential construction project in Kenya, a Revit IFC2X3 export independently validated across separate engineering reviews, showed all 18 strip footings with zero Base Quantities coverage, while every column, beam, and slab in the same file carried complete quantity sets. This wasn't inconsistent modeling; it's a known limitation specific to foundation-level elements in that exporter, confirmed independently on Autodesk's own IFC exporter documentation and public issue tracker: an "Export base quantities" setting exists as a literal checkbox in Revit's export dialog, and specific categories, distribution elements like pipes and ducts among them, have historically not received quantities regardless of that setting.</p>
 
-                <h2>Following One Reference by Hand</h2>
-                <p>Take the second value in the beam's line, <code>#12</code>. Search the file for where <code>#12=</code> is actually defined, and here's what's sitting there:</p>
-                <pre><code>#12= IFCOWNERHISTORY(#7,#11,$,.ADDED.,$,$,$,1482339244);</code></pre>
-                <p>That's a real entity, IFCOWNERHISTORY, and the beam's reference to #12 wasn't decoration. It was a genuine, followable address, and you just followed it.</p>
+                <h2>Present, But Measuring the Wrong Thing</h2>
+                <p>A ground floor slab in that same Kenyan project reports <code>NetVolume = 60.2249 m³</code>. The real structural concrete in that slab is 13.383 m³. The remaining 46.842 m³ is sand and earth, part of the same multi-layer Revit floor family, folded into one figure because the quantity describes the whole assembly as built, not the structural layer alone. Pricing that number directly added over €8,600 of phantom concrete cost to a real client delivery. Nothing here is a schema bug; NetVolume did exactly what its own definition says. The mistake is assuming that number always means structural material.</p>
 
-                <h2>One More Hop</h2>
-                <p>This entity has its own references too.</p>
-                <p><code>#11</code> sits right there in its second slot.</p>
-                <p>Search for <code>#11=</code>, and it leads here:</p>
-                <pre><code>#11= IFCAPPLICATION(#10,'20.0.0','ARCHICAD-64','IFC2x3 add-on version: 4009 GER FULL');</code></pre>
-                <p>Follow one reference from a beam, then one more from what it pointed to, and you land on the exact software that created this file: ArchiCAD, version 20.0.0.</p>
-                <p>You've now followed two links manually, by hand, with nothing but the raw text and the knowledge of what # means.</p>
+                <h2>Present, But the Numbers Are Wrong</h2>
+                <p>A separate foundation element in the same project reports <code>GrossVolume = 432.0 m³</code> against <code>NetVolume = 0.432 m³</code>, a factor of exactly 1000, the signature of a units error in the export path. This is independently documented elsewhere too: Autodesk's own issue tracker records a related, separately confirmed failure on the same exporter family, NetVolume and GrossVolume occasionally swapping labels entirely, correct numeric values attached to the wrong name. Two different failure shapes, a scaling error and a label swap, both producing a quantity set that looks structurally perfect and is numerically unusable.</p>
 
-                <h2>Going the Other Direction</h2>
-                <p>Every reference so far has pointed outward, from the beam to something else.</p>
-                <p>It works the other way too.</p>
-                <p>Somewhere in this file, a line exists that points back at the beam's own number, #20374.</p>
-                <p>Search the file for that number, and one of the results is this:</p>
-                <pre><code>#14517= IFCRELCONTAINEDINSPATIALSTRUCTURE('13J1BKcWxmCqHLM0nJ4nFJ',#12,$,$,(#14502,#15042,...,#20374,...,#35053),#479);</code></pre>
-                <p>Notice the name first, IFCRELCONTAINEDINSPATIALSTRUCTURE.</p>
-                <p>That <code>IFCREL</code> prefix already told you this is a relationship, and once you read it, the name is almost self-explanatory: something contained in a spatial structure.</p>
-                <p>Inside the parentheses sits exactly the kind of list mentioned earlier, dozens of # references bundled together, and the beam's own number, #20374, is one of them.</p>
-                <p>That whole list points at a single value at the end, <code>#479</code>.</p>
-                <p>Search for that, and it resolves to:</p>
-                <pre><code>#479= IFCBUILDINGSTOREY('2eyxpyOx95m90jmsXLOuR0',#12,'Erdgeschoss',$,$,#477,$,'ACID00000001-0000-0000-0000-000000000000',.ELEMENT.,0.);</code></pre>
-                <p>Erdgeschoss.</p>
-                <p>The exact storey Bonsai's Spatial Container field told you this beam belonged to back in 3.3.</p>
-                <p>Only this time, you didn't read it off a panel.</p>
-                <p>You found the relationship line, recognised it from its own name, located the beam inside its list of references, and traced it to the storey yourself.</p>
-                <p>At this point, you've manually done exactly what IFC software does automatically.</p>
+                <h2>An Internally Impossible Relationship</h2>
+                <p>The sharpest trap needs no external ground truth, only knowing what the two words mean. buildingSMART's own definitions state that GrossArea excludes openings while NetArea accounts for them; NetArea can only ever be equal to or smaller than GrossArea. A systematic pattern across multiple validated Revit exports shows the opposite, NetArea consistently reporting roughly double GrossArea on floor slabs, a physically impossible relationship by the schema's own definitions, catchable without ever seeing a drawing.</p>
 
-                <h2>What This Actually Means</h2>
-                <p>A viewer's tree was never magic.</p>
-                <p>Bonsai, or any IFC-reading tool, does precisely what you just did, thousands of times over, the instant a file opens: read every line, follow every reference, match every IFCREL line against the objects it connects, and quietly assemble the result into something readable.</p>
-                <p>You've now seen the raw material that process runs on and proven, by hand, that it holds together exactly as claimed.</p>
-
-                <h2>Where This Leads</h2>
-                <p>Module 3 closes here.</p>
-                <p>You can now open an IFC file, read its metadata, search it directly, understand the grammar of an entity, and follow its internal references by hand.</p>
-                <p>What's still missing is the vocabulary: what an IFCBEAM is actually allowed to contain, what IFCRELCONTAINEDINSPATIALSTRUCTURE and its relatives are really for, how property sets and quantities are defined, and how all of those entities fit together inside the IFC schema.</p>
-                <p>That's Module 4.</p>
+                <h2>Other Documented Patterns, Briefly</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pattern</th>
+                                <th>Shape</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Curved/non-standard wall profiles</td>
+                                <td>Exporter skips Base Quantities entirely (independently reported on Autodesk forums)</td>
+                            </tr>
+                            <tr>
+                                <td>Container entities (e.g. a stair)</td>
+                                <td>Never carry quantities themselves; only child elements do</td>
+                            </tr>
+                            <tr>
+                                <td>A validated Allplan project</td>
+                                <td>No IFC-standard Base Quantities at all; proprietary quantity sets used instead</td>
+                            </tr>
+                            <tr>
+                                <td>Composite/constituent-set elements</td>
+                                <td>Combined volume of multiple materials, no fraction split available</td>
+                            </tr>
+                            <tr>
+                                <td>Zero treated as valid</td>
+                                <td>A populated quantity set with a literal 0.0 where real data should be</td>
+                            </tr>
+                            <tr>
+                                <td>A validated Allplan project's CrossSectionArea</td>
+                                <td>Exported in cm² rather than the m² the schema expects</td>
+                            </tr>
+                            <tr>
+                                <td>NetVolume &gt; GrossVolume on stairs</td>
+                                <td>A real, inverted Revit export quirk specific to stair flights</td>
+                            </tr>
+                            <tr>
+                                <td>Sloped elements</td>
+                                <td>Naive length × width × depth math undercounts by an exact trig factor</td>
+                            </tr>
+                            <tr>
+                                <td>Name-implied vs. modeled dimension</td>
+                                <td>An element's name and its real Base Quantities disagree; the quantity wins</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>Every IFC entity follows the same basic pattern: <code>#number = ENTITYNAME(attributes);</code></li>
-                        <li>Every symbol has a fixed meaning: quotes for text, # for references, $ for unset values, dots for enumerations, and parentheses that can hold either one value or a whole list.</li>
-                        <li>Entity numbers are not line numbers. References point to entity instance names, regardless of where those entities appear in the file.</li>
-                        <li>An entity's name tells you what kind of line it is before you read its contents. Anything beginning with IFCREL describes relationships rather than physical objects.</li>
-                        <li>Following references manually is exactly what IFC software does automatically. There is no hidden process — just entities connected together through references.</li>
+                        <li>The relationship connecting an element to a Property Set can point at a quantity set instead. Code must check which one it received.</li>
+                        <li>Whether trustworthy Base Quantities exist at all is often decided by the Model View Definition chosen at export time, visible in a file's own header.</li>
+                        <li>Quantities fail in at least four distinct shapes: missing entirely, present but measuring the wrong thing, present with corrupted or mislabeled numbers, and present with an internally impossible relationship between two values.</li>
+                        <li>Some traps need outside knowledge. Others, like NetArea exceeding GrossArea, are catchable from the schema's own definitions alone.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/content/introduction.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IFC4.3 Introduction</a></li>
-                        <li><a href="https://docs.ifcopenshell.org/introduction/introduction_to_ifc.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Introduction to IFC</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcElementQuantity.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcElementQuantity</a></li>
+                        <li><a href="https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Export-selected-base-quantities-to-IFC-from-Revit.html" target="_blank" rel="noopener noreferrer">Autodesk — Export base quantities to IFC</a></li>
+                        <li><a href="https://github.com/Autodesk/revit-ifc/issues/198" target="_blank" rel="noopener noreferrer">Autodesk — GitHub issue #198: NetVolume/GrossVolume label bug</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-3-4-step-physical-file-structure.html">← Prev</a>
-                <a href="lesson-4-1-what-an-ifc-entity-is.html">Next →</a>
+                <a href="lesson-4-4-property-sets.html">← Prev</a>
+                <a href="lesson-4-6-types-vs-occurrences.html">Next →</a>
             </div>
 
         </div>

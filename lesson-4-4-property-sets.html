@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3.5 Reading an IFC File as Plain Text | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 3.5 — The grammar of a single IFC entity line, and following its references by hand, from a beam to its storey, to prove a viewer's tree is nothing but this.">
+    <title>4.4 Property Sets — Standard vs Custom | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 4.4 — How IFC attaches open-ended data to an element via IfcRelDefinesByProperties, and real, documented cases where a populated property was simply wrong.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -203,6 +203,19 @@
         }
         .lesson-content p:last-child { margin-bottom: 0; }
 
+        .lesson-content ul {
+            margin: 0 0 20px;
+            padding-left: 20px;
+            list-style: disc;
+        }
+        .lesson-content ul li {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .lesson-content ul li:last-child { margin-bottom: 0; }
+
         .lesson-content img {
             display: block;
             width: 100%;
@@ -365,106 +378,68 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 3 → 3.5</span>
-            <h1 class="lesson-title">3.5 Reading an IFC File as Plain Text</h1>
+            <span class="lesson-breadcrumb">Module 4 → 4.4</span>
+            <h1 class="lesson-title">4.4 Property Sets</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Module 3.4 showed the shape of an IFC file: three sections, thousands of numbered lines, and a few strange symbols sitting inside them without explaining what they meant. This lesson finishes that. By the end, you'll be able to look at any line in this file and read exactly what it's saying, including following its references by hand.</p>
+                <p>Property Sets are how IFC attaches open-ended, extensible data to an element from outside its own line, distinct from the small, fixed set of attributes built into the entity itself. This lesson shows the mechanism with a real property set from AC20-FZK-Haus.ifc, then a real, documented failure mode from validated construction projects.</p>
 
-                <h2>The Grammar of One Line</h2>
-                <p>Here's the beam again, from line 11,567:</p>
-                <pre><code>#20374= IFCBEAM('3tCgZT92j6fw8fXgwCL3Jm',#12,'Unterzug-1',$,'Radial Gradient Fill 1515460218 200 x 240',#20340,#20370,'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9',$);</code></pre>
-                <p>Almost every entity in an IFC file follows this same overall pattern:</p>
-                <pre><code>#number = ENTITYNAME(attribute1, attribute2, attribute3, ...);</code></pre>
-                <p>Once you recognise that pattern, you've recognised the basic structure of nearly every line in an IFC file.</p>
-                <p>Every symbol here means something specific, and once you know the rules, they apply to every line in every IFC file, not just this one.</p>
-                <p>Anything in single quotes, <code>'Unterzug-1'</code>, <code>'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9'</code>, is plain text, a string.</p>
-                <p>Anything starting with # followed by a number, <code>#12</code>, <code>#20340</code>, <code>#20370</code>, is a reference. It isn't a value describing this beam directly, it's an address pointing at wherever that numbered entity is defined elsewhere in the file. buildingSMART's own IFC documentation calls these ordered, unnamed attribute values, and the ISO standard itself refers to the number as the entity's instance name.</p>
-                <p>A bare <code>$</code> means exactly one thing: this attribute simply wasn't given a value. Not zero, not blank text, genuinely nothing here.</p>
-                <p>A word wrapped in dots, <code>.ADDED.</code>, is an enumeration, a fixed keyword chosen from a defined list of allowed options, not free text someone typed in.</p>
-                <p>And one more, worth knowing before the next section: sometimes what sits inside the parentheses isn't a single reference, but a whole list of them. You'll see this shortly, and it looks exactly like you'd expect, several # references sitting together, separated by commas, all inside one set of parentheses, one attribute holding many references at once instead of just one.</p>
+                <h2>What a Property Set Actually Is</h2>
+                <p>A real beam in FZK-Haus carries Pset_BeamCommon, reached through the relationship entity IfcRelDefinesByProperties:</p>
+                <pre><code>#20409= IFCRELDEFINESBYPROPERTIES('0kgaqWTukScGEjKDAQ25_g',#12,$,$,(#20374),#20405);
+#20405= IFCPROPERTYSET('04m_eFuJACryOL903aNSOy',#12,'Pset_BeamCommon',$,(#20403,#20404));
+#20403= IFCPROPERTYSINGLEVALUE('Slope',$,IFCPLANEANGLEMEASURE(0.),$);
+#20404= IFCPROPERTYSINGLEVALUE('Reference',$,IFCIDENTIFIER('Radial Gradient Fill 1515460218 200 x 240'),$);</code></pre>
+                <p>The property set itself, <code>#20405</code>, descends from IfcPropertySetDefinition, a subtype of IfcRoot, so it opens with a real GlobalId, OwnerHistory, Name, Description, plus one attribute of its own: HasProperties.</p>
+                <p>The individual properties inside are a different branch of the schema entirely. IfcProperty, buildingSMART's schema confirms, is a subtype of IfcPropertyAbstraction, not IfcRoot. No property, of any kind, carries a GlobalId. <code>#20403</code>'s four values, Name, Description, NominalValue, Unit, match buildingSMART's own definition of IfcPropertySingleValue exactly.</p>
 
-                <h2>References Are Addresses, Not Line Numbers</h2>
-                <p>One easy mistake is to assume a reference like <code>#20374</code> means "go to line 20,374." It doesn't.</p>
-                <p>It means "go to the entity whose instance name is #20374."</p>
-                <p>In this file, that entity happens to appear on line 11,567. Those are two completely different numbers. The instance name identifies the entity; the line number simply tells you where your text editor happens to display it. Exporting software can write entities in different orders, but their references continue to work because they point to entity numbers, not physical line numbers.</p>
+                <h2>One Entity, Multiple Homes for Data</h2>
+                <p><code>#20404</code>'s value, <code>'Radial Gradient Fill 1515460218 200 x 240'</code>, is the same messy ArchiCAD label that also sits directly on this beam's own entity line, in a completely different position (its ObjectType attribute). Same underlying data, two structurally different homes: one fixed and built into the entity at creation, one external, attached through a relationship, and extensible, an element can carry as many property sets as needed. This is the actual distinction to take from this lesson: an entity's own attributes are few and fixed; its property sets are where IFC's real flexibility lives.</p>
 
-                <h2>What a Name Already Tells You</h2>
-                <p>One more piece of grammar, and it's a genuinely useful shortcut.</p>
-                <p>Look at the entity name itself, the word immediately after the equals sign.</p>
-                <p><code>IFCBEAM</code> is a physical thing, a real object in the building.</p>
-                <p>But plenty of lines in this file start with <code>IFCREL</code>, and that prefix is a direct signal: this line isn't an object at all, it's a relationship connecting two or more other things together.</p>
-                <p>You can often tell what kind of line you're looking at before reading a single value inside it, simply from that one prefix.</p>
+                <h2>Standard Names, Custom Names, Same Mechanism</h2>
+                <p>Pset_BeamCommon is buildingSMART-defined, meant to mean the same thing in any compliant file. That's what "standard" means: portable naming, not portable content, since the Slope and Reference values on this specific beam are still ArchiCAD-specific regardless.</p>
+                <p>The same beam also carries ArchiCADProperties, a name appearing nowhere in buildingSMART's documentation, twenty-nine properties, entirely German, entirely ArchiCAD workflow metadata: Ursprungsgeschoss (origin storey), Raumname (room name), Typ (type). Same mechanism, IfcPropertySet plus IfcRelDefinesByProperties, used for two different purposes: one for cross-software portability, one purely internal to one vendor's workflow.</p>
 
-                <h2>Following One Reference by Hand</h2>
-                <p>Take the second value in the beam's line, <code>#12</code>. Search the file for where <code>#12=</code> is actually defined, and here's what's sitting there:</p>
-                <pre><code>#12= IFCOWNERHISTORY(#7,#11,$,.ADDED.,$,$,$,1482339244);</code></pre>
-                <p>That's a real entity, IFCOWNERHISTORY, and the beam's reference to #12 wasn't decoration. It was a genuine, followable address, and you just followed it.</p>
+                <h2>Presence Isn't Reliability</h2>
+                <p>Pset_WallCommon.LoadBearing is a real, standard, buildingSMART-defined property. Across two separately validated real construction projects, it was populated, and wrong, on both.</p>
+                <p>In one project, two concrete shear walls, material confirmed independently as reinforced concrete panels, were exported with <code>LoadBearing = False</code>. Taking that at face value would have silently dropped 22.7 m³ of real structural concrete from a validation report. In another, every wall in the building showed <code>LoadBearing = False</code> with no material tag at all to fall back on, forcing a validation process to flag the entire wall category rather than trust the flag outright.</p>
+                <p>Neither case is missing data. The property exists, populated, exactly where the schema says it should be. It's simply wrong: a modeler error, not a schema failure. A property's presence confirms the mechanism worked. It confirms nothing about whether a human entered the correct value.</p>
 
-                <h2>One More Hop</h2>
-                <p>This entity has its own references too.</p>
-                <p><code>#11</code> sits right there in its second slot.</p>
-                <p>Search for <code>#11=</code>, and it leads here:</p>
-                <pre><code>#11= IFCAPPLICATION(#10,'20.0.0','ARCHICAD-64','IFC2x3 add-on version: 4009 GER FULL');</code></pre>
-                <p>Follow one reference from a beam, then one more from what it pointed to, and you land on the exact software that created this file: ArchiCAD, version 20.0.0.</p>
-                <p>You've now followed two links manually, by hand, with nothing but the raw text and the knowledge of what # means.</p>
-
-                <h2>Going the Other Direction</h2>
-                <p>Every reference so far has pointed outward, from the beam to something else.</p>
-                <p>It works the other way too.</p>
-                <p>Somewhere in this file, a line exists that points back at the beam's own number, #20374.</p>
-                <p>Search the file for that number, and one of the results is this:</p>
-                <pre><code>#14517= IFCRELCONTAINEDINSPATIALSTRUCTURE('13J1BKcWxmCqHLM0nJ4nFJ',#12,$,$,(#14502,#15042,...,#20374,...,#35053),#479);</code></pre>
-                <p>Notice the name first, IFCRELCONTAINEDINSPATIALSTRUCTURE.</p>
-                <p>That <code>IFCREL</code> prefix already told you this is a relationship, and once you read it, the name is almost self-explanatory: something contained in a spatial structure.</p>
-                <p>Inside the parentheses sits exactly the kind of list mentioned earlier, dozens of # references bundled together, and the beam's own number, #20374, is one of them.</p>
-                <p>That whole list points at a single value at the end, <code>#479</code>.</p>
-                <p>Search for that, and it resolves to:</p>
-                <pre><code>#479= IFCBUILDINGSTOREY('2eyxpyOx95m90jmsXLOuR0',#12,'Erdgeschoss',$,$,#477,$,'ACID00000001-0000-0000-0000-000000000000',.ELEMENT.,0.);</code></pre>
-                <p>Erdgeschoss.</p>
-                <p>The exact storey Bonsai's Spatial Container field told you this beam belonged to back in 3.3.</p>
-                <p>Only this time, you didn't read it off a panel.</p>
-                <p>You found the relationship line, recognised it from its own name, located the beam inside its list of references, and traced it to the storey yourself.</p>
-                <p>At this point, you've manually done exactly what IFC software does automatically.</p>
-
-                <h2>What This Actually Means</h2>
-                <p>A viewer's tree was never magic.</p>
-                <p>Bonsai, or any IFC-reading tool, does precisely what you just did, thousands of times over, the instant a file opens: read every line, follow every reference, match every IFCREL line against the objects it connects, and quietly assemble the result into something readable.</p>
-                <p>You've now seen the raw material that process runs on and proven, by hand, that it holds together exactly as claimed.</p>
-
-                <h2>Where This Leads</h2>
-                <p>Module 3 closes here.</p>
-                <p>You can now open an IFC file, read its metadata, search it directly, understand the grammar of an entity, and follow its internal references by hand.</p>
-                <p>What's still missing is the vocabulary: what an IFCBEAM is actually allowed to contain, what IFCRELCONTAINEDINSPATIALSTRUCTURE and its relatives are really for, how property sets and quantities are defined, and how all of those entities fit together inside the IFC schema.</p>
-                <p>That's Module 4.</p>
+                <h2>A Different Shape: IfcComplexProperty</h2>
+                <p>buildingSMART's schema defines a second property kind entirely: IfcComplexProperty, confirmed to have no NominalValue attribute at all, only a nested HasProperties list, a property containing other properties.</p>
+                <p>A real wall from a validated Allplan-authored project (Allplan being a widely used structural detailing tool in the German, Austrian, and Swiss market) carries exactly this structure:</p>
+                <pre><code>[Object Layer Attributes #1]
+  → Gewerk: Betonarbeiten
+  → Objektname: Wand</code></pre>
+                <p>Gewerk, German for trade, was the single most reliable classification signal in that file: Betonarbeiten means concrete works. It was invisible to a validation process for exactly the reason the schema predicts: code safely skipping properties with no NominalValue also skipped the one property carrying the real answer. The fix wasn't a workaround, it was checking HasProperties specifically when NominalValue is absent. Absence of NominalValue is not absence of useful information.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>Every IFC entity follows the same basic pattern: <code>#number = ENTITYNAME(attributes);</code></li>
-                        <li>Every symbol has a fixed meaning: quotes for text, # for references, $ for unset values, dots for enumerations, and parentheses that can hold either one value or a whole list.</li>
-                        <li>Entity numbers are not line numbers. References point to entity instance names, regardless of where those entities appear in the file.</li>
-                        <li>An entity's name tells you what kind of line it is before you read its contents. Anything beginning with IFCREL describes relationships rather than physical objects.</li>
-                        <li>Following references manually is exactly what IFC software does automatically. There is no hidden process — just entities connected together through references.</li>
+                        <li>Property Sets attach extensible data from outside an element, via IfcRelDefinesByProperties, distinct from the entity's own fixed attributes.</li>
+                        <li>IfcPropertySet is rooted and carries a GlobalId. The properties inside it are not rooted, ever.</li>
+                        <li>A property set's name being "standard" says nothing about whether its values are trustworthy.</li>
+                        <li>IfcComplexProperty has no NominalValue by design. Code must check its nested HasProperties or silently miss real data.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/content/introduction.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IFC4.3 Introduction</a></li>
-                        <li><a href="https://docs.ifcopenshell.org/introduction/introduction_to_ifc.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Introduction to IFC</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPropertySet.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcPropertySet</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPropertySingleValue.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcPropertySingleValue</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcComplexProperty.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcComplexProperty</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-3-4-step-physical-file-structure.html">← Prev</a>
-                <a href="lesson-4-1-what-an-ifc-entity-is.html">Next →</a>
+                <a href="lesson-4-3-relationships.html">← Prev</a>
+                <a href="lesson-4-5-base-quantities.html">Next →</a>
             </div>
 
         </div>

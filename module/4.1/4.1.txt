@@ -1,0 +1,72 @@
+4.1 What an IFC Entity Actually Is
+
+Introduction
+
+Every line in an IFC file is an instance of a formally defined entity, published and maintained by buildingSMART, the international body governing the format, not just text that happens to follow a pattern. This lesson proves that using real lines from AC20-FZK-Haus.ifc, a benchmark model created at Karlsruhe Institute of Technology and published as a public test file by buildingSMART, downloadable by anyone from buildingSMART's own Sample-Test-Files repository.
+
+What a Line Actually Is
+
+An IFC file is plain text. Every entity is one line: a number identifying it, an equals sign, the entity name in capitals, and a list of values in parentheses. buildingSMART's own schema documentation uses exactly this shape to explain the format, giving a minimal worked example directly in its published concept templates: #123=IFCPERSON($,$,'Alice',$,$,$,$,$); One instance, one name, several values deliberately left unset with $.
+
+Real files work identically, just with real content. Here's a real beam from the FZK-Haus file:
+
+#20374= IFCBEAM('3tCgZT92j6fw8fXgwCL3Jm',#12,'Unterzug-1',$,'Radial Gradient Fill 1515460218 200 x 240',#20340,#20370,'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9',$);
+
+Unterzug is German for downstand beam, a common ArchiCAD-exported naming pattern.
+
+An Entity Is a Schema Definition, Not a Habit
+
+It would be easy to assume IFCBEAM is a loose naming convention every vendor happens to follow. It isn't. IfcBeam is a formally defined entity inside the IFC schema, and every instance of it conforms to a fixed attribute structure laid out in that schema, for whatever schema version produced it. Nobody types that structure by hand; the exporting software fills it in.
+
+Sitting above IfcBeam in that schema is IfcRoot, and buildingSMART's own documentation declares it an abstract supertype, "the most abstract and root class for all entity definitions" in the specification. Abstract means exactly what it sounds like: you will never find a line reading #x= IFCROOT(...). Only concrete descendants like IFCBEAM are ever written into a file.
+
+Nine Values, Traced to a Real Schema Chain
+
+buildingSMART's own schema record for IfcBeam gives its full inheritance chain directly: IfcBeam → IfcBuildingElement → IfcElement → IfcProduct → IfcObject → IfcObjectDefinition → IfcRoot. Walking that chain against the real line above:
+
+IfcRoot contributes the first four slots: GlobalId, OwnerHistory, Name, Description. '3tCgZT92j6fw8fXgwCL3Jm', #12 (a reference to another entity), 'Unterzug-1', $.
+IfcObjectDefinition adds nothing here. Its own schema entry defines no explicit attributes, only inverse relationships, which don't appear as positional values.
+IfcObject adds ObjectType: 'Radial Gradient Fill 1515460218 200 x 240', an ArchiCAD 2D drawing-fill label, not a material name, despite sitting in a slot that looks like it should carry one.
+IfcProduct adds ObjectPlacement and Representation: #20340 and #20370, references to where the beam sits and how its shape is described.
+IfcElement adds Tag: 'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9', a separate identifier from the GlobalId.
+IfcBuildingElement adds nothing. It defines no attributes of its own, and buildingSMART's schema also declares it abstract.
+IfcBeam adds the final slot, PredefinedType, here $, unset.
+IfcRoot            → GlobalId, OwnerHistory, Name, Description
+IfcObjectDefinition → (nothing)
+IfcObject          → ObjectType
+IfcProduct         → ObjectPlacement, Representation
+IfcElement         → Tag
+IfcBuildingElement → (nothing, and abstract)
+IfcBeam            → PredefinedType
+
+Nine slots is IfcBeam's number specifically, not IFC's number generally. IfcWall lands on a different count through a different chain. The mechanism, name the chain, trace every value to one link in it, is universal. The exact number isn't.
+
+An IFC entity is not a line of text. The entity is a schema-defined class carrying inherited attributes; the line is just how it looks once written to disk.
+
+Why Some Entities Never Carry a GlobalId
+
+#12 and #11, referenced inside the beam's own line, resolve to:
+
+#12= IFCOWNERHISTORY(#7,#11,$,.ADDED.,$,$,$,1482339244);
+#11= IFCAPPLICATION(#10,'20.0.0','ARCHICAD-64','IFC2x3 add-on version: 4009 GER FULL');
+
+Neither opens with a GlobalId. buildingSMART's own IfcRoot documentation explains why directly: IfcRoot is the supertype of all IFC entities "except for those defined in an IFC resource schema," and resource entities "are not supposed to be independent entities" the way rooted ones are. IfcOwnerHistory and IfcApplication both belong to that resource category, confirmed by their own schema attribute lists, OwningUser, ApplicationDeveloper, and similar fields, none of them GlobalId. The real rule: anything descending from IfcRoot carries one; anything outside that branch, by design, doesn't.
+
+Why This Matters in Practice
+
+That ObjectType value, 'Radial Gradient Fill 1515460218 200 x 240', looks like it should be a material and isn't. A validation engine checking this real file confirmed it: the string is a 2D section-fill pattern, an ArchiCAD drawing-presentation setting the modeler never aligned with the real 3D material before export. A correctly tagged export would show Stahlbeton or Beton C25/30 instead.
+
+Knowing this value comes from ObjectType, not some material-specific attribute, is what makes the discrepancy legible. Without that, it looks like a broken file. With it, the diagnosis is precise: this slot never promised a real material name, so its being wrong here isn't a data corruption, it's a modeler workflow gap. The correct fix is checking BaseQuantities and material association separately, never trusting ObjectType alone, which is exactly what a properly built extraction engine does.
+
+Key Takeaways
+
+An IFC entity is a formally defined schema class, not an informal convention. Every instance conforms to that structure for its schema version.
+Being abstract and having no attributes are separate facts. IfcRoot has attributes but is abstract; IfcObjectDefinition and IfcBuildingElement have neither attributes nor, in the latter case, instantiability.
+Every value in a line traces to the specific schema level that introduced it. The slot count is entity-specific, not universal.
+Entities outside the IfcRoot branch, like IfcOwnerHistory and IfcApplication, never carry a GlobalId, by design.
+
+Further Reading
+
+buildingSMART — IfcRoot
+buildingSMART — IfcBeam
+buildingSMART — Sample-Test-Files (GitHub)

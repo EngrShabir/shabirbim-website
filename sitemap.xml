@@ -158,6 +158,48 @@
   </url>
 
   <url>
+    <loc>https://shabirbim.com/lesson-4-1-what-an-ifc-entity-is.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-4-2-spatial-structure-hierarchy.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-4-3-relationships.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-4-4-property-sets.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-4-5-base-quantities.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-4-6-types-vs-occurrences.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-4-7-geometry-representation.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>https://shabirbim.com/services.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

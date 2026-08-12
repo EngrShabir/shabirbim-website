@@ -1,0 +1,44 @@
+4.6 Types vs Occurrences
+
+Introduction
+
+Every IFC element can share common data through a linked type object instead of repeating it on its own line, and that sharing mechanism can exist correctly while carrying nothing at all. This lesson shows both, using a real type object from AC20-FZK-Haus.ifc, a public buildingSMART benchmark file, and a separately documented failure of the same mechanism on a different vendor's software entirely.
+
+The Relationship: One Type, Many Instances
+
+A real beam in FZK-Haus is linked to a shared type object through IfcRelDefinesByType:
+
+#20540= IFCRELDEFINESBYTYPE('1MoX2DdRLIjH1tYDKjL_$U',#12,$,$,(#20374),#20527);
+
+buildingSMART's documentation describes this relationship as "1-to-N," letting one type apply to a single object or many, all of which then "share the same object type, and the property sets and properties assigned to the object type." If fifty beams share a type-level definition, that data is written once, on the type, and referenced by all fifty instances.
+
+What Sits on the Other End
+
+#20527 is that beam's type, IfcBeamType:
+
+#20527= IFCBEAMTYPE('0qkuQQ1HbP9IXJpQRg$6wU',#12,'Radial Gradient Fill 1515460218 200 x 240',$,$,$,(#20535,#20537),'34BB869A-0519-5925-2853-CDA6EAFC6E9E',$,.NOTDEFINED.);
+
+Ten values, tracing a real chain: IfcRoot (GlobalId, OwnerHistory, Name, Description) → IfcObjectDefinition (nothing) → IfcTypeObject (ApplicableOccurrence, HasPropertySets) → IfcTypeProduct (RepresentationMaps, Tag) → IfcElementType (ElementType) → IfcBuiltElementType (nothing) → IfcBeamType (PredefinedType). The Name value, 'Radial Gradient Fill 1515460218 200 x 240', is the same messy label already found elsewhere on this same beam, now on the shared type object itself.
+
+A Type That Shares Nothing
+
+Look at slot six: HasPropertySets = $. Empty. Nothing anywhere in this file points a property relationship at #20527. The sharing mechanism this lesson just described, common data written once on the type, exists here structurally and carries nothing. The relationship is real. The type object is real. It's simply hollow.
+
+This is not a one-off ArchiCAD quirk. Autodesk's own documentation acknowledges a confirmed regression on a completely different authoring tool: "User-defined Properties applied to family types can't be exported to IFC" from certain Revit versions onward, type-level data silently failing to export while instance-level data on the same elements exports correctly. Two unrelated vendors, the same category of gap: the type/instance sharing mechanism working exactly as designed, and the data meant to live on the type simply never arriving there.
+
+One Real Asymmetry
+
+PredefinedType is optional on IfcBeam, the instance, per buildingSMART's schema, but mandatory on IfcBeamType. The instance's own line leaves it unset, $. Its type explicitly sets .NOTDEFINED., a real enumeration value, not an absence. Optional on the instance, mandatory on the type, and "unset" and "explicitly marked as not defined" are not the same thing.
+
+Key Takeaways
+
+IfcRelDefinesByType lets one Type object be shared by many instances, holding common data once instead of repeating it per occurrence.
+A Type object can exist, be correctly linked, and carry no shared property data at all, confirmed independently on two unrelated authoring tools.
+PredefinedType is optional on an instance but mandatory on its Type.
+IFC2X3 and IFC4 don't always share type entity names; doors and windows use IfcDoorStyle/IfcWindowStyle in IFC2X3 but IfcDoorType/IfcWindowType in IFC4.
+
+Further Reading
+
+buildingSMART — IfcRelDefinesByType
+buildingSMART — IfcBeamType
+Autodesk — Type properties export regression
