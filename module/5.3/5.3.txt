@@ -1,0 +1,63 @@
+5.3 Where Official Schema Docs Live and How to Use Them
+Introduction
+
+Search buildingSMART's own site for a single entity, IfcDoor for instance, and more than one page comes back. Some carry a banner reading "official." Others carry a banner reading "under development." Both claim to describe the same entity, in the same schema version, published by the same organisation.
+
+This isn't a sign that something is broken or unreliable. It's two different documentation surfaces doing two different jobs, and picking the right one on purpose, rather than whichever result search happens to rank first, is the actual skill this lesson teaches.
+
+Two Domains, Two Different Jobs
+
+buildingSMART splits its documentation across domains, and each one answers a different question.
+
+technical.buildingsmart.org answers: where do I find the full release history, the specifications database, and the actual downloadable EXP and XSD schema files for a given version. This is the index, the catalogue of every release buildingSMART has ever published, official or retired.
+
+standards.buildingsmart.org answers a different question: where do I actually read the documentation for one specific entity, type, or property, inside one specific release. This is where the detailed entity pages live, the ones showing an ENTITY block, an attribute table, and a WHERE rule for a real thing like IfcDoorType.
+
+One is the catalogue. The other is the content. Knowing which job a page is doing before reading it prevents a lot of confusion about why two pages don't look alike.
+
+Frozen Release vs. Under Development: Two Different Questions, Not Two Grades of Trust
+
+Inside standards.buildingsmart.org itself, there's a further split, and it's easy to misread this as one version being more trustworthy than the other. It isn't. It's two different questions.
+
+A page under a path like standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/... carries its own banner stating plainly: "official... the version as it has been sent to ISO and has the exact same content as the ISO publication." If the question is what a published, ISO-submitted release formally specifies, word for word, this frozen page is the correct reference. It doesn't change.
+
+A page under ifc43-docs.standards.buildingsmart.org carries a different banner: "under development," with a rolling, date-stamped build number attached. Its own description states directly that it carries the same structure and semantic content as the ISO release, but with additional examples and clarifications added since publication, and possibly typo fixes. Critically, that same page states its own limit: structural changes to the specification or semantic definitions are not allowed there, only clarification. If the question is what the current, most explained version of this documentation says, including examples that didn't exist at publication time, this is the right page, as long as it's read knowing it's a live, evolving document, not a fixed reference point.
+
+Neither page is the wrong choice in general. The wrong choice is picking one without knowing which question you're actually asking.
+
+Matching the Doc Page to the File's Own Declared Version
+
+A real IFC file states which schema it was written against in a single line near its top, something like FILE_SCHEMA(('IFC4'));. That declaration is what should point toward which documentation page is relevant, not habit, and not whichever page a search engine surfaces first.
+
+Precision matters here. A file declaring IFC4 does not automatically mean IFC 4.3 documentation is the correct release-specific reference, even though IFC 4.3 is part of the same broader IFC4.x family and the two share a great deal of vocabulary. IFC4 and IFC 4.3 are still separate, distinct releases, and an entity's exact attribute list or WHERE rule can genuinely differ between them, as the earlier lesson on schema versions showed with IfcDoorStyle and IfcDoorType. Checking a claim about a file against the documentation for the wrong specific release can produce a confidently wrong answer. The file's own declared schema is the primary filter for selecting the applicable release documentation, the starting point for narrowing down which page is even worth reading, not a guarantee that everything on that page describes the file's actual content correctly.
+
+A Real Case Where the Wrong Page Misleads You
+
+This isn't a hypothetical risk. Compare the same entity, IfcDoor, and the same named WHERE rule, CorrectTypeAssigned, across both documentation surfaces for IFC 4.3.
+
+On the frozen, official release page:
+
+CorrectTypeAssigned : (SIZEOF(IsTypedBy) = 0) OR ('IFC4X3_ADD2.IFCDOORTYPE' IN TYPEOF(SELF\IfcObject.IsTypedBy[1].RelatingType));
+
+On the under-development documentation page, same entity, same rule name:
+
+CorrectTypeAssigned : (SIZEOF(IsTypedBy) = 0) OR ('IFC4X3_DEV_03701bb6.IFCDOORTYPE' IN TYPEOF(SELF\IfcObject.IsTypedBy[1].RelatingType));
+
+The logic is identical. What differs is the literal string constant embedded inside the rule, 'IFC4X3_ADD2.IFCDOORTYPE' on the frozen page versus an internal development build tag on the dev page. Anyone who needed the exact, precise text of that rule, to document it, to reference it, to compare it against something else, would get two different literal answers depending on which of the two pages they happened to be reading, despite both pages describing the same official entity in the same schema version.
+
+This is exactly what the previous section's distinction protects against. Someone asking "what does the finalised, ISO-submitted rule actually say, word for word" needs the frozen page. Someone reading for general understanding, aware the exact wording can still shift, can use either. The mistake isn't using the dev page. The mistake is not knowing which one you're on when the exact wording matters.
+
+Why This Matters in Practice
+
+Everything in this lesson is about finding and reading documentation correctly, nothing more. It's worth being precise about what it isn't. Actually checking whether a real file conforms to a schema, running that file against buildingSMART's own automated tooling, is a separate task with its own separate tool, covered later in this series when the Information Quality and Validation module gets to buildingSMART's IFC Validation Service. This lesson is about reading the rulebook correctly by hand. That later one is about a machine checking a real file against it.
+
+Key Takeaways
+technical.buildingsmart.org is the release catalogue: every version, its history, and its downloadable schema files. standards.buildingsmart.org is where the actual entity-level documentation for a specific release lives.
+A frozen release page and an "under development" documentation page for the same version aren't a trustworthy option and a risky one. They answer different questions: what a published release formally says, word for word, versus what the most current, clarified explanation of it currently reads.
+An under-development page can add examples, clarifications, and typo fixes, but its own stated policy is that it cannot change the schema's structure or semantic meaning.
+A file's own declared schema is the primary filter for selecting the applicable release documentation. It narrows down which page is relevant; it doesn't by itself guarantee everything on that page matches the file's actual content.
+The same named WHERE rule, on the same entity, in the same schema version, can carry a different literal string between the frozen and the under-development page, confirmed directly by comparing IfcDoor's CorrectTypeAssigned rule across both. Exact wording should always be checked against the page that matches the actual question being asked.
+Further Reading
+buildingSMART Technical — IFC Schema Specifications
+buildingSMART — IfcDoor, official IFC 4.3 release
+buildingSMART — IfcDoor, under-development documentation

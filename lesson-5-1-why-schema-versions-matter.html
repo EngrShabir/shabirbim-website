@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4.7 Geometry Representation — Conceptual Only | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 4.7 — Placement vs shape, multiple representations on one element, and why reading raw geometry is the last resort for a quantity, not the first choice.">
+    <title>5.1 Why Schema Versions Matter Practically | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 5.1 — Why FILE_SCHEMA, software identity, and data trustworthiness are three separate facts, and what buildingSMART's Major.Minor.Addendum.Corrigendum scheme really governs.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,65 +378,81 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 4 → 4.7</span>
-            <h1 class="lesson-title">4.7 Geometry Representation — Conceptual Only</h1>
+            <span class="lesson-breadcrumb">Module 5 → 5.1</span>
+            <h1 class="lesson-title">5.1 Why Schema Versions Matter Practically</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Every physical element in an IFC file carries a description of its actual 3D shape, separate entirely from its quantities and separate from its properties. This lesson explains that description at a conceptual level, using a real element from AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART and freely downloadable from its own Sample-Test-Files repository, and shows why reading geometry directly is the last resort for extracting a quantity, not the first choice.</p>
+                <p>Open any IFC file in a plain text editor and near the top sits a line like this:</p>
+                <pre><code>FILE_SCHEMA(('IFC4'));</code></pre>
+                <p>That single line declares the rulebook the rest of the file is supposed to conform to. Every entity, every attribute, every relationship in the thousands of lines that follow is written against whatever that named schema actually permits.</p>
+                <p>Here is the core idea this lesson is built around: a version change can alter the structure or interpretation of IFC data, which means two files both carrying the .ifc extension cannot be assumed structurally identical underneath. Anything reading these files, software or a person, has to treat that declared version as load-bearing information, not a label to skim past. This lesson shows exactly what that declaration governs, what it doesn't, and how buildingSMART itself defines the difference between a version change too small to notice and one that can break things outright.</p>
 
-                <h2>Two Separate Questions About the Same Object</h2>
-                <p>An IfcProduct, the schema branch covering any physical thing with a location, carries two separate attributes for two separate questions: ObjectPlacement answers "where is it," Representation answers "what does it look like." A real beam in FZK-Haus references both:</p>
-                <pre><code>#20374= IFCBEAM(...,#20340,#20370,...);
-#20340= IFCLOCALPLACEMENT(#477,#20339);
-#20370= IFCPRODUCTDEFINITIONSHAPE($,$,(#20360,#20368));</code></pre>
-                <p><code>#20340</code> is the placement, where this beam sits relative to its storey. <code>#20370</code> is the shape, and it's worth noticing it holds a list, (#20360, #20368), not one representation but two.</p>
+                <h2>Three Separate Facts, Easy to Blur Into One</h2>
+                <p>It's tempting to treat a phrase like "this file is IFC4" as one simple fact. It's actually three separate facts, and a real file makes this easy to prove.</p>
+                <p>Take a real beam from AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself as a public test file, freely downloadable from its own Sample-Test-Files repository:</p>
+                <pre><code>#20374= IFCBEAM('3tCgZT92j6fw8fXgwCL3Jm',#12,'Unterzug-1',$,'Radial Gradient Fill 1515460218 200 x 240',#20340,#20370,'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9',$);</code></pre>
+                <p>The second value, <code>#12</code>, is a reference. Search this file for where #12= is actually defined:</p>
+                <pre><code>#12= IFCOWNERHISTORY(#7,#11,$,.ADDED.,$,$,$,1482339244);</code></pre>
+                <p>That entity's second value, <code>#11</code>, is another reference. Search for where #11= is defined, and it resolves to:</p>
+                <pre><code>#11= IFCAPPLICATION(#10,'20.0.0','ARCHICAD-64','IFC2x3 add-on version: 4009 GER FULL');</code></pre>
+                <p>This is where the three facts separate out. buildingSMART's own schema defines IfcApplication with exactly four attributes, in this fixed order: ApplicationDeveloper, Version, ApplicationFullName, ApplicationIdentifier. Matching that order against the real values above: <code>'20.0.0'</code> is the Version, the actual software version number. <code>'ARCHICAD-64'</code> is the ApplicationFullName, identifying which software this is. And <code>'IFC2x3 add-on version: 4009 GER FULL'</code> is the ApplicationIdentifier, described in buildingSMART's own documentation as simply "a short identifying name as provided by the application developer," free text the vendor chose, not a formal declaration of anything.</p>
+                <p>Now here is the part worth sitting with. This same file's header, checked separately, declares:</p>
+                <pre><code>FILE_SCHEMA(('IFC4'));</code></pre>
+                <p>The file is IFC4. But the vendor-chosen ApplicationIdentifier string sitting inside that same file literally contains the words "IFC2x3." That's not a contradiction or an error. It's a leftover internal naming convention from the software vendor's own add-on versioning, sitting in a free-text field that was never meant to declare a schema version in the first place. Only one line in this entire file has the authority to say what schema this file conforms to, and it's FILE_SCHEMA, not anything inside IfcApplication.</p>
+                <p>So the three facts are: which schema the file declares conformance to (FILE_SCHEMA), which software and version actually produced it (IfcApplication's Version and ApplicationFullName), and whether the file's actual content can be trusted, a separate question again, unanswered by either of the first two. Reading "IFC2x3" inside a file's own text and concluding that's the file's schema, when the header says IFC4, is exactly the kind of assumption this lesson exists to prevent.</p>
 
-                <h2>One Object, Multiple Representations</h2>
-                <p>buildingSMART's own documentation explains why an element commonly carries more than one shape description: RepresentationIdentifier labels what kind of representation each one is, 'Body' for the real 3D shape, 'Axis' for a simplified reference line, 'FootPrint' for a 2D ground outline, 'Box' for a simplified bounding box. Different tools need different levels of detail for different jobs, rendering a realistic view versus running a fast clash check.</p>
-                <p>This beam's two representations confirm exactly that:</p>
-                <pre><code>#20360= IFCSHAPEREPRESENTATION(#118,'Body','SweptSolid',(#20356));
-#20368= IFCSHAPEREPRESENTATION(#375,'Box','BoundingBox',(#20367));</code></pre>
-                <p>One real, detailed 3D shape, 'Body', and one simplified bounding box, 'Box', useful for a fast visibility or collision check without needing the real geometry at all. Same beam, two purposes, two representations, both correct simultaneously.</p>
+                <h2>The Official Versioning Notation</h2>
+                <p>buildingSMART identifies every IFC release using a four-part scheme: <strong>Major.Minor.Addendum.Corrigendum</strong>. This is the exact notation buildingSMART's own schema specifications page uses to catalogue every release it has published, and each position has a specific, published definition on that same page.</p>
+                <p><strong>Major</strong> versions can include scope expansions or deletions, and may have changes that break compatibility.</p>
+                <p><strong>Minor</strong> versions extend features while compatibility is guaranteed for the schema's "core," though not necessarily for everything else in it.</p>
+                <p><strong>Addendums</strong> improve existing features. The schema itself may change at this level, but upward compatibility is guaranteed.</p>
+                <p><strong>Corrigendums</strong>, per buildingSMART's own definition, consist of improvements to documentation, where the schema does not change, though deprecation is possible.</p>
+                <p>That last definition is worth remembering precisely, because the next section shows a real corrigendum that didn't fully stay inside it.</p>
 
-                <h2>The Concept: A 2D Shape Swept Along a Line</h2>
-                <p>The real shape, <code>#20356</code>, is an IfcExtrudedAreaSolid, confirmed by buildingSMART's schema to represent exactly one idea: take a flat, bounded 2D shape and sweep it in a straight line by some distance. That's the entire concept, no more complex than dragging a stamp shape through space.</p>
-                <pre><code>#20356= IFCEXTRUDEDAREASOLID(#20346,#20353,#20354,4.07996060195);
-#20346= IFCRECTANGLEPROFILEDEF(.AREA.,'',#20345,0.24,0.2);</code></pre>
-                <p>The 2D shape being swept, <code>#20346</code>, is a plain rectangle, 0.24 by 0.2 metres. The distance it's swept, the fourth value on the extrusion line, is 4.07996 metres. A rectangle, dragged in a straight line for just over four metres, is the entire geometric description of this beam.</p>
+                <h2>Even the Category Definition Doesn't Always Tell the Whole Story</h2>
+                <p>buildingSMART's own generic definition says a corrigendum shouldn't touch the schema itself. The actual release notes for the IFC2x3 Technical Corrigendum 1, also published by buildingSMART, describe something more specific: the deletion, modification, or addition of a number of WHERE rules in the EXPRESS schema, along with changes to a handful of functions.</p>
+                <p>buildingSMART's German chapter confirms that files based on IFC2x3 and files based on IFC2x3 TC1 don't actually differ from each other in practice, meaning almost everything in that corrigendum lived in documentation and consistency-rule wording rather than anything a real exchange file carries. Almost, but not entirely. buildingSMART's own notes single out one direct exception: a change to a defined type called IfcCompoundPlaneAngleMeasure, allowing it to optionally express angles down to a fraction of a second, stated plainly as the one change from that entire corrigendum that is actually reflected in the exchange file itself.</p>
+                <p>So two buildingSMART sources, read together, tell a more precise story than either alone. The category is defined as documentation-only, and one real release in that category still reached the schema and, in one specific case, a real file. Automation built to read IFC cannot treat a category label, "just a corrigendum," as a guarantee that nothing structural changed. The category's own definition isn't wrong, it's just not a substitute for checking what a specific release actually did.</p>
 
-                <h2>Why Bother, When the Number Is Already There</h2>
-                <p>Multiply it out: 0.24 × 0.2 × 4.07996 = 0.195838 m³. That's the exact volume this beam's own pre-computed Base Quantities already report directly, no geometry math required to get it. This is the real point of this lesson. Reading a quantity that the authoring software already calculated and wrote into the file is one line of code. Deriving that same number from raw geometry means reconstructing a solid shape from a profile and a direction and correctly computing its volume, real computational geometry work, before you even reach the point Base Quantities hand you for free.</p>
-                <p>Geometry-based extraction is a genuine, necessary capability, but only when there's nothing better to read. A real residential construction project in Kenya needed exactly this: 18 strip footings exported with completely empty Base Quantities, a known limitation of that particular exporter for foundation-level elements. Each footing did carry a real IfcExtrudedAreaSolid, some with as many as eleven separate extrusion segments for a single strip footing. Reading those extrusions directly, summing profile area times depth per segment, recovered real, correct volumes, 16.591 m³ total, where a generic assumed dimension would have produced 12.960 m³, a meaningfully wrong number for real structural concrete.</p>
+                <h2>A Major Version, Traced Through One Real Entity</h2>
+                <p>Compare that to a major-version boundary, using one specific, checkable example: doors.</p>
+                <p>Search buildingSMART's own current schema documentation for IfcDoorStyle, the entity IFC2x3 used for a door's shared type-level data, and its entry carries an explicit deprecation notice: the entity is deprecated and shall not be used, with IfcDoorType named as its replacement. The HISTORY note on IfcDoorType confirms the other side of that same change directly: it's a new entity introduced in IFC4, replacing the previous definition, IfcDoorStyle.</p>
+                <p>Two distinctions worth being precise about here.</p>
+                <p>First, this isn't a rename. IfcDoorType and IfcDoorStyle are separate, differently structured entities with different attribute sets, not the same entity carrying a new label. Code or a file built around one cannot simply substitute the other's name and expect anything to work.</p>
+                <p>Second, "deprecated" and "deleted" are not the same event, and they didn't happen at the same time. IfcDoorStyle was marked deprecated starting in IFC4, meaning flagged as something that should no longer be used, while the entity itself still technically existed in the schema. buildingSMART's own IFC4.3 documentation confirms it was only actually deleted later, stating directly that IfcDoorStyle and IfcWindowStyle were deprecated in IFC4 and are now deleted. A schema can carry a formal warning about an entity for an entire major-version cycle before that entity is finally removed.</p>
 
-                <h2>The Priority, Stated Plainly</h2>
-                <p>The right order for extracting a quantity is: read the pre-computed Base Quantities first, since the authoring software already did the work correctly. Fall back to a descriptive Property Set second, since a modeler-entered dimension is still faster and usually reliable. Only reach for raw geometry, sweeping a profile and computing its resulting volume, when neither of those exists. Geometry is always the most work and the most room for a subtle error, correctly handling multiple segments, correct units, correct extrusion direction, and it should only ever be reached for after confirming nothing simpler is available.</p>
+                <h2>Why This Matters Once Two Real Files Are Involved</h2>
+                <p>None of this is abstract once two files with different schema declarations sit side by side. A file whose header reads <code>FILE_SCHEMA(('IFC4'))</code> is entitled to contain IfcDoorType. A file whose header reads <code>FILE_SCHEMA(('IFC2X3'))</code> is not; its doors are described through IfcDoorStyle instead, a genuinely different entity with a different attribute structure.</p>
+                <p>This is the practical shape of the claim this lesson opened with. The same logical thing, a door's shared type data, is represented by two structurally different entities depending on which side of the IFC4 boundary the file was exported on. Code or a person reading files across projects has to treat the schema declaration as the only authoritative source for which entities are even legal in that file, never a vendor string, never an assumption carried over from the last file that happened to work.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>ObjectPlacement and Representation answer two separate questions, where something is and what it looks like, and are two separate attributes even on the same element.</li>
-                        <li>A single element can carry multiple shape representations at once, a detailed 3D body and a simplified bounding box among the common types, each serving a different purpose.</li>
-                        <li>IfcExtrudedAreaSolid represents one simple concept: a bounded 2D profile swept in a straight line by a given distance.</li>
-                        <li>Reading a pre-computed Base Quantity is far simpler than deriving the same number from raw geometry, which is exactly why geometry extraction should be the last resort, used only when nothing simpler exists in the file.</li>
+                        <li>A file's FILE_SCHEMA declaration, its software identity, and its actual data trustworthiness are three separate facts. A real file can even contain a vendor-chosen text string mentioning a different schema version than the one it actually declares, without that being an error.</li>
+                        <li>buildingSMART defines each level of its Major.Minor.Addendum.Corrigendum scheme explicitly, down to stating that a corrigendum should not change the schema at all, only its documentation.</li>
+                        <li>A real corrigendum can still go beyond its own category's definition. buildingSMART's own release notes for IFC2x3 TC1 describe real EXPRESS-level changes, including one that reached actual exchange files. The category label alone is not proof of what a specific release did.</li>
+                        <li>A real major-version change, IfcDoorStyle to IfcDoorType, shows deprecation and deletion are separate events, sometimes an entire version cycle apart.</li>
+                        <li>Two files can both be valid IFC and still be structurally incompatible on the same real-world concept, because they were written against different rulebooks, and only the schema declaration itself can be trusted to say which.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcShapeRepresentation.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcShapeRepresentation</a></li>
-                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcExtrudedAreaSolid.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcExtrudedAreaSolid</a></li>
+                        <li><a href="https://technical.buildingsmart.org/standards/ifc/ifc-schema-specifications/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — IFC Schema Specifications</a></li>
+                        <li><a href="https://technical.buildingsmart.org/standards/ifc/ifc-schema-specifications/ifc-release-notes/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — IFC Release Notes</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcDoorType.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcDoorType, HISTORY note</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-4-6-types-vs-occurrences.html">← Prev</a>
-                <a href="lesson-5-1-why-schema-versions-matter.html">Next →</a>
+                <a href="lesson-4-7-geometry-representation.html">← Prev</a>
+                <a href="lesson-5-2-express-schema-language.html">Next →</a>
             </div>
 
         </div>

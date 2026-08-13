@@ -1,0 +1,87 @@
+5.1 Why Schema Versions Matter Practically
+Introduction
+
+Open any IFC file in a plain text editor and near the top sits a line like this:
+
+FILE_SCHEMA(('IFC4'));
+
+That single line declares the rulebook the rest of the file is supposed to conform to. Every entity, every attribute, every relationship in the thousands of lines that follow is written against whatever that named schema actually permits.
+
+Here is the core idea this lesson is built around: a version change can alter the structure or interpretation of IFC data, which means two files both carrying the .ifc extension cannot be assumed structurally identical underneath. Anything reading these files, software or a person, has to treat that declared version as load-bearing information, not a label to skim past. This lesson shows exactly what that declaration governs, what it doesn't, and how buildingSMART itself defines the difference between a version change too small to notice and one that can break things outright.
+
+Three Separate Facts, Easy to Blur Into One
+
+It's tempting to treat a phrase like "this file is IFC4" as one simple fact. It's actually three separate facts, and a real file makes this easy to prove.
+
+Take a real beam from AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself as a public test file, freely downloadable from its own Sample-Test-Files repository:
+
+#20374= IFCBEAM('3tCgZT92j6fw8fXgwCL3Jm',#12,'Unterzug-1',$,'Radial Gradient Fill 1515460218 200 x 240',#20340,#20370,'EAFC436F-7CDC-482B-8B-93-5FDB86D941A9',$);
+
+The second value, #12, is a reference. Search this file for where #12= is actually defined:
+
+#12= IFCOWNERHISTORY(#7,#11,$,.ADDED.,$,$,$,1482339244);
+
+That entity's second value, #11, is another reference. Search for where #11= is defined, and it resolves to:
+
+#11= IFCAPPLICATION(#10,'20.0.0','ARCHICAD-64','IFC2x3 add-on version: 4009 GER FULL');
+
+This is where the three facts separate out. buildingSMART's own schema defines IfcApplication with exactly four attributes, in this fixed order: ApplicationDeveloper, Version, ApplicationFullName, ApplicationIdentifier. Matching that order against the real values above: '20.0.0' is the Version, the actual software version number. 'ARCHICAD-64' is the ApplicationFullName, identifying which software this is. And 'IFC2x3 add-on version: 4009 GER FULL' is the ApplicationIdentifier, described in buildingSMART's own documentation as simply "a short identifying name as provided by the application developer," free text the vendor chose, not a formal declaration of anything.
+
+Now here is the part worth sitting with. This same file's header, checked separately, declares:
+
+FILE_SCHEMA(('IFC4'));
+
+The file is IFC4. But the vendor-chosen ApplicationIdentifier string sitting inside that same file literally contains the words "IFC2x3." That's not a contradiction or an error. It's a leftover internal naming convention from the software vendor's own add-on versioning, sitting in a free-text field that was never meant to declare a schema version in the first place. Only one line in this entire file has the authority to say what schema this file conforms to, and it's FILE_SCHEMA, not anything inside IfcApplication.
+
+So the three facts are: which schema the file declares conformance to (FILE_SCHEMA), which software and version actually produced it (IfcApplication's Version and ApplicationFullName), and whether the file's actual content can be trusted, a separate question again, unanswered by either of the first two. Reading "IFC2x3" inside a file's own text and concluding that's the file's schema, when the header says IFC4, is exactly the kind of assumption this lesson exists to prevent.
+
+The Official Versioning Notation
+
+buildingSMART identifies every IFC release using a four-part scheme: Major.Minor.Addendum.Corrigendum. This is the exact notation buildingSMART's own schema specifications page uses to catalogue every release it has published, and each position has a specific, published definition on that same page.
+
+Major versions can include scope expansions or deletions, and may have changes that break compatibility.
+
+Minor versions extend features while compatibility is guaranteed for the schema's "core," though not necessarily for everything else in it.
+
+Addendums improve existing features. The schema itself may change at this level, but upward compatibility is guaranteed.
+
+Corrigendums, per buildingSMART's own definition, consist of improvements to documentation, where the schema does not change, though deprecation is possible.
+
+That last definition is worth remembering precisely, because the next section shows a real corrigendum that didn't fully stay inside it.
+
+Even the Category Definition Doesn't Always Tell the Whole Story
+
+buildingSMART's own generic definition says a corrigendum shouldn't touch the schema itself. The actual release notes for the IFC2x3 Technical Corrigendum 1, also published by buildingSMART, describe something more specific: the deletion, modification, or addition of a number of WHERE rules in the EXPRESS schema, along with changes to a handful of functions.
+
+buildingSMART's German chapter confirms that files based on IFC2x3 and files based on IFC2x3 TC1 don't actually differ from each other in practice, meaning almost everything in that corrigendum lived in documentation and consistency-rule wording rather than anything a real exchange file carries. Almost, but not entirely. buildingSMART's own notes single out one direct exception: a change to a defined type called IfcCompoundPlaneAngleMeasure, allowing it to optionally express angles down to a fraction of a second, stated plainly as the one change from that entire corrigendum that is actually reflected in the exchange file itself.
+
+So two buildingSMART sources, read together, tell a more precise story than either alone. The category is defined as documentation-only, and one real release in that category still reached the schema and, in one specific case, a real file. Automation built to read IFC cannot treat a category label, "just a corrigendum," as a guarantee that nothing structural changed. The category's own definition isn't wrong, it's just not a substitute for checking what a specific release actually did.
+
+A Major Version, Traced Through One Real Entity
+
+Compare that to a major-version boundary, using one specific, checkable example: doors.
+
+Search buildingSMART's own current schema documentation for IfcDoorStyle, the entity IFC2x3 used for a door's shared type-level data, and its entry carries an explicit deprecation notice: the entity is deprecated and shall not be used, with IfcDoorType named as its replacement. The HISTORY note on IfcDoorType confirms the other side of that same change directly: it's a new entity introduced in IFC4, replacing the previous definition, IfcDoorStyle.
+
+Two distinctions worth being precise about here.
+
+First, this isn't a rename. IfcDoorType and IfcDoorStyle are separate, differently structured entities with different attribute sets, not the same entity carrying a new label. Code or a file built around one cannot simply substitute the other's name and expect anything to work.
+
+Second, "deprecated" and "deleted" are not the same event, and they didn't happen at the same time. IfcDoorStyle was marked deprecated starting in IFC4, meaning flagged as something that should no longer be used, while the entity itself still technically existed in the schema. buildingSMART's own IFC4.3 documentation confirms it was only actually deleted later, stating directly that IfcDoorStyle and IfcWindowStyle were deprecated in IFC4 and are now deleted. A schema can carry a formal warning about an entity for an entire major-version cycle before that entity is finally removed.
+
+Why This Matters Once Two Real Files Are Involved
+
+None of this is abstract once two files with different schema declarations sit side by side. A file whose header reads FILE_SCHEMA(('IFC4')) is entitled to contain IfcDoorType. A file whose header reads FILE_SCHEMA(('IFC2X3')) is not; its doors are described through IfcDoorStyle instead, a genuinely different entity with a different attribute structure.
+
+This is the practical shape of the claim this lesson opened with. The same logical thing, a door's shared type data, is represented by two structurally different entities depending on which side of the IFC4 boundary the file was exported on. Code or a person reading files across projects has to treat the schema declaration as the only authoritative source for which entities are even legal in that file, never a vendor string, never an assumption carried over from the last file that happened to work.
+
+Key Takeaways
+A file's FILE_SCHEMA declaration, its software identity, and its actual data trustworthiness are three separate facts. A real file can even contain a vendor-chosen text string mentioning a different schema version than the one it actually declares, without that being an error.
+buildingSMART defines each level of its Major.Minor.Addendum.Corrigendum scheme explicitly, down to stating that a corrigendum should not change the schema at all, only its documentation.
+A real corrigendum can still go beyond its own category's definition. buildingSMART's own release notes for IFC2x3 TC1 describe real EXPRESS-level changes, including one that reached actual exchange files. The category label alone is not proof of what a specific release did.
+A real major-version change, IfcDoorStyle to IfcDoorType, shows deprecation and deletion are separate events, sometimes an entire version cycle apart.
+Two files can both be valid IFC and still be structurally incompatible on the same real-world concept, because they were written against different rulebooks, and only the schema declaration itself can be trusted to say which.
+Further Reading
+buildingSMART Technical — IFC Schema Specifications
+buildingSMART Technical — IFC Release Notes
+buildingSMART — IfcDoorType, HISTORY note

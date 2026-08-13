@@ -200,6 +200,30 @@
   </url>
 
   <url>
+    <loc>https://shabirbim.com/lesson-5-1-why-schema-versions-matter.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-5-2-express-schema-language.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-5-3-official-schema-docs.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-5-4-model-view-definitions.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>https://shabirbim.com/services.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

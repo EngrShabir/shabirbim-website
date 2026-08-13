@@ -1,0 +1,71 @@
+5.2 EXPRESS Schema Language: Reading, Not Writing
+Introduction
+
+Every IFC entity has a formal definition somewhere, a document stating exactly what attributes it carries, in what order, and under what conditions. That document isn't written in IFC itself. It's written in a separate language called EXPRESS, and reading it directly is the only way to check a claim about IFC against the actual source rather than someone's secondhand explanation of it.
+
+This lesson is about reading that language, not writing a schema of your own. By the end, a real EXPRESS entity block will be fully legible: what each line declares, how one entity inherits from another, and how a schema states a rule about data that goes beyond simply naming a value's type.
+
+What EXPRESS Actually Is
+
+EXPRESS is a data modeling language, formally defined by the ISO standard 10303-11. That's not a separate, unrelated standard invented for construction. It's part of the same ISO 10303 family, commonly known as STEP, that already came up when this series looked at the raw structure of an IFC file. ISO's own listing for the standard describes EXPRESS plainly: it consists of language elements that allow an unambiguous data definition and the specification of constraints on the data defined.
+
+That one sentence splits into exactly two jobs, and each one has its own syntax. Defining what data looks like is the job of an ENTITY block. Specifying a constraint beyond simple typing is the job of a WHERE rule. The rest of this lesson covers both, in that order.
+
+Anatomy of an ENTITY Block, and What SUBTYPE OF Actually Does
+
+Here's a real, complete EXPRESS definition, published directly on buildingSMART's own schema documentation for IfcDoorType:
+
+ENTITY IfcDoorType
+ SUBTYPE OF (IfcBuiltElementType);
+	PredefinedType : IfcDoorTypeEnum;
+	OperationType : IfcDoorTypeOperationEnum;
+	ParameterTakesPrecedence : OPTIONAL IfcBoolean;
+	UserDefinedOperationType : OPTIONAL IfcLabel;
+ WHERE
+	CorrectPredefinedType : (PredefinedType <> IfcDoorTypeEnum.USERDEFINED) OR
+ ((PredefinedType = IfcDoorTypeEnum.USERDEFINED) AND EXISTS (SELF\IfcElementType.ElementType));
+END_ENTITY;
+
+The overall shape is straightforward. ENTITY IfcDoorType opens the definition. END_ENTITY; closes it. Between them sit two distinct blocks: a list of attributes, then a WHERE section.
+
+The second line is the one worth slowing down on: SUBTYPE OF (IfcBuiltElementType). It's easy to read this as a label, a note about where this entity sits in some documentation hierarchy. It's not a label. It's a functional declaration that IfcDoorType inherits every attribute IfcBuiltElementType defines, and everything IfcBuiltElementType itself inherits from its own parent, all the way up.
+
+buildingSMART's own schema record for IfcDoorType lists that full chain directly: IfcRoot, then IfcObjectDefinition, then IfcTypeObject, then IfcTypeProduct, then IfcElementType, then IfcBuiltElementType, then finally IfcDoorType itself. Seven levels. Only four attributes appear inside the ENTITY block shown above, PredefinedType, OperationType, ParameterTakesPrecedence, UserDefinedOperationType, because those are the only attributes IfcDoorType contributes on its own. Everything else it carries, GlobalId from IfcRoot, ElementType from IfcElementType, and more, arrives through that SUBTYPE OF line, not through anything written inside this specific block.
+
+This isn't a theoretical claim. The WHERE rule inside this exact block proves it directly, and the next section shows exactly how.
+
+Two Separate Gates: OPTIONAL and WHERE
+
+It's easy to treat OPTIONAL and a WHERE rule as two ways of saying the same kind of thing, some looser version of "required." They're not. They're two separate mechanisms, answering two separate questions, and this same block shows both operating on the same attribute at once.
+
+OPTIONAL answers one question: can this attribute be left unset at all. Look again at the attribute list. PredefinedType and OperationType have no OPTIONAL keyword, they must carry a value in every instance of this entity. ParameterTakesPrecedence and UserDefinedOperationType do carry OPTIONAL, so a real IfcDoorType instance is allowed to leave them unset entirely.
+
+WHERE answers a different question: given the values that are actually present, do they satisfy some further condition. That's what the CorrectPredefinedType rule is doing. Translated into plain language, and confirmed by buildingSMART's own stated description of this exact rule: the inherited attribute ElementType shall be provided if PredefinedType is set to USERDEFINED.
+
+Here's the part that makes the distinction unmistakable. ElementType, inherited from IfcElementType five levels up the chain traced above, is itself defined as OPTIONAL in its own schema entry, allowed to be absent by default. But this WHERE rule reaches up through the inheritance chain, using the syntax SELF\IfcElementType.ElementType, and conditionally demands that same optional attribute actually be present, specifically when PredefinedType equals USERDEFINED. The same attribute is optional by one formal constraint and conditionally required by another, and both are part of the schema's own formal constraints, sitting at the specification level, not a claim about whether any particular exporter or validator actually checks them. OPTIONAL sets the default. WHERE can tighten it under specific conditions. A schema reader who only checks one of the two is reading half the specification.
+
+Reading Optional vs Mandatory Directly From the Source
+
+None of this requires trusting a secondhand summary. The same block settles it directly, line by line.
+
+PredefinedType : IfcDoorTypeEnum; carries no OPTIONAL keyword. Mandatory, no exceptions written into the attribute list itself.
+
+ParameterTakesPrecedence : OPTIONAL IfcBoolean; carries the keyword explicitly. Allowed to be absent, and nothing else in this specific attribute line changes that.
+
+That's the entire test: presence or absence of the word OPTIONAL directly in front of the type. No inference needed, no cross-referencing required, just reading the line as written. The harder question, whether something optional can still become conditionally required, is answered by checking the separate WHERE section, exactly as the previous section walked through.
+
+Why Reading This Yourself Is Worth Doing
+
+A tool, an article, or a person's explanation can all be wrong about what a schema actually specifies. The EXPRESS text itself cannot be wrong about itself, it's the primary source everything else is a description of. When a claim about IFC needs settling, whether an attribute is really mandatory, whether two entities are really related, whether a rule really applies under a given condition, the fastest and most reliable check is reading the actual ENTITY block, exactly as this lesson just did.
+
+Two things this lesson deliberately left for later, so they don't get blurred with what's covered here. Finding the right schema documentation page for a given IFC version, and knowing which of buildingSMART's several documentation domains to trust, is its own skill, covered next. And reading actual data instances inside a real file programmatically, in code, rather than reading the schema definition that governs them, is a different task entirely, covered later in this series when Python and IfcOpenShell come into the picture.
+
+Key Takeaways
+EXPRESS is a formally defined ISO standard, ISO 10303-11, part of the same STEP family that defines the physical IFC file format itself, not a bespoke language invented for construction.
+SUBTYPE OF is a functional inheritance declaration, not a documentation label. An entity's full attribute set is rarely visible in its own ENTITY block alone; most of it arrives from ancestors up the chain.
+OPTIONAL and WHERE are two separate mechanisms. OPTIONAL governs whether a value may be absent by default. WHERE governs whether present values, or the presence of a value at all under a specific condition, satisfy a further constraint.
+A single real attribute can be OPTIONAL at the schema level and still be made conditionally mandatory by a WHERE rule. Neither mechanism substitutes for the other, and both operate at the specification level, independent of whether any specific exporter or validator actually checks them.
+Reading the actual EXPRESS text directly settles a schema question more reliably than any secondhand summary, because it is the primary source, not a description of one.
+Further Reading
+ISO — ISO 10303-11:2004, EXPRESS Language Reference Manual
+buildingSMART — IfcDoorType, full schema record

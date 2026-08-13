@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4.7 Geometry Representation — Conceptual Only | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 4.7 — Placement vs shape, multiple representations on one element, and why reading raw geometry is the last resort for a quantity, not the first choice.">
+    <title>5.2 EXPRESS Schema Language: Reading, Not Writing | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 5.2 — Reading a real EXPRESS ENTITY block: what SUBTYPE OF actually does, and how OPTIONAL and WHERE are two separate constraint mechanisms, not one.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,65 +378,77 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 4 → 4.7</span>
-            <h1 class="lesson-title">4.7 Geometry Representation — Conceptual Only</h1>
+            <span class="lesson-breadcrumb">Module 5 → 5.2</span>
+            <h1 class="lesson-title">5.2 EXPRESS Schema Language: Reading, Not Writing</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>Every physical element in an IFC file carries a description of its actual 3D shape, separate entirely from its quantities and separate from its properties. This lesson explains that description at a conceptual level, using a real element from AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART and freely downloadable from its own Sample-Test-Files repository, and shows why reading geometry directly is the last resort for extracting a quantity, not the first choice.</p>
+                <p>Every IFC entity has a formal definition somewhere, a document stating exactly what attributes it carries, in what order, and under what conditions. That document isn't written in IFC itself. It's written in a separate language called EXPRESS, and reading it directly is the only way to check a claim about IFC against the actual source rather than someone's secondhand explanation of it.</p>
+                <p>This lesson is about reading that language, not writing a schema of your own. By the end, a real EXPRESS entity block will be fully legible: what each line declares, how one entity inherits from another, and how a schema states a rule about data that goes beyond simply naming a value's type.</p>
 
-                <h2>Two Separate Questions About the Same Object</h2>
-                <p>An IfcProduct, the schema branch covering any physical thing with a location, carries two separate attributes for two separate questions: ObjectPlacement answers "where is it," Representation answers "what does it look like." A real beam in FZK-Haus references both:</p>
-                <pre><code>#20374= IFCBEAM(...,#20340,#20370,...);
-#20340= IFCLOCALPLACEMENT(#477,#20339);
-#20370= IFCPRODUCTDEFINITIONSHAPE($,$,(#20360,#20368));</code></pre>
-                <p><code>#20340</code> is the placement, where this beam sits relative to its storey. <code>#20370</code> is the shape, and it's worth noticing it holds a list, (#20360, #20368), not one representation but two.</p>
+                <h2>What EXPRESS Actually Is</h2>
+                <p><strong>EXPRESS</strong> is a data modeling language, formally defined by the ISO standard 10303-11. That's not a separate, unrelated standard invented for construction. It's part of the same ISO 10303 family, commonly known as STEP, that already came up when this series looked at the raw structure of an IFC file. ISO's own listing for the standard describes EXPRESS plainly: it consists of language elements that allow an unambiguous data definition and the specification of constraints on the data defined.</p>
+                <p>That one sentence splits into exactly two jobs, and each one has its own syntax. Defining what data looks like is the job of an ENTITY block. Specifying a constraint beyond simple typing is the job of a WHERE rule. The rest of this lesson covers both, in that order.</p>
 
-                <h2>One Object, Multiple Representations</h2>
-                <p>buildingSMART's own documentation explains why an element commonly carries more than one shape description: RepresentationIdentifier labels what kind of representation each one is, 'Body' for the real 3D shape, 'Axis' for a simplified reference line, 'FootPrint' for a 2D ground outline, 'Box' for a simplified bounding box. Different tools need different levels of detail for different jobs, rendering a realistic view versus running a fast clash check.</p>
-                <p>This beam's two representations confirm exactly that:</p>
-                <pre><code>#20360= IFCSHAPEREPRESENTATION(#118,'Body','SweptSolid',(#20356));
-#20368= IFCSHAPEREPRESENTATION(#375,'Box','BoundingBox',(#20367));</code></pre>
-                <p>One real, detailed 3D shape, 'Body', and one simplified bounding box, 'Box', useful for a fast visibility or collision check without needing the real geometry at all. Same beam, two purposes, two representations, both correct simultaneously.</p>
+                <h2>Anatomy of an ENTITY Block, and What SUBTYPE OF Actually Does</h2>
+                <p>Here's a real, complete EXPRESS definition, published directly on buildingSMART's own schema documentation for IfcDoorType:</p>
+                <pre><code>ENTITY IfcDoorType
+ SUBTYPE OF (IfcBuiltElementType);
+	PredefinedType : IfcDoorTypeEnum;
+	OperationType : IfcDoorTypeOperationEnum;
+	ParameterTakesPrecedence : OPTIONAL IfcBoolean;
+	UserDefinedOperationType : OPTIONAL IfcLabel;
+ WHERE
+	CorrectPredefinedType : (PredefinedType &lt;&gt; IfcDoorTypeEnum.USERDEFINED) OR
+ ((PredefinedType = IfcDoorTypeEnum.USERDEFINED) AND EXISTS (SELF\IfcElementType.ElementType));
+END_ENTITY;</code></pre>
+                <p>The overall shape is straightforward. <code>ENTITY IfcDoorType</code> opens the definition. <code>END_ENTITY;</code> closes it. Between them sit two distinct blocks: a list of attributes, then a WHERE section.</p>
+                <p>The second line is the one worth slowing down on: <code>SUBTYPE OF (IfcBuiltElementType)</code>. It's easy to read this as a label, a note about where this entity sits in some documentation hierarchy. It's not a label. It's a functional declaration that IfcDoorType inherits every attribute IfcBuiltElementType defines, and everything IfcBuiltElementType itself inherits from its own parent, all the way up.</p>
+                <p>buildingSMART's own schema record for IfcDoorType lists that full chain directly: IfcRoot, then IfcObjectDefinition, then IfcTypeObject, then IfcTypeProduct, then IfcElementType, then IfcBuiltElementType, then finally IfcDoorType itself. Seven levels. Only four attributes appear inside the ENTITY block shown above, PredefinedType, OperationType, ParameterTakesPrecedence, UserDefinedOperationType, because those are the only attributes IfcDoorType contributes on its own. Everything else it carries, GlobalId from IfcRoot, ElementType from IfcElementType, and more, arrives through that SUBTYPE OF line, not through anything written inside this specific block.</p>
+                <p>This isn't a theoretical claim. The WHERE rule inside this exact block proves it directly, and the next section shows exactly how.</p>
 
-                <h2>The Concept: A 2D Shape Swept Along a Line</h2>
-                <p>The real shape, <code>#20356</code>, is an IfcExtrudedAreaSolid, confirmed by buildingSMART's schema to represent exactly one idea: take a flat, bounded 2D shape and sweep it in a straight line by some distance. That's the entire concept, no more complex than dragging a stamp shape through space.</p>
-                <pre><code>#20356= IFCEXTRUDEDAREASOLID(#20346,#20353,#20354,4.07996060195);
-#20346= IFCRECTANGLEPROFILEDEF(.AREA.,'',#20345,0.24,0.2);</code></pre>
-                <p>The 2D shape being swept, <code>#20346</code>, is a plain rectangle, 0.24 by 0.2 metres. The distance it's swept, the fourth value on the extrusion line, is 4.07996 metres. A rectangle, dragged in a straight line for just over four metres, is the entire geometric description of this beam.</p>
+                <h2>Two Separate Gates: OPTIONAL and WHERE</h2>
+                <p>It's easy to treat <code>OPTIONAL</code> and a <code>WHERE</code> rule as two ways of saying the same kind of thing, some looser version of "required." They're not. They're two separate mechanisms, answering two separate questions, and this same block shows both operating on the same attribute at once.</p>
+                <p><code>OPTIONAL</code> answers one question: can this attribute be left unset at all. Look again at the attribute list. PredefinedType and OperationType have no OPTIONAL keyword, they must carry a value in every instance of this entity. ParameterTakesPrecedence and UserDefinedOperationType do carry OPTIONAL, so a real IfcDoorType instance is allowed to leave them unset entirely.</p>
+                <p><code>WHERE</code> answers a different question: given the values that are actually present, do they satisfy some further condition. That's what the CorrectPredefinedType rule is doing. Translated into plain language, and confirmed by buildingSMART's own stated description of this exact rule: the inherited attribute ElementType shall be provided if PredefinedType is set to USERDEFINED.</p>
+                <p>Here's the part that makes the distinction unmistakable. ElementType, inherited from IfcElementType five levels up the chain traced above, is itself defined as OPTIONAL in its own schema entry, allowed to be absent by default. But this WHERE rule reaches up through the inheritance chain, using the syntax <code>SELF\IfcElementType.ElementType</code>, and conditionally demands that same optional attribute actually be present, specifically when PredefinedType equals USERDEFINED. The same attribute is optional by one formal constraint and conditionally required by another, and both are part of the schema's own formal constraints, sitting at the specification level, not a claim about whether any particular exporter or validator actually checks them. OPTIONAL sets the default. WHERE can tighten it under specific conditions. A schema reader who only checks one of the two is reading half the specification.</p>
 
-                <h2>Why Bother, When the Number Is Already There</h2>
-                <p>Multiply it out: 0.24 × 0.2 × 4.07996 = 0.195838 m³. That's the exact volume this beam's own pre-computed Base Quantities already report directly, no geometry math required to get it. This is the real point of this lesson. Reading a quantity that the authoring software already calculated and wrote into the file is one line of code. Deriving that same number from raw geometry means reconstructing a solid shape from a profile and a direction and correctly computing its volume, real computational geometry work, before you even reach the point Base Quantities hand you for free.</p>
-                <p>Geometry-based extraction is a genuine, necessary capability, but only when there's nothing better to read. A real residential construction project in Kenya needed exactly this: 18 strip footings exported with completely empty Base Quantities, a known limitation of that particular exporter for foundation-level elements. Each footing did carry a real IfcExtrudedAreaSolid, some with as many as eleven separate extrusion segments for a single strip footing. Reading those extrusions directly, summing profile area times depth per segment, recovered real, correct volumes, 16.591 m³ total, where a generic assumed dimension would have produced 12.960 m³, a meaningfully wrong number for real structural concrete.</p>
+                <h2>Reading Optional vs Mandatory Directly From the Source</h2>
+                <p>None of this requires trusting a secondhand summary. The same block settles it directly, line by line.</p>
+                <p><code>PredefinedType : IfcDoorTypeEnum;</code> carries no OPTIONAL keyword. Mandatory, no exceptions written into the attribute list itself.</p>
+                <p><code>ParameterTakesPrecedence : OPTIONAL IfcBoolean;</code> carries the keyword explicitly. Allowed to be absent, and nothing else in this specific attribute line changes that.</p>
+                <p>That's the entire test: presence or absence of the word OPTIONAL directly in front of the type. No inference needed, no cross-referencing required, just reading the line as written. The harder question, whether something optional can still become conditionally required, is answered by checking the separate WHERE section, exactly as the previous section walked through.</p>
 
-                <h2>The Priority, Stated Plainly</h2>
-                <p>The right order for extracting a quantity is: read the pre-computed Base Quantities first, since the authoring software already did the work correctly. Fall back to a descriptive Property Set second, since a modeler-entered dimension is still faster and usually reliable. Only reach for raw geometry, sweeping a profile and computing its resulting volume, when neither of those exists. Geometry is always the most work and the most room for a subtle error, correctly handling multiple segments, correct units, correct extrusion direction, and it should only ever be reached for after confirming nothing simpler is available.</p>
+                <h2>Why Reading This Yourself Is Worth Doing</h2>
+                <p>A tool, an article, or a person's explanation can all be wrong about what a schema actually specifies. The EXPRESS text itself cannot be wrong about itself, it's the primary source everything else is a description of. When a claim about IFC needs settling, whether an attribute is really mandatory, whether two entities are really related, whether a rule really applies under a given condition, the fastest and most reliable check is reading the actual ENTITY block, exactly as this lesson just did.</p>
+                <p>Two things this lesson deliberately left for later, so they don't get blurred with what's covered here. Finding the right schema documentation page for a given IFC version, and knowing which of buildingSMART's several documentation domains to trust, is its own skill, covered next. And reading actual data instances inside a real file programmatically, in code, rather than reading the schema definition that governs them, is a different task entirely, covered later in this series when Python and IfcOpenShell come into the picture.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>ObjectPlacement and Representation answer two separate questions, where something is and what it looks like, and are two separate attributes even on the same element.</li>
-                        <li>A single element can carry multiple shape representations at once, a detailed 3D body and a simplified bounding box among the common types, each serving a different purpose.</li>
-                        <li>IfcExtrudedAreaSolid represents one simple concept: a bounded 2D profile swept in a straight line by a given distance.</li>
-                        <li>Reading a pre-computed Base Quantity is far simpler than deriving the same number from raw geometry, which is exactly why geometry extraction should be the last resort, used only when nothing simpler exists in the file.</li>
+                        <li>EXPRESS is a formally defined ISO standard, ISO 10303-11, part of the same STEP family that defines the physical IFC file format itself, not a bespoke language invented for construction.</li>
+                        <li>SUBTYPE OF is a functional inheritance declaration, not a documentation label. An entity's full attribute set is rarely visible in its own ENTITY block alone; most of it arrives from ancestors up the chain.</li>
+                        <li>OPTIONAL and WHERE are two separate mechanisms. OPTIONAL governs whether a value may be absent by default. WHERE governs whether present values, or the presence of a value at all under a specific condition, satisfy a further constraint.</li>
+                        <li>A single real attribute can be OPTIONAL at the schema level and still be made conditionally mandatory by a WHERE rule. Neither mechanism substitutes for the other, and both operate at the specification level, independent of whether any specific exporter or validator actually checks them.</li>
+                        <li>Reading the actual EXPRESS text directly settles a schema question more reliably than any secondhand summary, because it is the primary source, not a description of one.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcShapeRepresentation.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcShapeRepresentation</a></li>
-                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcExtrudedAreaSolid.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcExtrudedAreaSolid</a></li>
+                        <li><a href="https://www.iso.org/standard/38047.html" target="_blank" rel="noopener noreferrer">ISO — ISO 10303-11:2004, EXPRESS Language Reference Manual</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcDoorType.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcDoorType, full schema record</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-4-6-types-vs-occurrences.html">← Prev</a>
-                <a href="lesson-5-1-why-schema-versions-matter.html">Next →</a>
+                <a href="lesson-5-1-why-schema-versions-matter.html">← Prev</a>
+                <a href="lesson-5-3-official-schema-docs.html">Next →</a>
             </div>
 
         </div>
