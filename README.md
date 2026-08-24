@@ -24,7 +24,7 @@ Trustworthy BIM data, from a model's first requirement to its last audit:
 - **Information Requirements & IDS** — defining what "correct" means before a model is
   built, as an IDS file a machine can check, not a spec buried in a PDF
 - **Schema & Standards Validation** — verifying models against IFC schema and delivery
-  requirements, not just that a file opens, but that it means what it claims
+  requirements, not just that a file opens, but that it means what it claim
 - **Independent Quantity Verification** — auditing IFC quantities directly against
   source data, catching what software and manual takeoff both miss
 
@@ -34,14 +34,14 @@ confidence scores, flags semantic anomalies, and generates PDF validation report
 Excel BOQs automatically. The engine is private; the outputs and methodology are fully
 documented here.
 
-The site also hosts a **[Knowledge Hub](https://shabirbim.com/knowledge-hub.html)** — a
-structured, sequential learning path through OpenBIM, IFC, IDS, and ISO 19650,
-currently in progress — and a **[Services](https://shabirbim.com/services.html)** page
-covering validation, IDS authoring, quantity verification, ISO 19650/CDE advisory, and
-custom Python automation for BIM workflows.
+The site also hosts a **[Knowledge Hub](https://shabirbim.com/knowledge-hub.html)** —
+11 modules, 51 lessons, a complete sequential path from BIM fundamentals through IFC,
+IDS, ISO 19650, IfcOpenShell/Python, automation and CI/CD, to digital twins and where
+open standards are heading — and a **[Services](https://shabirbim.com/services.html)**
+page covering validation, IDS authoring, quantity verification, ISO 19650/CDE advisory,
+and custom Python automation for BIM workflows.
 
 ---
-
 ## Case Studies
 
 Seven files. Each processed through the same validation pipeline — quantity
