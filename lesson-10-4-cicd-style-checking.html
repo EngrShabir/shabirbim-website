@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>10.4 CI/CD-Style Checking as a Repeatable Pipeline Step | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 10.4 — Turning the batch QA pipeline into something an event triggers automatically, and the real shift from a check as a report to a check as a gate.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,68 +378,66 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 10 → 10.4</span>
+            <h1 class="lesson-title">10.4 CI/CD-Style Checking as a Repeatable Pipeline Step</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>10.3 covered naming an automated check inside a BIM Execution Plan, a process commitment that a check will run at a specific point. What it didn't cover is what actually starts that check running. A script sitting on a hard drive, however well built, still needs a person to remember to open a terminal and run it. This lesson covers a pattern that removes that dependency on memory: automated pipelines that trigger a check on an event, rather than waiting for someone to get around to it.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>What CI/CD Actually Means</h2>
+                <p>Continuous integration and continuous delivery, CI/CD, is a software-engineering practice in which automated pipelines build, test, validate, and potentially deliver changes through repeatable stages. In continuous integration specifically, those checks are commonly triggered by changes submitted to a shared repository, so verification happens consistently rather than depending on a person to perform it manually. Continuous delivery extends that idea further: keeping a change in a state ready for release once it's passed those checks, rather than assuming every passing change gets deployed automatically, which is a stronger practice usually called continuous deployment.</p>
+                <p>Worth being precise here rather than oversimplifying: a pipeline can be triggered by more than just a push, a pull request, a scheduled run, a manual trigger, or another pipeline finishing can all start one. For this lesson, the specific pattern that matters is event-triggered checking, something changing, and a pipeline responding automatically. That's the piece worth carrying into how this maps onto IFC.</p>
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+                <h2>Why This Maps Onto IFC Checking Cleanly</h2>
+                <p>From the automation system's perspective, a model file being committed to a repository has the same useful shape as source code being committed: an event occurs, a pipeline is triggered, and automated checks run against the changed content. The automation pattern is the same. The project semantics behind it aren't necessarily identical, a BIM team's real information workflow isn't automatically a Git repository, which matters enough to come back to directly in a moment. But the underlying shape, event happens, pipeline responds, holds regardless.</p>
+                <p>This isn't a hypothetical extension of software practice into an unrelated field. Working examples already exist of IFC repositories using continuous-integration workflows to automatically validate IFC files, including schema-level checks and evaluation against a project's IDS specifications, when changes are pushed, with the result reported directly back on that push.</p>
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+                <h2>The Trigger, Concretely</h2>
+                <p>Two kinds of trigger are worth knowing at a conceptual level. A version control push, a model being committed to a shared repository, the same event that triggers CI in software development. Or an event exposed by a CDE workflow, which is worth being precise about rather than assuming it works like a folder being watched for new files. A CDE-triggered workflow doesn't require the CDE itself to behave like a Git repository. The integration can expose an event, a new or revised container reaching a particular workflow state, for instance, which then starts automation elsewhere. The important concept is the event and its defined consequence, not the storage technology generating it. Treating "CDE" as simply "cloud folder plus CI/CD" misses this.</p>
+                <p>Setting up the specific tooling behind either kind of trigger, configuring a particular CI/CD platform, connecting a specific CDE to a specific automation service, is real, detailed technical work that depends heavily on which tools a project is actually using. That's outside what this lesson covers. What matters here is the pattern itself and why it fits, not a platform-specific walkthrough.</p>
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+                <h2>What Runs When Triggered</h2>
+                <p>The trigger doesn't need new checking logic. It calls the same batch-and-QA pipeline built across this module, extraction from 10.1, checks from 10.2, the exact process 10.3 described being named in a BEP, just invoked automatically rather than by a person typing a command. Nothing about the checking logic itself changes. What changes is what starts it running.</p>
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+                <h2>Pass/Fail as a Gate, Not Just a Report</h2>
+                <p>This is the actual shift CI/CD adds beyond simply automating a check's timing. In every version of this pipeline built so far, a failed check produced a CSV, a file a person could open and read, if they chose to. A report informs a decision. A gate makes passing a prerequisite for a defined next step, blocking a specific transition rather than merely recommending against it. A push that fails its automated checks can be prevented from merging. Where the CDE or workflow system exposes an appropriate integration, a check's result can be used as a prerequisite for a status transition, rather than assumed to control it automatically regardless of what the underlying system actually supports.</p>
+                <p>That distinction matters more than it sounds. A report only works if someone reads it, and reading it is optional in a way a blocked merge isn't. Turning a check into a gate is what makes "this must be verified before it proceeds" something the process guarantees, rather than something that depends on a person's diligence.</p>
+                <p>Worth adding one qualification here, since it's easy to overreach in the other direction: not every failed rule has to be a hard gate. A mature pipeline can distinguish blocking failures from warnings or issues that need human review, depending on the consequence a project actually defines for that specific check. Turning every result into an automatic block isn't itself the goal. Making the consequence of failing a check a deliberate, defined choice rather than an accident of whether someone happened to read a report is.</p>
+
+                <h2>What This Deliberately Doesn't Cover</h2>
+                <p>Worth being explicit rather than implying more than this lesson actually delivers. Setting up a real CI/CD system, choosing a specific platform, configuring its triggers, writing the actual workflow file that runs a script on every push, is genuine tooling knowledge with its own real depth, specific to whichever platform a team ends up using. This lesson covers the pattern and why it fits IFC checking naturally. It doesn't walk through building one.</p>
+
+                <h2>Closing Module 10</h2>
+                <p>This module built one continuous line, worth seeing as a whole now that it's complete. 10.1 turned a single-file script into something that processes a whole folder without breaking on one bad file. 10.2 added judgment on top of that extraction, explicit rules that flag what actually needs attention rather than treating every value as equally fine. 10.3 stepped back from code and placed that same process inside a project's actual governance, a named commitment in a BIM Execution Plan rather than something happening invisibly. This lesson closed the loop by triggering the same pipeline automatically on a defined event, with the option to make its result an actual gate rather than just a report waiting to be read.</p>
+                <p>Everything built across Modules 9 and 10 has been about static files, files sitting still, extracted from, checked, and reported on. The next module moves toward something genuinely different: information that keeps changing after handover, and what happens when the target isn't a file anymore but a live, ongoing asset. That's where Module 11, Digital Twins, picks up.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>CI/CD is broader than one trigger type, pushes, pull requests, schedules, and manual runs can all start a pipeline. The pattern this lesson focuses on is event-triggered checking: something changes, a pipeline responds automatically.</li>
+                        <li>A model file committed to a repository has the same automation shape as code being committed, an event, a triggered pipeline, automated checks, even though a BIM team's actual information workflow isn't automatically a Git repository.</li>
+                        <li>A CDE-triggered workflow works through an exposed event, such as a container reaching a defined workflow state, not by the CDE behaving like a watched folder. The event and its defined consequence matter, not the underlying storage technology.</li>
+                        <li>The real shift CI/CD adds is turning a failed check from a passive report into a gate, a defined prerequisite that blocks a specific transition, where the underlying system actually supports enforcing that.</li>
+                        <li>Not every failed check needs to be a hard gate. A mature pipeline distinguishes blocking failures from warnings or issues needing human review, based on a consequence the project deliberately defines, rather than treating every result the same way by default.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://www.redhat.com/en/topics/devops/what-is-ci-cd" target="_blank" rel="noopener noreferrer">Red Hat — What is CI/CD?</a></li>
+                        <li><a href="https://community.osarch.org/discussion/3175/continuous-integration-in-ifc-git-repositories-using-ids-and-validation" target="_blank" rel="noopener noreferrer">OSArch — Continuous Integration in IFC Git repositories using IDS and validation</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-10-3-automation-in-bim-execution-plan.html">← Prev</a>
+                <a href="lesson-11-1-static-bim-to-digital-twin.html">Next →</a>
             </div>
 
         </div>

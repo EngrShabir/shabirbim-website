@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>9.1 Environment Setup | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 9.1 — Installing IfcOpenShell correctly in plain Python: the right command, the sanity check that confirms it worked, and the install failures worth knowing about in advance.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,68 +378,67 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 9 → 9.1</span>
+            <h1 class="lesson-title">9.1 Environment Setup</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>Every lesson before this one in the Knowledge Hub has been about reading, reasoning about, or checking an IFC file by hand, opening it in a viewer, tracing a property by eye, running it through a validator someone else built. This lesson starts a different track: writing the code that reads an IFC file directly. Before any of that logic makes sense, the right library needs to be installed correctly, and this is one of those areas where a wrong first step costs real time later. This lesson covers exactly that, nothing more, no IFC logic yet.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>What's Actually Needed</h2>
+                <p>Two things: Python itself, and IfcOpenShell installed as a library inside it. IfcOpenShell is an open-source library, LGPL licensed, built for reading, writing, and querying IFC files, with both a C++ core and Python bindings that expose the full API. It doesn't require Blender or Bonsai to be installed. Bonsai bundles IfcOpenShell inside itself, an add-on that turns Blender into a graphical IFC authoring platform, giving non-programmers a working Python console without installing anything separately. That's one route among several, and it isn't the one this module uses. Writing scripts against plain Python and a directly installed IfcOpenShell is the route that generalizes: a script written this way can be deployed wherever a compatible Python and IfcOpenShell environment is available, in an automated pipeline, on a server, in a scheduled job, without a graphical application sitting underneath it.</p>
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+                <h2>Installing IfcOpenShell</h2>
+                <p>IfcOpenShell's own documentation lists several installation routes and recommends one specifically for this situation: PyPI, Python's standard package index, is the recommended method for anyone using pip, the standard tool for installing Python libraries.</p>
+                <p>Worth running one command first, since a machine can have more than one Python installation, and pip on its own doesn't always point at the interpreter a person thinks it does:</p>
+                <pre><code>python --version</code></pre>
+                <p>That confirms which Python is actually active. Then install using that same interpreter explicitly:</p>
+                <pre><code>python -m pip install ifcopenshell</code></pre>
+                <p>Writing it as <code>python -m pip</code> rather than just <code>pip</code> tells the specific Python interpreter just checked to run its own pip, rather than leaving it to chance which installation on the system actually receives the package. This detail becomes directly relevant in the next section, since a mismatch here is exactly what causes some install failures.</p>
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+                <h2>The First Sanity Check</h2>
+                <p>Before writing anything that touches a real IFC file, it's worth confirming the install actually worked. IfcOpenShell's own documentation includes this check as part of its installation instructions:</p>
+                <pre><code>import ifcopenshell
+print(ifcopenshell.version)
+model = ifcopenshell.file()</code></pre>
+                <p>Each line confirms something progressively stronger than the last. The first confirms Python can locate and load the module at all. The second confirms the module exposes its own version information, useful to have on hand later if something behaves unexpectedly and version turns out to matter. The third actually instantiates IfcOpenShell's core file object, a blank, empty in-memory model, not from a real file yet, just proof that the library's central object genuinely works rather than merely importing without error. If all three lines run clean, the install is confirmed working, and there's nothing IFC-specific left to troubleshoot before moving on.</p>
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+                <h2>Common Install Failures</h2>
+                <p>A few things go wrong often enough to be worth naming directly, rather than discovering them the hard way.</p>
+                <p>The most common one isn't really an installation failure at all. It's installing the wrong package. A similarly named package, <code>install-ifcopenshell-python</code>, also exists on PyPI, a separate, unofficial helper project, not the official <code>ifcopenshell</code> distribution this module is built around. The name similarity is the actual trap: typing something close but not exact is an easy mistake, and it installs a different codebase entirely. The correct package name for everything in this module is exactly <code>ifcopenshell</code>, nothing appended, nothing rearranged.</p>
+                <p>The second is a Python version mismatch, and it can run in either direction. Current as of August 2026, IfcOpenShell 0.8.5 requires Python 3.10 through 3.14, with prebuilt packages published for each of those versions across major platforms. That range will keep moving as new releases come out, and it's worth checking the current supported range directly rather than assuming this article's numbers hold indefinitely. The direction worth watching for specifically is a brand-new Python release outpacing IfcOpenShell's support. When a new major Python version ships, there's often a real gap before a compatible IfcOpenShell package follows, and installing during that gap produces an error reporting no matching distribution was found. If that happens, the fix isn't to keep retrying the same command, it's to check IfcOpenShell's current documentation for its supported range and, if needed, use a slightly older, fully supported Python version instead.</p>
+                <p>The third shows up mainly on Windows: an install that starts building a component called <code>mathutils</code> from source and then fails with a compiler-related error, sometimes specifically asking for Microsoft's C++ Build Tools. This happens when pip can't find a prebuilt package matching the exact Python version and system in use, and falls back to compiling from source instead, a fallback that needs compiler tools most machines don't have installed by default. Using a Python version inside IfcOpenShell's currently supported range usually avoids this entirely, since a supported version normally has a prebuilt package ready and never needs the source-build fallback.</p>
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+                <h2>What's Next</h2>
+                <p>With the library installed and confirmed working, the next lesson moves to the part this one deliberately held back: opening a real IFC file and reading something out of it for the first time.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>IfcOpenShell can be installed and used directly in plain Python, with no dependency on Blender or Bonsai. That route is what this module builds on, since it generalizes to scripts deployable in any compatible Python environment.</li>
+                        <li>Install with <code>python -m pip install ifcopenshell</code>, using the specific Python interpreter confirmed by <code>python --version</code>, rather than relying on a bare pip command that might point somewhere unexpected.</li>
+                        <li>A similarly named but unofficial package, <code>install-ifcopenshell-python</code>, exists on PyPI and is a common source of confusion. The correct package is exactly <code>ifcopenshell</code>.</li>
+                        <li>After installing, run a three-line check that confirms progressively more: the module loads, it reports its version, and its core file object actually instantiates.</li>
+                        <li>IfcOpenShell 0.8.5 currently requires Python 3.10 through 3.14, as of August 2026. This range moves over time; a "no matching distribution" error often means a very new Python release has temporarily outpaced IfcOpenShell's support, not a broken install.</li>
+                        <li>A Windows-specific compiler error during install (often naming mathutils) usually means no prebuilt package matched the exact Python version in use. A currently supported Python version normally avoids it entirely.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://docs.ifcopenshell.org/ifcopenshell-python/installation.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Installation</a></li>
+                        <li><a href="https://github.com/IfcOpenShell/IfcOpenShell" target="_blank" rel="noopener noreferrer">IfcOpenShell — GitHub Repository</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-8-4-eir-oir-connect-to-ids.html">← Prev</a>
+                <a href="lesson-9-2-reading-ifc-programmatically.html">Next →</a>
             </div>
 
         </div>

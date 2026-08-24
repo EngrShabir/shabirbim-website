@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>10.2 Building a Basic Automated QA Pipeline | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 10.2 — Adding explicit, hand-written rules on top of extraction: what a check means at this level, and why hand-rolled checks are useful but genuinely not IDS.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,68 +378,142 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 10 → 10.2</span>
+            <h1 class="lesson-title">10.2 Building a Basic Automated QA Pipeline</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>10.1 built a batch runner that opens a folder of IFC files, extracts data from every wall it finds, and honestly records which files it could and couldn't process. What it doesn't do is look at the extracted values and say anything about whether they're any good. A wall with a net_volume of 0 gets treated identically to a wall with a perfectly sensible one, both are just numbers sitting in a CSV. This lesson adds that missing layer: a small set of explicit, hand-written rules that look at each extracted result and flag something worth a person's attention.</p>
+                <p>There are two different questions running through this pipeline, worth separating clearly before writing any check. Extraction asks: what does the IFC file actually contain. QA asks: does what was extracted satisfy a rule the project cares about. An extraction function reports what's genuinely in the file, nothing more. A QA check makes a judgment against a rule someone wrote. The same extracted value can be a completely accurate, valid piece of data and still fail a project-specific QA rule, and keeping those two questions distinct is what makes the rest of this lesson make sense.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>What a Check Means at This Level</h2>
+                <p>A "check" here is deliberately simple: one clear, explicit rule, applied to one extracted value, returning a result and a reason. Is a required value present at all. Does a numeric value satisfy a specific project rule. Is a value the type it's supposed to be. This is not the depth Module 6 covered in buildingSMART's own multi-stage validation, and it's not IDS from Module 7, a standardized, machine-interoperable specification format that produces the same result in any compliant tool. This is the plainest version possible: rules written directly in Python, specific to whatever a project's own pipeline needs to check right now, nothing more formal than that.</p>
+                <p>Worth stating plainly, since it's an easy thing to assume without noticing: a passing result here means this particular rule passed, nothing broader. It doesn't mean the IFC file is correct, or complete, or validated in any formal sense. The value of the conclusion is bounded entirely by the quality and coverage of the rules someone actually wrote.</p>
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+                <h2>Structuring a Check as a Function</h2>
+                <p>Following the same discipline Module 9 built extraction around, one check gets its own small function, taking a single extracted result and returning a structured verdict rather than printing anything directly. A check genuinely has three possible outcomes, not two, it can pass, fail, or have nothing to check at all, and the result structure should say which:</p>
+                <pre><code>def check_volume_present(row):
+    if row["net_volume"] is None:
+        return {"check": "volume_present", "status": "failed", "reason": "NetVolume is missing or unset"}
+    return {"check": "volume_present", "status": "passed", "reason": None}
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+def check_volume_positive(row):
+    volume = row["net_volume"]
+    if volume is None:
+        return {"check": "volume_positive", "status": "skipped", "reason": "NetVolume is unavailable"}
+    if volume <= 0:
+        return {"check": "volume_positive", "status": "failed", "reason": f"NetVolume is {volume}, not a positive number"}
+    return {"check": "volume_positive", "status": "passed", "reason": None}</code></pre>
+                <p>Two small, independent functions, each checking exactly one thing. check_volume_present only cares whether a value exists at all. check_volume_positive only cares whether an existing volume is greater than zero, a deliberately simple project rule chosen for this example, not a universal claim about what's valid for every IFC quantity or element type. When there's nothing to check, it reports skipped, not passed, since those genuinely mean different things and a QA report that collapses them together loses real information. A missing value is already check_volume_present's job to flag; check_volume_positive skipping rather than failing on the same missing value avoids reporting the same underlying problem twice.</p>
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+                <h2>Running Multiple Checks and Collecting Results</h2>
+                <p>A list of check functions applied to every row of extracted data turns into a structured report rather than scattered print statements:</p>
+                <pre><code>checks = [check_volume_present, check_volume_positive]
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+def run_checks(row):
+    return [check(row) for check in checks]
+
+def flatten_check_results(rows):
+    flagged = []
+    for row in rows:
+        for result in run_checks(row):
+            if result["status"] == "failed":
+                flagged.append({
+                    "wall_name": row["wall_name"],
+                    "global_id": row["global_id"],
+                    "check": result["check"],
+                    "reason": result["reason"],
+                })
+    return flagged</code></pre>
+                <p>Adding a new check later means writing one more small function and adding it to the checks list, nothing else in this structure needs to change. flatten_check_results keeps only genuine failures, filtering explicitly on <code>status == "failed"</code> rather than just not passed, since a skipped check shouldn't show up in a report meant to surface actual problems.</p>
+
+                <h2>A Complete Pipeline Script</h2>
+                <p>Combining this with 10.1's batch runner: extract, check, and write out both the raw data and a focused list of flagged issues. The following assumes run_batch() and the extraction functions from 10.1 are already available in the same script.</p>
+                <pre><code>from pathlib import Path
+import csv
+
+def check_volume_present(row):
+    if row["net_volume"] is None:
+        return {"check": "volume_present", "status": "failed", "reason": "NetVolume is missing or unset"}
+    return {"check": "volume_present", "status": "passed", "reason": None}
+
+def check_volume_positive(row):
+    volume = row["net_volume"]
+    if volume is None:
+        return {"check": "volume_positive", "status": "skipped", "reason": "NetVolume is unavailable"}
+    if volume <= 0:
+        return {"check": "volume_positive", "status": "failed", "reason": f"NetVolume is {volume}, not a positive number"}
+    return {"check": "volume_positive", "status": "passed", "reason": None}
+
+checks = [check_volume_present, check_volume_positive]
+
+def run_checks(row):
+    return [check(row) for check in checks]
+
+def flatten_check_results(rows):
+    flagged = []
+    for row in rows:
+        for result in run_checks(row):
+            if result["status"] == "failed":
+                flagged.append({
+                    "wall_name": row["wall_name"],
+                    "global_id": row["global_id"],
+                    "check": result["check"],
+                    "reason": result["reason"],
+                })
+    return flagged
+
+def write_csv(rows, output_path, fieldnames):
+    with open(output_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+# run_batch() comes unchanged from Lesson 10.1
+run_log, all_results = run_batch("/path/to/ifc_folder")
+flagged_issues = flatten_check_results(all_results)
+
+write_csv(run_log, "run_log.csv", ["file", "status", "error"])
+write_csv(all_results, "wall_quantities.csv", ["file", "wall_name", "global_id", "net_volume"])
+write_csv(flagged_issues, "flagged_issues.csv", ["wall_name", "global_id", "check", "reason"])
+
+print(f"{len(flagged_issues)} issues flagged across {len(all_results)} walls")</code></pre>
+                <p>Three files come out of this run: which files processed successfully, every extracted value, and a short, focused list of exactly what needs a second look. write_csv() now takes explicit fieldnames rather than reading them off the first row, so flagged_issues.csv still gets created with proper headers even on a clean run with zero issues, a report that says "nothing was flagged" rather than a file that simply doesn't exist. run_batch() here is the same function built in 10.1, unchanged, since the checking layer sits entirely on top of extraction rather than needing to touch it.</p>
+                <p>The full shape this pipeline follows is worth holding onto as one picture: can the file be opened and processed at all, tracked in the run log; then, for whatever was successfully extracted, does it satisfy the rules that were written, tracked in the flagged issues. Two different questions, two different failure surfaces, kept clearly apart.</p>
+
+                <h2>What This Is, and Isn't</h2>
+                <p>Worth being direct about this rather than letting it go unsaid. What's built here is genuinely useful for a project's own internal, ad hoc checks, quick, specific, and easy to extend. It is not IDS, and it isn't trying to be. IDS addresses a real limitation of hand-written, project-specific checks like these: the requirement and the logic that checks it are tied to one particular codebase, understood only by whoever can read that specific script, rather than expressed as a standardized, machine-readable specification any compliant tool can interpret the same way. IDS solves a broader interoperability problem than "custom scripts are bad", it lets a requirement be written once and checked identically across different tools and people, not just the one script that happens to implement it today.</p>
+                <p>Neither approach is simply better. Hand-rolled checks like the ones in this lesson are fast to write and perfectly suited to a project's own internal, informal use. The moment a check needs to be shared across tools, understood by someone who doesn't read Python, or trusted to produce the same result regardless of which software runs it, that's the moment IDS, covered in Module 7, is the right tool instead.</p>
+
+                <h2>What's Next</h2>
+                <p>Everything in this module so far has been code, run manually, by a person choosing to execute it. The next lesson steps back from code entirely and looks at where automation like this actually fits inside a real project, specifically within a BIM Execution Plan, the document Module 8 already introduced as the delivery team's response to an EIR.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>Extraction and QA ask different questions. Extraction reports what a file actually contains; QA judges whether that content satisfies a rule someone explicitly wrote. A value can be genuinely accurate and still fail a project-specific rule.</li>
+                        <li>A check has three real outcomes, not two: passed, failed, or skipped when there's nothing to check. Collapsing skipped into passed loses real information a QA report needs.</li>
+                        <li>A passing check means the specific rule passed, not that the file is validated or correct in any broader sense. The conclusion is only as good as the rules written.</li>
+                        <li>Keeping each check narrow, one concern per function, and filtering a report on explicit status rather than a simple pass/fail boolean, produces a more useful, more architecturally sound foundation as more checks get added.</li>
+                        <li>Hand-written Python checks are real and useful for a project's own internal use, but they are not IDS. IDS solves the deeper problem of a requirement being tied to one specific codebase, letting it instead be written once and checked identically across any compliant tool.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://technical.buildingsmart.org/projects/information-delivery-specification-ids/" target="_blank" rel="noopener noreferrer">buildingSMART — Information Delivery Specification (IDS)</a></li>
+                        <li><a href="https://github.com/IfcOpenShell/IfcOpenShell/issues/1349" target="_blank" rel="noopener noreferrer">IfcOpenShell — IDS support discussion (GitHub)</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-10-1-batch-processing-ifc-files.html">← Prev</a>
+                <a href="lesson-10-3-automation-in-bim-execution-plan.html">Next →</a>
             </div>
 
         </div>

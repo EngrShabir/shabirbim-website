@@ -224,6 +224,162 @@
   </url>
 
   <url>
+    <loc>https://shabirbim.com/lesson-6-1-why-models-fail.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-6-2-levels-of-validation.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-6-3-ifc-validation-service.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-6-4-exporter-behavior-comparison.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-7-1-the-problem-ids-solves.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-7-2-ids-structure-facets.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-7-3-writing-your-first-ids-file.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-7-4-ids-vs-traditional-eir.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-7-5-validating-against-ids.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-8-1-what-iso19650-governs.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-8-2-common-data-environment.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-8-3-naming-conventions.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-8-4-eir-oir-connect-to-ids.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-9-1-ifcopenshell-environment-setup.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-9-2-reading-ifc-programmatically.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-9-3-extracting-properties-quantities.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-9-4-common-pitfalls-units-none-psets.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-9-5-script-to-reusable-tool.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-10-1-batch-processing-ifc-files.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-10-2-automated-qa-pipeline.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-10-3-automation-in-bim-execution-plan.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-10-4-cicd-style-checking.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-11-1-static-bim-to-digital-twin.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-11-2-ifc-sensor-data-integration.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-11-3-interoperability-challenges.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://shabirbim.com/lesson-11-4-where-open-standards-are-heading.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>https://shabirbim.com/services.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

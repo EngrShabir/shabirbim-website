@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>9.3 Extracting Properties and Quantities with Code | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 9.3 — How properties and quantities attach to an element through IfcRelDefinesByProperties, and the correct way to pull them out with ifcopenshell.util.element.get_psets().">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,68 +378,102 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 9 → 9.3</span>
+            <h1 class="lesson-title">9.3 Extracting Properties and Quantities with Code</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>The last lesson stopped deliberately at direct attributes, values like Name and GlobalId sitting right on an entity, reachable with plain dot notation. Most of what makes an IFC element actually useful, a wall's fire rating, a column's concrete grade, a slab's net volume, doesn't live that way. It lives in separate entities connected to the element through a relationship, and reaching it takes real, specific code. This lesson covers exactly that: how properties and quantities actually attach to an element in the schema, and the correct way to pull them out.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>Where Properties and Quantities Actually Live</h2>
+                <p>An element doesn't carry its properties directly. It's linked to them through a relationship entity called IfcRelDefinesByProperties, which connects the element to a property set definition. That definition can be either of two entity types: an IfcPropertySet, holding ordinary named properties, or an IfcElementQuantity, holding quantities specifically, net volumes, areas, lengths, and the like. Both are valid property-definition targets of IfcRelDefinesByProperties, different entity types with different internal structures, but reachable through the exact same relationship, which is why properties and quantities can be pulled out through one mechanism rather than two unrelated ones.</p>
+                <p>Walking this manually looks like this:</p>
+                <pre><code>for relationship in wall.IsDefinedBy:
+    if relationship.is_a("IfcRelDefinesByProperties"):
+        definition = relationship.RelatingPropertyDefinition
+        print(definition.Name)</code></pre>
+                <p>That loop is real and it works, and seeing it once is worth doing, because it shows exactly what's happening underneath: IsDefinedBy exposes the inverse relationships through which the object is defined, filtering it for IfcRelDefinesByProperties isolates the property-definition relationships specifically, and RelatingPropertyDefinition is the actual property set or quantity set on the other end. But writing this loop by hand every time is not the practical way to work, and IfcOpenShell provides something better.</p>
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+                <h2>The Practical Way: ifcopenshell.util.element.get_psets()</h2>
+                <pre><code>import ifcopenshell.util.element
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+psets = ifcopenshell.util.element.get_psets(wall)</code></pre>
+                <p>This one call does the relationship-walking above internally and returns a dictionary: property set names as keys, and for each one, a dictionary of property or quantity names and their values. By default it returns everything attached to the element, both properties and quantities together, and it also includes property sets inherited from the element's type where applicable, not only ones assigned directly to the specific occurrence.</p>
+                <p>Two optional flags narrow the result to one kind or the other:</p>
+                <pre><code>properties_only = ifcopenshell.util.element.get_psets(wall, psets_only=True)
+quantities_only = ifcopenshell.util.element.get_psets(wall, qtos_only=True)</code></pre>
+                <p><code>psets_only=True</code> restricts the result to sets originating from IfcPropertySet. <code>qtos_only=True</code> restricts it to sets originating from a quantity set like IfcElementQuantity. Same function, same underlying relationship, two different filters over what comes back.</p>
+                <p>Worth knowing about too: when the exact property set and property name are already known in advance, <code>ifcopenshell.util.element.get_pset(element, name, prop=None)</code> gives a more targeted, more efficient lookup than pulling every set with <code>get_psets()</code> and then picking one out. This lesson sticks with <code>get_psets()</code> since it's the right tool for exploring an unfamiliar file, but <code>get_pset()</code> is worth reaching for once a script knows exactly what it's after.</p>
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+                <h2>Properties and Quantities, Seen in Returned Data</h2>
+                <p>The dictionary structure looks the same regardless of which kind of set it came from, which is worth seeing directly rather than just described. For example, a returned property set could look like this:</p>
+                <pre><code>{
+    "Pset_WallCommon": {
+        "id": 173875,
+        "IsExternal": True,
+        "FireRating": "2HR"
+    }
+}</code></pre>
+                <p>And a quantity set, retrieved the same way with <code>qtos_only=True</code>, could look like this:</p>
+                <pre><code>{
+    "Qto_WallBaseQuantities": {
+        "id": 173877,
+        "NetSideArea": 4.2,
+        "GrossVolume": 0.84
+    }
+}</code></pre>
+                <p>These IDs and values are illustrative, not universal, and a real file will return whatever its own sets actually contain. Nothing about the dictionary's structure tells you which kind of set you're looking at beyond the names themselves. Named sets starting with Pset_ and Qto_ follow IFC's own naming convention for standardized property and quantity sets, but the prefix itself isn't what makes a set standardized, and a name alone shouldn't be treated as proof of it. A project can define its own custom sets with entirely different naming, which is part of why filtering by kind through psets_only or qtos_only is the more reliable approach rather than relying on naming patterns.</p>
+                <p>Every returned set also carries an <code>id</code> key, an IFC entity ID associated with the returned definition. This can be useful when tracing a value back into the IFC graph, though inherited type properties need a bit more care when interpreting that ID, since an inherited set's id reflects the occurrence rather than necessarily the type's own original property set. Worth knowing this exists rather than assuming every id traces to exactly one unambiguous place.</p>
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+                <h2>A Complete Script</h2>
+                <p>Putting this together with what 9.2 already built:</p>
+                <pre><code>import ifcopenshell
+import ifcopenshell.util.element
+
+model = ifcopenshell.open("/path/to/model.ifc")
+
+walls = model.by_type("IfcWall")
+
+for wall in walls:
+    quantities = ifcopenshell.util.element.get_psets(wall, qtos_only=True)
+    qto = quantities.get("Qto_WallBaseQuantities")
+    if qto:
+        print(wall.Name, "-", qto.get("NetVolume"))
+    else:
+        print(wall.Name, "- no base quantities found")</code></pre>
+                <p>This opens a file, goes through every wall, and prints its net volume where a base quantity set exists for it. Run against a real, well-exported file, most walls will print a number. Some might not, and that's not a bug in this script. Retrieving NetVolume here confirms the value is present and reachable, nothing more. Whether that value is itself trustworthy is a separate question this lesson deliberately doesn't answer yet.</p>
+
+                <h2>What's Next</h2>
+                <p>That else branch above isn't decoration. Not every element in a real file has the quantity set a script expects, values can come back as None even when a set exists, and property and quantity values need to be interpreted against their own IFC unit definitions, which can vary by model and can be set explicitly at the property level rather than assumed from the project default. The next lesson goes into exactly these failure modes, the ones a clean example like this one is quietly avoiding.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>Properties and quantities aren't direct attributes. They're reached through IfcRelDefinesByProperties, a relationship whose RelatingPropertyDefinition can be either an IfcPropertySet (properties) or an IfcElementQuantity (quantities), two different entity types both reachable through the same relationship.</li>
+                        <li><code>ifcopenshell.util.element.get_psets(element)</code> walks that relationship correctly and returns a dictionary of set names to their contents, including type-inherited sets by default. <code>get_pset()</code> offers a more targeted lookup when the exact set and property are already known.</li>
+                        <li><code>psets_only=True</code> and <code>qtos_only=True</code> filter the result to properties or quantities specifically. Without either, both come back together in the same dictionary.</li>
+                        <li>Returned sets each include an <code>id</code> key tied to the underlying IFC entity, though inherited sets need extra care when interpreting that ID, since it reflects the occurrence rather than always the type's original set.</li>
+                        <li>Pset_ and Qto_ prefixes follow IFC's naming convention for standardized sets, but the name alone doesn't guarantee standardization, and projects can define entirely custom sets, which is why filtering by kind is more reliable than filtering by name.</li>
+                        <li>Retrieving a quantity confirms it's present and reachable. It says nothing about whether the value itself is trustworthy, and values also need interpreting against their own IFC unit definitions, both of which the next lesson addresses directly.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://docs.ifcopenshell.org/ifcopenshell-python/code_examples.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Code examples</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcElementQuantity.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcElementQuantity</a></li>
+                        <li><a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcRelDefinesByProperties.htm" target="_blank" rel="noopener noreferrer">buildingSMART — IfcRelDefinesByProperties</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-9-2-reading-ifc-programmatically.html">← Prev</a>
+                <a href="lesson-9-4-common-pitfalls-units-none-psets.html">Next →</a>
             </div>
 
         </div>

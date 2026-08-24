@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>9.4 Common Pitfalls: Units, None Values, Missing Psets | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 9.4 — Three real-world conditions a robust IFC extraction script has to handle: a missing property set, a value that exists but is unset, and a number without a resolved unit.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,68 +378,106 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 9 → 9.4</span>
+            <h1 class="lesson-title">9.4 Common Pitfalls: Units, None Values, Missing Psets</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>The script at the end of 9.3 worked cleanly. Every wall it was tested against had the expected quantity set, every value inside it was a usable number, and nothing needed interpreting before printing. Real files aren't always that cooperative, and a script that only works when everything is present, populated, and unambiguous in its meaning isn't a script that survives contact with a real project. This lesson covers three real-world conditions a robust extraction script has to handle: a property set that simply isn't there, a value that's there but unset, and a number that's there and set but whose actual unit isn't something the raw value tells you on its own. The first two are entirely valid model states, not errors. The third is an interpretation problem worth taking seriously rather than assuming away.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>A Missing Property Set Is a Valid Model State</h2>
+                <p><code>get_psets(element, qtos_only=True)</code> doesn't guarantee the quantity set a script is looking for actually exists. If an element was authored without one, or an exporter didn't populate it for that element type, the returned dictionary simply won't have that key. This is expected behavior, not a malfunction, and 9.3 already introduced the correct response to it:</p>
+                <pre><code>quantities = ifcopenshell.util.element.get_psets(wall, qtos_only=True)
+qto = quantities.get("Qto_WallBaseQuantities")
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+if qto:
+    ...
+else:
+    print(wall.Name, "- no base quantities found")</code></pre>
+                <p>Using <code>.get()</code> rather than direct key access (<code>quantities["Qto_WallBaseQuantities"]</code>) is the difference between a missing set producing a clean, checkable None and producing an unhandled KeyError that stops the script. This distinction matters more once a script runs unattended against a batch of files rather than one file being watched by a person.</p>
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+                <h2>A Present Key Doesn't Guarantee a Usable Value</h2>
+                <p>A property set existing, and even the specific property or quantity name existing as a key inside it, still doesn't guarantee there's a usable value behind it. An unset IFC value can be represented by a $ token in the underlying STEP file, and IfcOpenShell exposes that as None in Python once the data reaches something like the dictionary get_psets() returns, not a missing key, not an empty string, but None sitting right where a real number was expected.</p>
+                <p>This is a different condition from a missing set entirely, and code that only checks whether a set exists will walk straight past it:</p>
+                <pre><code>qto = quantities.get("Qto_WallBaseQuantities")
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+if qto:
+    net_volume = qto.get("NetVolume")
+    if net_volume is not None:
+        print(wall.Name, "-", net_volume)
+    else:
+        print(wall.Name, "- NetVolume present but unset")</code></pre>
+                <p>The set exists, the key exists, and the value is still None. Skipping this check and passing the result straight into a calculation, adding it to a running total, for instance, either raises a TypeError immediately or, worse, gets silently coerced into something misleading depending on what the surrounding code does with it. Checking explicitly for None before treating a value as numeric is the reliable way to distinguish an unset value from a real one.</p>
+                <p>This is worth naming as a pattern in its own right, since it's easy to write code that assumes a key existing is the same as having a number: key exists does not mean value exists, and value exists does not mean value is usable. Both checks are needed, and they check different things.</p>
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+                <h2>A Number Without Its Unit Isn't Finished Yet</h2>
+                <p>Even a clean, non-None number carries a hidden assumption: what unit is it actually in. IFC doesn't fix this globally. A project establishes its own unit system through IfcUnitAssignment, which associates unit definitions with the quantities used across the model, and a length unit in that assignment can be declared as plain meters or as millimeters, among other options, depending entirely on how the authoring software or user set the project up. The same physical quantity can be represented by very different numeric magnitudes depending on the model's own unit definitions, a wall's net side area might read 4.2 in one file and 4200.0 in another for what is genuinely the same physical size, with nothing in the raw number itself signaling which is which.</p>
+                <p><code>ifcopenshell.util.unit.calculate_unit_scale(model)</code> exists specifically to resolve this for a project's default length unit, returning a scale factor for converting that unit to and from SI meters. That's a real, useful tool, and worth knowing exists. But applying it correctly to a specific quantity, especially anything beyond a plain length, area and volume don't scale the same way a length does, and a specific quantity can occasionally carry its own explicit unit override that differs from the project default entirely, is enough of its own topic that it deserves being treated properly rather than folded into a first extraction script. The lesson worth locking in here is the principle, not a shortcut: a numeric IFC value is not self-describing, and before converting it to anything, the value's actual unit context has to be determined first, not assumed.</p>
+                <p>For this lesson, the honest and correct move is to stop at the value itself, not convert it:</p>
+                <pre><code>net_volume = qto.get("NetVolume")
+
+if net_volume is None:
+    print(wall.Name, "- NetVolume present but unset")
+    continue
+
+print(wall.Name, "-", net_volume, "(unit not yet resolved)")</code></pre>
+
+                <h2>A Defensive Version of 9.3's Script</h2>
+                <p>Putting the first two conditions together, this is 9.3's script rewritten to survive a real, imperfect file rather than only the clean one it was demonstrated on, deliberately leaving unit conversion out rather than applying it carelessly:</p>
+                <pre><code>import ifcopenshell
+import ifcopenshell.util.element
+
+model = ifcopenshell.open("/path/to/model.ifc")
+
+walls = model.by_type("IfcWall")
+
+for wall in walls:
+    quantities = ifcopenshell.util.element.get_psets(wall, qtos_only=True)
+    qto = quantities.get("Qto_WallBaseQuantities")
+
+    if not qto:
+        print(wall.Name, "- no base quantities found")
+        continue
+
+    net_volume = qto.get("NetVolume")
+
+    if net_volume is None:
+        print(wall.Name, "- NetVolume present but unset")
+        continue
+
+    print(wall.Name, "-", net_volume, "(unit not yet resolved)")</code></pre>
+                <p>Two checks, three distinct outcomes, none of them crash the script or silently produce a misleading number: no quantity set, a quantity set with the value unset, and a real, present value clearly labeled as not yet unit-resolved rather than quietly treated as meters.</p>
+
+                <h2>What's Next</h2>
+                <p>Every script built across this module so far runs top to bottom against one hardcoded file path, printing results as it goes. The final lesson in this module takes that shape and turns it into something structured enough to reuse: functions instead of one long script, a shape that can process more than one file without being rewritten each time.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>A missing property or quantity set is a valid model state, not an error. Use <code>.get()</code> rather than direct key access so a missing set returns None cleanly instead of raising an exception.</li>
+                        <li>A property or quantity can exist as a key while its actual value is None. An unset IFC value can be represented by $ in the underlying STEP file, and IfcOpenShell exposes unset values as None in Python. Check for this explicitly before treating a value as numeric.</li>
+                        <li>Key exists does not mean value exists, and value exists does not mean the value is ready to use. These are separate checks worth keeping separate.</li>
+                        <li>A numeric IFC value is not self-describing. The same physical quantity can be represented by very different numeric magnitudes depending on the project's own unit definitions, established through IfcUnitAssignment.</li>
+                        <li>Converting a value correctly requires knowing its actual unit context first, which is more than a single scale factor in the general case, especially once quantities beyond a plain length are involved. When that context hasn't been resolved yet, label a value as such rather than assuming it's already in a known unit.</li>
+                        <li>Handling missing sets, unset values, and unresolved units is what separates a script that works on one clean demo file from one that survives a real, messy project.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://docs.ifcopenshell.org/ifcopenshell-python/code_examples.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Code examples</a></li>
+                        <li><a href="https://docs.ifcopenshell.org/autoapi/ifcopenshell/util/unit/index.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — ifcopenshell.util.unit</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-9-3-extracting-properties-quantities.html">← Prev</a>
+                <a href="lesson-9-5-script-to-reusable-tool.html">Next →</a>
             </div>
 
         </div>

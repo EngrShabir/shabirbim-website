@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>9.2 Reading an IFC File Programmatically: First Script | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 9.2 — Opening a real IFC file with IfcOpenShell, querying by type, and reading direct attributes: the three operations every later script in this module reuses.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,68 +378,83 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 9 → 9.2</span>
+            <h1 class="lesson-title">9.2 Reading an IFC File Programmatically: First Script</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>The last lesson confirmed IfcOpenShell installs and loads correctly, using nothing but an empty, in-memory model to prove it. This lesson opens an actual file for the first time and pulls something real out of it. Everything here is deliberately small: one file, one type of element, a handful of attributes. The point isn't to do anything sophisticated yet. It's to build the small number of operations that every later script in this module reuses, and to see them actually work against a real model.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>Opening a File</h2>
+                <p>IfcOpenShell's own documentation gives the pattern directly:</p>
+                <pre><code>import ifcopenshell
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+model = ifcopenshell.open("/path/to/model.ifc")</code></pre>
+                <p><code>ifcopenshell.open()</code> takes a file path and returns a model object, everything in that IFC file loaded into memory and ready to query. This is the same kind of object 9.1's sanity check created with <code>ifcopenshell.file()</code>, except now it's populated with real data rather than empty.</p>
+                <p>Two things commonly go wrong here, worth knowing about before they happen rather than after. If the path is wrong, misspelled, pointing at a folder that's been moved, or just doesn't exist, the call fails with an error reporting the file can't be found. IfcOpenShell can also fail while opening a file if the file is inaccessible, malformed, or declares a schema version it doesn't support, though the exact failure and message depend on what's actually wrong with the file rather than following one single standardized pattern. Either way, the failure happens immediately, at the open() call itself, not silently later on. That's a deliberate design choice worth appreciating: a script that gets past this line has a genuinely loaded model to work with, not something that will fail unpredictably three lines further down.</p>
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+                <h2>Querying by Type</h2>
+                <p>The single most common first operation on a loaded model is asking for every entity of one kind:</p>
+                <pre><code>walls = model.by_type("IfcWall")</code></pre>
+                <p><code>by_type()</code> returns every entity in the file matching that IFC class, wrapped as a list. It normally includes entities whose IFC schema type is derived from the requested class, following IFC's own entity inheritance hierarchy, so <code>model.by_type("IfcElement")</code> returns instances of the many specific entity types derived from IfcElement, not only entities literally typed IfcElement itself. The string passed in has to match a real IFC entity name exactly; a typo or a name the schema doesn't recognize produces an error at that call, rather than silently returning nothing.</p>
+                <p>An empty list back from <code>by_type()</code> isn't necessarily an error though. It's a real, meaningful result: the file genuinely contains zero entities of that type. This distinction matters enough to be explicit about:</p>
+                <pre><code>walls = model.by_type("IfcWall")
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+if not walls:
+    print("No walls found.")</code></pre>
+                <p>An exception means the operation itself failed, a bad type name, a schema-level problem. An empty list means the operation succeeded and simply found nothing. Once real automation starts making decisions based on what a query returns, this difference, between a failed check and a check that correctly found zero matches, is exactly the kind of thing worth never confusing.</p>
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+                <h2>Reading Attributes Off an Entity</h2>
+                <p>Once a list of entities exists, each one carries attributes accessible with plain dot notation, matching the IFC schema's own naming exactly, including its capitalization:</p>
+                <pre><code>wall = walls[0]
+print(wall.GlobalId)
+print(wall.Name)</code></pre>
+                <p>GlobalId is the IFC object's globally unique identifier, intended to identify that object consistently within and across IFC-based workflows. It's designed to remain stable when an object's other attributes change, but it isn't an unconditional guarantee: an export, a re-import, or certain software operations can produce a different GlobalId for what a person would still consider the same real-world element. Name is the human-readable label an author gave the element, which may or may not be meaningful depending on how carefully the originating software or user named things.</p>
+                <p>These are direct attributes, values sitting on the entity itself, no lookup required beyond the dot notation. This matters because it's the first half of a distinction the next lesson goes much deeper on. Not everything worth knowing about an element lives this way. Quantities, most custom properties, and material information all live one or more steps away from the entity itself, reached through relationships rather than a direct attribute. This lesson deliberately stops at direct attributes. Reaching into properties and quantities is 9.3's job.</p>
+
+                <h2>A Complete First Script</h2>
+                <p>Putting the pieces together, this is a small, complete script that opens a file, counts every wall in it, and prints each one's name:</p>
+                <pre><code>import ifcopenshell
+
+model = ifcopenshell.open("/path/to/model.ifc")
+
+walls = model.by_type("IfcWall")
+print(f"Found {len(walls)} walls")
+
+for wall in walls:
+    print(wall.GlobalId, "-", wall.Name)</code></pre>
+                <p>Run against any real IFC file with walls in it, this prints a count followed by one line per wall, its identifier and its name. Nothing here depends on any particular authoring tool or a specific project; the same three operations, open, query by type, read an attribute, work identically against a file exported from any IFC-producing software, since they're operating on the schema itself rather than on anything tool-specific.</p>
+
+                <h2>What's Next</h2>
+                <p>Direct attributes like Name and GlobalId are only part of what an IFC entity carries. The next lesson goes into the part that matters most for anything resembling real extraction work: properties and quantities, where they actually live in the file's structure, and how to read them correctly.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li><code>ifcopenshell.open(path)</code> loads a real IFC file into memory and returns a model object. A wrong path, an inaccessible file, or an unsupported schema fails at this call, rather than failing unpredictably later.</li>
+                        <li><code>model.by_type("IfcClassName")</code> returns every entity of that class, following IFC's entity inheritance hierarchy, so subclasses are included automatically. The class name must exactly match a real IFC entity name.</li>
+                        <li>An empty list from <code>by_type()</code> is a valid, meaningful result, not necessarily a sign of failure. An exception means the operation itself failed; an empty list means it succeeded and found nothing, a distinction worth keeping precise.</li>
+                        <li>Direct attributes like GlobalId and Name are read with plain dot notation matching the schema's own naming and capitalization exactly.</li>
+                        <li>GlobalId is designed to identify an object consistently, but export, re-import, or certain operations can still produce a different one for what is conceptually the same element. Name is a human-readable label whose usefulness depends entirely on how carefully the authoring software or user populated it.</li>
+                        <li>Direct attributes are only one layer of what an entity carries. Properties, quantities, and material data live one or more steps further away, reached through relationships rather than direct dot access, which is where the next lesson picks up.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://docs.ifcopenshell.org/ifcopenshell-python/hello_world.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Hello, world!</a></li>
+                        <li><a href="https://docs.ifcopenshell.org/ifcopenshell-python/code_examples.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Code examples</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-9-1-ifcopenshell-environment-setup.html">← Prev</a>
+                <a href="lesson-9-3-extracting-properties-quantities.html">Next →</a>
             </div>
 
         </div>

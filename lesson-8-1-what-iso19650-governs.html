@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>8.1 What ISO 19650 Actually Governs | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 8.1 — ISO 19650's six parts, the OIR to AIR to PIR to EIR requirements cascade, and the boundary between managing information well and information being true.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,68 +378,81 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 8 → 8.1</span>
+            <h1 class="lesson-title">8.1 What ISO 19650 Actually Governs</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>Say "ISO 19650" to someone in construction and the first thing that usually comes back is "the BIM standard." That phrase sets someone up to expect a document that tells them how to model a column, which software to use, or how detailed a wall needs to be before it counts as finished. Open the actual standard looking for any of that and it isn't there. Not because it's buried in a later clause. Because ISO 19650 was never that kind of document.</p>
+                <p>It's an information management standard. Its subject is the process around the model, not the model itself. Who is responsible for producing information. What has to exist before someone else can rely on it. When it has to arrive. How a receiving organization checks that what it asked for is what it actually got. This lesson covers what the standard's six parts set out, using ISO's own clause structure and definitions, then draws the line around what it deliberately leaves for other layers to handle.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>Six Parts, One Foundational Framework</h2>
+                <p>ISO 19650 is a family of documents, not one document. As of 2026 there are six parts, developed by ISO technical committee TC 59/SC 13 as an internationalization of earlier UK standards, principally the PAS 1192 series. Part 1 establishes concepts and principles. Part 2 covers the delivery phase, the stretch of a project where design and construction actually happen. Part 3 covers the operational phase, once the asset is in use. Part 4 covers information exchange criteria. Part 5 covers a security-minded approach for sensitive assets. Part 6, the newest, covers health and safety information and was only published in 2025, later than most practitioner guides written before that date will mention.</p>
+                <p>Part 1 does the conceptual heavy lifting. It defines the vocabulary and the roles structure, an appointing party holding the requirements, and one or more appointed parties delivering information against them. Where a delivery chain has several tiers, the appointed party managing others beneath it is called the lead appointed party, a relative position within a specific appointment chain rather than a fixed title.</p>
+                <p>The other parts don't each reproduce this framework from scratch. They apply and extend it to a specific phase or concern: Part 2 applies it to delivery, Part 3 to operation, Part 5 to security. Across the whole series, two things recur consistently: defined information-management responsibilities, and a progression from broad organizational needs down to appointment-specific requirements. That progression is worth walking through on its own.</p>
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+                <h2>The Cascade: OIR → AIR → PIR → EIR</h2>
+                <p>ISO 19650-1 defines an information requirement, in clause 3.3.2, as a specification for what, when, how, and for whom information is to be produced. Four narrower terms build on that one definition, each one closer to a real contract than the last.</p>
+                <p>An <strong>Organizational Information Requirement</strong>, clause 3.3.3, is an information requirement in relation to organizational objectives. It's a standing business goal, not tied to any single project. A hospital trust wanting to cut facilities management costs across its whole estate is an OIR.</p>
+                <p>An <strong>Asset Information Requirement</strong>, clause 3.3.4, is an information requirement in relation to the operation of an asset. Still estate-wide. Every new building the trust constructs must hand over data structured so its maintenance system can schedule upkeep on major plant automatically.</p>
+                <p>A <strong>Project Information Requirement</strong>, clause 3.3.5, is an information requirement in relation to the delivery of an asset, narrowed to one real project. For the new outpatient wing specifically, mechanical and electrical assets need manufacturer, model number, and warranty data captured, structured to that project's actual equipment.</p>
+                <p>An <strong>Exchange Information Requirement</strong>, clause 3.3.6, is an information requirement in relation to an appointment. It takes the relevant project information needs and expresses them as appointment-specific requirements, and clause 5.5 makes clear this isn't just the PIR copied into a contract. The EIR covers managerial, commercial, and technical aspects together. Delivery formats and deadlines sit alongside the actual data content, which is why a real EIR reads as heavier and more specific than the three requirements feeding into it.</p>
+                <p>The cascade exists as four steps, rather than an organization writing an EIR directly, for traceability. It provides a mechanism where a requirement written into an appointment should be explainable in terms of the information needs sitting above it. This is a requirements-management principle the cascade supports, not a rule the standard states in these exact words. In practice, it's what stops projects from accumulating contract requirements nobody can trace back to an actual need.</p>
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+                <h2>What ISO 19650 Deliberately Leaves for Other Layers</h2>
+                <p>This is where most of the confusion about the standard comes from, expecting it to define something it was never built to define. ISO 19650 says nothing about:</p>
+                <ul>
+                    <li>Which authoring tool to use. Revit, ArchiCAD, Allplan, or Tekla can all satisfy the same ISO 19650 requirement; the standard has no opinion on software.</li>
+                    <li>How geometry should be modeled. Level of detail, drafting conventions, and modeling technique sit in separate project or company standards.</li>
+                    <li>IFC export settings or how a quantity gets calculated. This is exactly the layer where problems like a footing losing its BaseQuantities on export happen.</li>
+                    <li>Which CDE platform to use. The standard defines the information-container workflow, review, authorization, and status concepts a CDE must support, not which vendor provides it.</li>
+                    <li>Whether a delivered value is correct. Nothing in the standard's own clauses addresses this.</li>
+                </ul>
+                <p>The practical shape of it: ISO 19650 sets the governance skeleton. Who's responsible. What has to be delivered, when it becomes binding, how it moves through review and authorization. Everything about how the actual technical work gets produced sits one layer below the standard, in tool-specific practice and project agreement.</p>
+                <p>Worth being precise on the CDE point specifically, since it's easy to flatten. The standard is often reduced in practice to four folders, Work in Progress, Shared, Published, Archive. That's a real part of it, but the actual information-management process underneath is richer: each information container carries status and suitability metadata, moves through defined review and authorization steps, and is tracked with revision control, not just filed into one of four buckets.</p>
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+                <h2>Why the Boundary Has Teeth</h2>
+                <p>A project can be fully ISO 19650 compliant on paper. Every role assigned correctly. The EIR properly narrowed down through a documented cascade. A BIM Execution Plan submitted and approved. A Common Data Environment running, containers moving through review and authorization exactly as specified.</p>
+                <p>Every governance box checked. None of that tells you whether the information flowing through that well-governed process is actually correct.</p>
+                <p>ISO 19650 governs how information is managed: who is responsible for it, how it is reviewed, authorized, exchanged, and delivered through a defined process. What it does not do, anywhere in its own clauses, is verify that the values inside a delivered file are the true ones. A model can move cleanly through every stage of a textbook-correct ISO 19650 process and still contain a quantity that's wrong by a large margin. Nothing in the standard is built to catch that, because catching it was never the problem the standard was solving.</p>
+                <p>That gap isn't a flaw. It's a boundary between layers, and it's worth seeing the whole stack at once:</p>
+                <p>A business need becomes an OIR. The OIR narrows into AIR and PIR. Those become a binding EIR. The EIR drives a BIM Execution Plan and an information delivery process. That process produces the actual deliverables, IFC models and other information containers. Those deliverables can then be checked against a technical specification like IDS, which verifies whether the required data is actually present and correctly structured. But even a file that passes every governance step and every structural check can still carry a wrong value, because none of those layers were built to verify correctness itself, only presence, process, and structure.</p>
+                <p>ISO 19650 answers one question well: is information being managed properly. It was never built to answer a second, separate question: is the information itself true. Confusing the two is where a lot of false confidence in "compliant" projects comes from.</p>
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+                <h2>A Worked Example, Start to Finish</h2>
+                <p>A rail authority wants to reduce unplanned maintenance incidents caused by asset failures across its network. That's the OIR, a standing goal with no project attached yet.</p>
+                <p>It translates that into a requirement: every new or renewed structure must deliver geometric and condition data structured for predictive maintenance, specifically material specification, installation date, and inspection access points. That's the AIR, still estate-wide.</p>
+                <p>For one specific elevated section between two stations, the authority narrows this further. All structural elements on this section, bridge decks, piers, retaining walls, must have material grade, installation date, and inspection access point coordinates, in a format compatible with its asset management platform. That's the PIR.</p>
+                <p>That same requirement then goes into the tender package and appointment contract, exact formatting and naming conventions specified, as a binding term the winning contractor is measured against. That's the EIR.</p>
+                <p>Every stage narrows the one before it and stays traceable back to the OIR that started the chain. Not one stage checks whether the material grade written into the delivered file for a specific pier is actually correct once it lands on the authority's desk. That verification sits entirely outside what this standard was built to govern.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>ISO 19650 is an information management standard, not a modeling or software standard. Its six parts (2026) cover concepts, delivery, operations, exchange, security, and health and safety.</li>
+                        <li>Part 1 establishes the roles hierarchy and requirements cascade; the other parts apply and extend that framework to specific phases and concerns rather than each reproducing it independently.</li>
+                        <li>The requirements cascade, OIR, AIR, PIR, EIR, defined in ISO 19650-1 clauses 3.3.2 through 3.3.6, narrows a broad organizational goal into a binding, appointment-specific contract term.</li>
+                        <li>The standard governs how information is managed: responsibility, review, authorization, and delivery. It explicitly does not define authoring software, modeling standards, IFC export settings, or which platform hosts the CDE.</li>
+                        <li>Full process compliance says nothing about whether the delivered data is correct. That check happens at a different layer entirely, one this lesson deliberately stops short of.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://www.iso.org/standard/68078.html" target="_blank" rel="noopener noreferrer">ISO — ISO 19650-1:2018</a></li>
+                        <li><a href="https://www.bsigroup.com/en-GB/products-and-services/standards/iso-19650-building-information-modelling-bim/" target="_blank" rel="noopener noreferrer">BSI — ISO 19650: Building Information Modeling (BIM)</a></li>
+                        <li><a href="https://ukbimframework.org/wp-content/uploads/2020/09/Guidance-Part-D_Developing-information-requirements_Edition-1.pdf" target="_blank" rel="noopener noreferrer">UK BIM Framework — Guidance Part D: Developing information requirements</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-7-5-validating-against-ids.html">← Prev</a>
+                <a href="lesson-8-2-common-data-environment.html">Next →</a>
             </div>
 
         </div>

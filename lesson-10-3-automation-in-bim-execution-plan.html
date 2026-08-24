@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>10.3 Where Automation Fits Inside a BIM Execution Plan | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 10.3 — Automation doesn't invent a new BEP category. ISO 19650-2 already names quality checking as its own step, and a pipeline is a specific way of performing it.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -252,6 +252,19 @@
             border-radius: 0;
         }
 
+        .lesson-content blockquote {
+            margin: 4px 0 28px;
+            padding: 18px 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 3px solid var(--accent-gold);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+        .lesson-content blockquote p { margin-bottom: 0; }
+
         .key-takeaways {
             margin-top: 52px;
             background: rgba(255, 255, 255, 0.04);
@@ -378,68 +391,63 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 10 → 10.3</span>
+            <h1 class="lesson-title">10.3 Where Automation Fits Inside a BIM Execution Plan</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>Everything built across this module so far has been code, run by a person choosing to execute it. This lesson steps back from code entirely and asks where something like it actually belongs on a real project, specifically inside a BIM Execution Plan, the document Module 8 introduced as the delivery team's formal response to a client's information requirements. Automation doesn't invent a new category of activity a BEP has to make room for. It fills a slot that was already there.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>Rebuilding the BEP</h2>
+                <p>A BIM Execution Plan, BEP, is the document a delivery team produces in direct response to an Exchange Information Requirement, setting out how that team intends to meet it: who does what, using what software, following what standards, on what schedule, and how quality gets checked before information moves forward. There are two versions. A pre-appointment BEP is submitted during tender, a lighter, more proposed answer used to compare competing bidders. A post-appointment BEP is confirmed once a contract is signed, far more detailed, and becomes the actual working document the delivery team follows for the rest of the project.</p>
+                <p>Among its regular contents, a BEP typically covers technical standards, the delivery team's organizational structure, the information delivery schedule, and, directly relevant here, the quality control and assurance processes the team commits to following before information gets shared or published.</p>
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+                <h2>Where Quality Checking Already Lives in a BEP</h2>
+                <p>This isn't automation inventing something new to write into a project's paperwork. ISO 19650-2 already names quality checking as its own explicit step in the information production cycle, clause 5.6.4, "undertake quality assurance check," sitting between generating information and reviewing it for sharing. Historically, and still very commonly, that step means a person opening a model and looking it over by eye. Nothing about the standard specifies how the check has to be performed, only that it happens, before information moves toward being shared, reviewed, and eventually authorized.</p>
+                <p>That's the exact slot a pipeline like the one built in 10.1 and 10.2 fills. It doesn't sit alongside the quality assurance step as something extra. It's a specific, automatable way of performing that same step, one already named and expected in the production cycle a BEP is meant to describe.</p>
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+                <h2>What a BEP Needs to Say About an Automated Check</h2>
+                <p>Naming automation in a BEP means being specific about the same things a manual check would need to be specific about, just with a script standing in for a person's eyes. What's actually being checked. Against what rule set, whether that's a small set of hand-written Python rules like Module 10's, or a formal IDS specification from Module 7. At what point in the CDE lifecycle it runs, tying directly back to the states covered in Module 8.2, most naturally before a container moves from Work in Progress into Shared, catching problems while they're still cheap to fix rather than after other disciplines have started coordinating against them. And who remains accountable for the result, since running a check automatically doesn't remove the need for a named person or role responsible for what the check actually found, or missed.</p>
+                <p>An automated tool changes who performs the check. It doesn't change the fact that a check happened, and a BEP still needs to say so clearly enough that anyone reading it understands exactly what gets checked, when, and by what standard.</p>
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+                <h2>A Worked Example</h2>
+                <p>A plausible BEP clause describing this might read:</p>
+                <blockquote>
+                    <p>"Prior to any structural model moving from Work in Progress to Shared status, the model shall be run through the task team's automated quantity extraction and QA pipeline. This checks that base quantities are present for all structural elements and that reported values fall within defined plausibility thresholds for each element type. Any element flagged by this check shall be reviewed and corrected by the originating modeler before the container is shared. The BIM Coordinator remains responsible for confirming this check has been run and reviewing the flagged issues log before authorizing the status change."</p>
+                </blockquote>
+                <p>Every piece a manual quality check clause would need is still there: what triggers the check, what it actually verifies, what happens when something fails it, and who's accountable for the outcome. The only thing that's changed from a traditional clause is that the verification step itself is performed by a script rather than a person paging through a model by eye.</p>
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+                <h2>The Boundary This Lesson Doesn't Cross</h2>
+                <p>Worth being precise about what naming automation in a BEP actually commits a team to. It's a process commitment, a statement that a specific kind of check will run at a specific point before information moves forward. It is not, on its own, a technical guarantee that the tool performing that check is correctly built, covers everything it should, or catches every real problem in a file. A BEP clause describing an automated check is exactly as trustworthy as the check it describes, no more, and writing the clause well doesn't retroactively make a weak or incomplete script into a reliable one. This is the same boundary that's run through this whole series since Module 8: a documented, well-governed process and a technically correct result are two different things, and naming a step in a plan confirms the first, not the second.</p>
+
+                <h2>What's Next</h2>
+                <p>This lesson covered automation as a documented process commitment, a line in a plan describing what happens and when. The next lesson goes back to something closer to code, but a different kind than anything built so far in this module: running a check automatically, on a schedule or a trigger, rather than by a person choosing to execute a script, the pattern most commonly known as CI/CD.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>A BIM Execution Plan is the delivery team's formal response to an EIR, setting out standards, software, schedule, and quality processes. Quality checking already has its own named step inside ISO 19650-2's production cycle, clause 5.6.4, before information moves toward being shared.</li>
+                        <li>Automated checks like the ones built earlier in this module don't sit alongside that step as something new. They're a specific way of performing a check the standard already expects to happen.</li>
+                        <li>A BEP describing an automated check needs to say what's checked, against what rule set, at what point in the CDE lifecycle, and who remains accountable for the result, the same things a manual check clause would need to specify.</li>
+                        <li>Naming automation in a BEP is a process commitment: a statement that a specific check will run at a specific point. It is not a technical guarantee that the check itself is correctly built or complete, the same boundary between process and correctness this series has carried since Module 8.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://www.ukbimframework.org/wp-content/uploads/2021/02/Guidance-Part-E_Tendering-and-appointments_Edition-2.pdf" target="_blank" rel="noopener noreferrer">UK BIM Framework — Guidance Part E: Tendering and appointments</a></li>
+                        <li><a href="https://ukbimframework.org/wp-content/uploads/2020/05/ISO19650-2Edition4.pdf" target="_blank" rel="noopener noreferrer">UK BIM Framework — ISO 19650-2 Guidance</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-10-2-automated-qa-pipeline.html">← Prev</a>
+                <a href="lesson-10-4-cicd-style-checking.html">Next →</a>
             </div>
 
         </div>

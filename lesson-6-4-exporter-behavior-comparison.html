@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>6.4 Exporter Behavior Across Major Tools — Comparative, Evidence-Based | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 6.4 — Seven real files across four exporter families, sorted honestly into universal failures, rule names hiding different problems, and genuine exporter-characteristic patterns.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -252,6 +252,32 @@
             border-radius: 0;
         }
 
+        .lesson-content .table-wrap {
+            overflow-x: auto;
+            margin: 4px 0 28px;
+        }
+        .lesson-content table {
+            width: 100%;
+            min-width: 480px;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+        .lesson-content th,
+        .lesson-content td {
+            text-align: left;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--paper-divider);
+            color: var(--text-primary);
+            vertical-align: top;
+        }
+        .lesson-content th {
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+        .lesson-content tr:last-child td {
+            border-bottom: none;
+        }
+
         .key-takeaways {
             margin-top: 52px;
             background: rgba(255, 255, 255, 0.04);
@@ -378,68 +404,88 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 6 → 6.4</span>
+            <h1 class="lesson-title">6.4 Exporter Behavior Across Major Tools — Comparative, Evidence-Based</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>Every file in this series conforms to the same IFC standard. Not every file was produced by the same tool. This lesson asks a narrower, more answerable question than "which exporter is better": given the same schema, do different export paths exhibit characteristic failure patterns, or does the same handful of failure types simply recur regardless of which tool produced the file? Seven files isn't enough data to rank software. It's enough to sort findings into three honest categories: failures that show up everywhere, meaning the cause probably isn't tool-specific at all; failures that recur under the same rule but look different each time, meaning the rule name hides more than one real problem; and failures that belong to one export path specifically, meaning they're worth checking for by name if you know which tool produced a file.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>Dataset and Method</h2>
+                <p>Seven files, four tool and schema-version combinations, checked through the same buildingSMART Validation Service, using the same three-stage method from 6.2 and 6.3.</p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>File</th>
+                                <th>Tool</th>
+                                <th>Schema</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>ArchiCAD 20</td><td>IFC4</td></tr>
+                            <tr><td>2</td><td>Revit</td><td>IFC4</td></tr>
+                            <tr><td>3</td><td>Unknown (2014 export)</td><td>IFC2X3</td></tr>
+                            <tr><td>4</td><td>Revit</td><td>IFC4</td></tr>
+                            <tr><td>5</td><td>Revit</td><td>IFC4</td></tr>
+                            <tr><td>6</td><td>Allplan 2017</td><td>IFC2X3</td></tr>
+                            <tr><td>7</td><td>Revit 2021</td><td>IFC2X3</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Four families in total: Revit IFC4 (three files), Revit IFC2X3 (one file), ArchiCAD IFC4 (one file), Allplan IFC2X3 (one file, plus File 3's unidentified IFC2X3 export as a second data point for that schema version). Every comparison below states plainly how many files support it. A pattern appearing in three of three files within one family is a real signal. A pattern appearing in one file is a file-specific observation, not evidence about the tool that produced it, a distinction this lesson holds to deliberately.</p>
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+                <h2>A Failure That Crosses Every Family: IFC106</h2>
+                <p>IFC106, orphaned resource entities unreferenced by anything in the file, geometry-support leftovers like stray IfcCartesianPoint or IfcAxis2Placement3D instances, appears in six of the seven files: ArchiCAD IFC4, all three Revit IFC4 files, Allplan IFC2X3, and Revit IFC2X3. The only file without it is File 3, whose own report came back with zero Industry Practice warnings entirely, the sole fully clean file in the dataset on that layer.</p>
+                <p>This is about as close to universal as seven files can demonstrate. It shows up regardless of tool, regardless of schema version, at a consistent occurrence count each time, roughly 9 to 10 entities per file. The likely explanation isn't a shared bug across four unrelated codebases, it's that leftover, unreferenced geometry-support data is simply a normal byproduct of how IFC export pipelines build and edit geometry, independent of vendor. Findings this widespread are the wrong place to look for exporter-specific insight. They're evidence about the general nature of IFC export, not about any one tool.</p>
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+                <h2>The Same Rule, Genuinely Different Failures: PSE001</h2>
+                <p>PSE001 checks that a Property Set matches buildingSMART's own standard definitions, correct name, correct properties inside, attached to a permitted entity type. It appears in three files, spanning three separate tool and schema combinations, ArchiCAD IFC4, Revit IFC4, and Revit IFC2X3, and each occurrence is a meaningfully different kind of mistake.</p>
+                <p>In the ArchiCAD file, two distinct sub-patterns appear under this one rule: a Pset named Pset_FireRatingProperties, which isn't a real standard name at all, and separately, a correctly-named standard Pset carrying a non-standard property inside it, SpaceTemperatureSummer, not on the official list for that Pset. Fifteen occurrences total, a naming-level failure and a content-level failure bundled under one rule.</p>
+                <p>In the Revit IFC4 file, the failure is different in kind entirely: a real, correctly-named Pset, attached to the wrong level of the spatial hierarchy, expected on IfcBuildingStorey, found instead on IfcBuilding one level up. Three occurrences. Nothing wrong with the Pset's name or its contents, the problem is which entity it's hanging off of.</p>
+                <p>In the Revit IFC2X3 file, a fourth distinct shape: property sets attached to IfcGroup, a pure organizational container with no geometry of its own, instead of a real product entity. Ten occurrences, three of them specifically expecting IfcReinforcingBar.</p>
+                <p>Four distinct failure shapes, under one rule name, across three files that share nothing in common except the rule that caught them. That's the real finding here: a recurring rule name is not evidence of a recurring underlying mistake. Each occurrence needs reading on its own terms, exactly the discipline 6.3 already established for reading any single violation.</p>
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+                <h2>A Failure Characteristic of One Export Path: CorrectItemsForType</h2>
+                <p>IfcShapeRepresentation.CorrectItemsForType checks that a representation's declared type matches what it actually contains, a representation labelled 'SweptSolid' should never contain a Boolean-result entity. This one shows the opposite pattern from PSE001: identical failure, three for three within a single family, zero anywhere else.</p>
+                <p>All three Revit IFC4 files hit it. File 2: nine occurrences, 'SweptSolid' labels wrapping IfcBooleanClippingResult entities. File 4: three occurrences, the more general IfcBooleanResult. File 5: fourteen occurrences, a mix of both subtypes. Same underlying story every time: a beam or column starts as a clean extruded solid, gets a piece clipped out of it later, a notch, an opening, a connection, and the export process updates the geometry Items to reflect the clip but never updates the RepresentationType label from 'SweptSolid' to 'Clipping'. Zero occurrences in the ArchiCAD file, zero in either Allplan file, zero in the Revit IFC2X3 file.</p>
+                <p>This is the cleanest exporter-characteristic finding in the dataset. It's not a schema-version story, since Revit IFC2X3 doesn't show it. It's specifically a Revit IFC4 export-path habit: a label that stops being updated once boolean clipping enters the geometry pipeline.</p>
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+                <h2>What the Dataset Cannot Prove</h2>
+                <p>Three patterns look tool-characteristic on the surface but don't survive scrutiny, and belong here specifically so they don't get promoted into claims the evidence doesn't support.</p>
+                <p>IfcMaterialProfileSetUsage.AssociatedTo, a missing material relationship, appeared in all three Revit IFC4 files and nowhere else. But the rule only fires on elements with profiled steel members, and the dataset doesn't contain equivalent profiled-steel content across every exporter, File 7's Revit IFC2X3 file is a pure RC frame with nothing capable of triggering the check at all. Its absence there could mean the exporter handles it correctly, or could simply mean nothing in that file could have failed it either way. The observation cannot cleanly separate exporter behavior from model-content differences.</p>
+                <p>OJT001, redundant PredefinedType values, appeared across every IFC4 file and zero IFC2X3 files, which looks like a schema-version story. It isn't one, at least not demonstrably: a real buildingSMART changelog entry confirms the rule was updated to "exclude checks for IFC2X3 models." Its absence from both IFC2X3 files in this dataset may simply mean the rule never ran on them, not that IFC2X3 exporters behave better. GRF003, missing coordinate reference systems, shows the identical pattern, present in every IFC4 file, absent from both IFC2X3 files, but no equivalent confirmation of a scope exclusion was found for this rule specifically. That doesn't mean GRF003 is a genuine IFC2X3 characteristic either, it means the question is genuinely open and unconfirmed rather than settled in either direction, and it's presented that way here rather than assumed.</p>
+                <p>GEM001 and GEM111, real geometric defects, closed-shell edge errors and polyline closure failures, appeared in scattered, inconsistent combinations: two tools, two schema versions, no file-count pattern clean enough to generalize from. These are exactly what file-specific findings should look like: real, worth reporting to the specific modeler who produced that specific file, and not evidence about the exporter as a category.</p>
+                <p>Rule applicability itself is a confounding variable a comparison like this has to account for. A rule appearing only in IFC4 files is not automatically an IFC4 exporter characteristic, it might be a rule that was never designed to run on IFC2X3 files at all.</p>
+
+                <h2>Practical Implications</h2>
+                <p>Three tiers, three different responses. A universal finding like IFC106 is worth a standard check on every file regardless of source, since it isn't telling you anything about which tool produced the file. A rule like PSE001 that recurs but changes shape needs its specific occurrence read fresh each time, never assumed from a prior file that hit the same rule name. And a genuinely exporter-characteristic finding like CorrectItemsForType is worth checking for specifically the moment a file is known to come from Revit IFC4, since three for three within one family, zero everywhere else, is a real enough signal to build a habit around, checking whether any element in the file underwent a late-stage boolean clip, before assuming its RepresentationType labels can be trusted.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>A finding present across most or all tool families, like IFC106, says something about IFC export in general, not about any one exporter.</li>
+                        <li>The same rule name catching different underlying mistakes on different files, as PSE001 does across three files with four distinct failure shapes, means a recurring rule is not evidence of a recurring cause. Each occurrence needs its own read.</li>
+                        <li>A finding confined to one tool and schema-version family across every file in that family, with zero elsewhere, like CorrectItemsForType in Revit IFC4, is the strongest kind of exporter-characteristic evidence this dataset can produce.</li>
+                        <li>Not every pattern that looks tool-specific is: element-type availability, rule-scope exclusions confirmed by buildingSMART's own changelog, and genuinely file-specific geometric defects can all produce a misleading appearance of exporter characteristic behavior. Distinguishing them from real signal is part of the comparison, not an afterthought.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://github.com/buildingSMART/ifc-gherkin-rules" target="_blank" rel="noopener noreferrer">buildingSMART — ifc-gherkin-rules repository</a></li>
+                        <li><a href="https://forums.buildingsmart.org/t/validation-service-updates/4992" target="_blank" rel="noopener noreferrer">buildingSMART Validation Service — Updates thread</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-6-3-ifc-validation-service.html">← Prev</a>
+                <a href="lesson-7-1-the-problem-ids-solves.html">Next →</a>
             </div>
 
         </div>

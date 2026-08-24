@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>9.5 From Script to Reusable Tool | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 9.5 — Reshaping defensive extraction logic into a function that returns data, processing multiple files in a loop, and writing results to CSV — a taste of a real tool.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -378,68 +378,109 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 9 → 9.5</span>
+            <h1 class="lesson-title">9.5 From Script to Reusable Tool</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>Every script built across this module so far does the same thing: opens one hardcoded file, prints results to the screen, and stops. That's the right shape for learning, since it keeps every new idea isolated and easy to follow. It's the wrong shape for actually using the code, because running it against a different file means editing the script itself, and running it against ten files means editing it ten times. This lesson takes the defensive extraction logic from 9.3 and 9.4 and reshapes it into something that can be pointed at any file, and any number of files, without being rewritten each time.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>Why a Script Isn't a Tool Yet</h2>
+                <p>The scripts so far mix three separate jobs into one block of code: opening a file, extracting data from it, and printing that data. As long as those three things are welded together, the script can only ever do exactly what it currently does, to exactly one file. The fix isn't more code. It's separating those jobs so each one can be reused on its own terms.</p>
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+                <h2>Turning a Script Into a Function</h2>
+                <p>The extraction logic from 9.4 already does real work. Wrapping it in a function changes what happens to the results, from printing them immediately to returning them as data:</p>
+                <pre><code>import ifcopenshell
+import ifcopenshell.util.element
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+def extract_wall_quantities(file_path):
+    model = ifcopenshell.open(file_path)
+    walls = model.by_type("IfcWall")
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+    results = []
+    for wall in walls:
+        quantities = ifcopenshell.util.element.get_psets(wall, qtos_only=True)
+        qto = quantities.get("Qto_WallBaseQuantities")
+        net_volume = qto.get("NetVolume") if qto else None
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+        results.append({
+            "file": file_path,
+            "wall_name": wall.Name,
+            "global_id": wall.GlobalId,
+            "net_volume": net_volume,
+        })
+
+    return results</code></pre>
+                <p>Nothing about the extraction logic itself changed from 9.4. What changed is the ending: instead of printing each wall's result as it goes, the function builds a list of dictionaries, one per wall, and hands the whole list back to whatever called it. A missing quantity set or an unset value still doesn't crash anything, it just becomes None in that wall's dictionary, a real, checkable result rather than a printed line that's gone the moment the script finishes.</p>
+                <p>This is the actual shift this lesson is about. A script that prints is only useful the moment it's run, watched by a person. A function that returns data can be called from anywhere, checked, combined with other results, or handed to a second piece of code that does something else with it entirely.</p>
+
+                <h2>Processing More Than One File</h2>
+                <p>Once extraction returns data instead of printing it, running the same logic against several files stops being a rewrite and becomes a loop:</p>
+                <pre><code>file_paths = [
+    "/path/to/building_a.ifc",
+    "/path/to/building_b.ifc",
+    "/path/to/building_c.ifc",
+]
+
+all_results = []
+for path in file_paths:
+    all_results.extend(extract_wall_quantities(path))
+
+print(f"Processed {len(file_paths)} files, {len(all_results)} walls total")</code></pre>
+                <p>Nothing here is specific to IFC. It's the same pattern any batch task uses: a list of things to process, a function that handles one of them, and a loop that calls it repeatedly and collects the results. The only reason this was out of reach before is that the earlier version of the script had no clean boundary between "get the data" and "do something with the data." Now that boundary exists, and everything downstream gets simpler because of it.</p>
+
+                <h2>Turning Results Into Something Usable</h2>
+                <p>A list of dictionaries sitting in memory disappears the moment the script ends. Writing it out to a file is what makes the results actually usable afterward, and for a flat list of dictionaries with the same keys in each one, Python's built-in csv module handles this directly, no extra library needed:</p>
+                <pre><code>import csv
+
+def write_results_csv(results, output_path):
+    if not results:
+        return
+
+    fieldnames = results[0].keys()
+    with open(output_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(results)
+
+write_results_csv(all_results, "wall_quantities.csv")</code></pre>
+                <p><code>csv.DictWriter</code> takes the same dictionary shape <code>extract_wall_quantities()</code> already produces and writes it straight to a spreadsheet-readable file, one row per wall, columns matching the dictionary keys exactly. This is a genuinely small amount of code for a real result: a script that started this module only able to print one file's data to a terminal now produces an actual file, covering as many source files as it was given, that opens directly in any spreadsheet tool.</p>
+                <p>Worth knowing this exact task, exporting IFC data to CSV, XLSX, or ODS with a query-based selection syntax, already exists as a dedicated, more capable tool within IfcOpenShell itself, called IfcCSV. Building a small version by hand here is about understanding the shape of the problem, not about replacing a tool that already solves it properly.</p>
+
+                <h2>Where This Deliberately Stops</h2>
+                <p>This is a taste of what a real extraction tool looks like, not a finished one, and the gap between the two is worth naming plainly rather than glossing over. A real tool needs to keep working when one file in a batch is corrupted or unreadable, rather than stopping the whole run. It needs some way of tracking confidence or completeness across a large batch, not just raw values. It needs proper packaging, so it can be run without opening a code editor first, and versioning, so results stay comparable as the code itself changes over time. None of that is covered here, and none of it belongs in an introductory lesson. What this lesson covers is the specific shift that makes all of that possible in the first place: separating extraction from output, and building around functions that return data rather than scripts that only print it.</p>
+
+                <h2>Closing the Module</h2>
+                <p>This module started with confirming a library installs correctly and ends with a small, genuinely reusable extraction tool built from nothing but that installed library and the standard tools already in Python. Every lesson in between, opening a file, reading direct attributes, reaching properties and quantities through the right relationship, and handling the real conditions a file can present, was a piece this final shape depends on. None of it stands alone; each lesson's script was quietly the foundation the next one built on.</p>
+                <p>The natural next step from here isn't more IFC-specific code. It's what happens around code like this at scale: running it automatically rather than by hand, checking its own output for problems, and fitting it into a repeatable pipeline rather than a script someone remembers to run. That's where Module 10 picks up.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>A script that prints results directly is only useful at the moment it runs. Wrapping the same logic in a function that returns structured data, a list of dictionaries here, makes it reusable by anything that calls it.</li>
+                        <li>Once extraction returns data instead of printing it, processing multiple files becomes a simple loop calling the same function repeatedly, not a rewrite of the script itself.</li>
+                        <li>Python's built-in csv module, specifically <code>csv.DictWriter</code>, turns a list of same-shaped dictionaries into a real spreadsheet-readable file with very little code.</li>
+                        <li>IfcOpenShell already provides a dedicated, more capable tool for exactly this kind of export, called IfcCSV. Building a small version here teaches the underlying shape of the problem rather than replacing a tool that already exists.</li>
+                        <li>A real extraction tool needs far more than this: resilience to bad files, some notion of confidence or completeness, proper packaging, and versioning. This lesson deliberately stops short of all of that, since the actual shift worth learning here is functions over scripts, and returned data over printed output.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://docs.ifcopenshell.org/ifcopenshell-python/code_examples.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — Code examples</a></li>
+                        <li><a href="https://docs.ifcopenshell.org/ifccsv.html" target="_blank" rel="noopener noreferrer">IfcOpenShell — IfcCSV</a></li>
+                        <li><a href="https://docs.python.org/3/library/csv.html" target="_blank" rel="noopener noreferrer">Python — csv: CSV File Reading and Writing</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-9-4-common-pitfalls-units-none-psets.html">← Prev</a>
+                <a href="lesson-10-1-batch-processing-ifc-files.html">Next →</a>
             </div>
 
         </div>

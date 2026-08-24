@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5.4 Model View Definitions: What They Constrain | Knowledge Hub — Shabir Ahmad</title>
-    <meta name="description" content="Module 5.4 — What a Model View Definition actually governs beyond a subset of the schema, the mvdXML mechanism behind it, and where its job ends and IDS begins.">
+    <title>7.4 IDS vs Traditional EIR/Spec Documents | Knowledge Hub — Shabir Ahmad</title>
+    <meta name="description" content="Module 7.4 — What a machine-readable IDS specification can express that a prose requirements document can't, and what prose can still do that IDS was never built for.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -252,6 +252,32 @@
             border-radius: 0;
         }
 
+        .lesson-content .table-wrap {
+            overflow-x: auto;
+            margin: 4px 0 28px;
+        }
+        .lesson-content table {
+            width: 100%;
+            min-width: 480px;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+        .lesson-content th,
+        .lesson-content td {
+            text-align: left;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--paper-divider);
+            color: var(--text-primary);
+            vertical-align: top;
+        }
+        .lesson-content th {
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+        .lesson-content tr:last-child td {
+            border-bottom: none;
+        }
+
         .key-takeaways {
             margin-top: 52px;
             background: rgba(255, 255, 255, 0.04);
@@ -378,68 +404,86 @@
         <div class="paper">
 
             <a href="knowledge-hub.html" class="lesson-back-link">← Back to Knowledge Hub</a>
-            <span class="lesson-breadcrumb">Module 5 → 5.4</span>
-            <h1 class="lesson-title">5.4 Model View Definitions: What They Constrain</h1>
+            <span class="lesson-breadcrumb">Module 7 → 7.4</span>
+            <h1 class="lesson-title">7.4 IDS vs Traditional EIR/Spec Documents</h1>
             <hr class="title-rule">
 
             <div class="lesson-content">
 
                 <h2>Introduction</h2>
-                <p>A real IFC file's header can carry more than a schema declaration and an author's name. AC20-FZK-Haus.ifc, a benchmark model published by buildingSMART itself, carries this line in its own header:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>That line identifies which Model View Definitions this file claims to have been exported against. It's important to be precise about what it is and isn't doing. The header string itself doesn't carry the actual constraints, what must be present, what must be excluded, how concepts are structured, those live inside the MVD's own separately published definition, not inside this one line of text. The header is a pointer to a rulebook, not the rulebook itself. This lesson is about what that rulebook actually constrains, mechanically, once you go looking for it.</p>
+                <p>The previous lessons in this module covered what IDS is, how it's structured, and how to build one. This lesson puts a traditional, prose-based requirements document and an IDS specification side by side and asks what each can express that the other can't. It's not a comparison between an old way and a new way. It's between two genuinely different kinds of artifact, and the difference between them matters more than picking a winner.</p>
 
-                <h2>What an MVD Actually Is</h2>
-                <p>A <strong>Model View Definition</strong> is a named, formally defined subset of the IFC schema, published by buildingSMART, built for one specific kind of data exchange. The idea exists because no single piece of software realistically needs, or can be expected to fully support, the entire IFC schema at once. An architect handing a model to a structural engineer for coordination needs different information present than a model being handed to a facility manager at project handover. An MVD is buildingSMART's way of naming and formalising exactly which slice of the schema a given exchange actually requires.</p>
+                <h2>What a Traditional Requirements Document Actually Is</h2>
+                <p>Before any standardised checking format existed, and in most projects still today, information requirements live in a document a client or lead party writes and issues contractually. In ISO 19650's language, this is the Exchange Information Requirements, a written specification of what information a project needs, produced by whom, and checked how. Its defining trait: it's read and interpreted by people. A reviewer opens it, opens the model, and judges by eye whether the model satisfies what was asked.</p>
 
-                <h2>Why "Subset" Undersells It</h2>
-                <p>buildingSMART's own technical documentation is direct about this: an MVD is not merely a subset of IFC. Its own stated definition covers more than filtering, an MVD defines what data must be present, what must be excluded, how entities are structured and related, and how concepts like material assignment are applied.</p>
-                <p>A real, named MVD makes this concrete without inventing anything new. The base IFC schema intentionally supports several ways to assign material to an element, a single material, a layer set, a constituent set, or a profile set, and several geometry representation types, including SweptSolid, BRep, and CSG. The <strong>Reference View</strong>, one of buildingSMART's own published MVDs, narrows this. Its own documentation states it may permit only IfcMaterialLayerSet for material and restrict geometry to SweptSolid or BRep alone. Every one of those options, the material types and the geometry types, already exists in the base schema. The MVD adds nothing new to it. What it does is take a set of options the schema already makes legal and declare only some of them acceptable for this one specific exchange purpose.</p>
-                <p>That's the precise shape of "beyond the base schema": not new entities, but a narrower, purpose-specific ruling on which of the schema's own existing options a file is allowed to use.</p>
+                <h2>The Same Requirement, Written Two Ways</h2>
+                <p>A prose requirement might read: "every reinforcing bar shall have its nominal diameter specified." The same requirement as an IDS specification is the exact file built in the previous lesson:</p>
+                <pre><code>&lt;ids:specification ifcVersion="IFC2X3" name="Rebar must have NominalDiameter"&gt;
+  &lt;ids:applicability&gt;
+    &lt;ids:entity&gt;&lt;ids:name&gt;&lt;ids:simpleValue&gt;IFCREINFORCINGBAR&lt;/ids:simpleValue&gt;&lt;/ids:name&gt;&lt;/ids:entity&gt;
+  &lt;/ids:applicability&gt;
+  &lt;ids:requirements&gt;
+    &lt;ids:attribute cardinality="required"&gt;
+      &lt;ids:name&gt;&lt;ids:simpleValue&gt;NominalDiameter&lt;/ids:simpleValue&gt;&lt;/ids:name&gt;
+    &lt;/ids:attribute&gt;
+  &lt;/ids:requirements&gt;
+&lt;/ids:specification&gt;</code></pre>
+                <p>Both say the same thing. One needs a person to check it. The other runs, and returns the same verdict regardless of who runs it.</p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Requirement type</th>
+                                <th>Prose/EIR</th>
+                                <th>IDS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>IFC property must exist</td><td>✓</td><td>✓</td></tr>
+                            <tr><td>Exact value or type requirement</td><td>✓</td><td>✓</td></tr>
+                            <tr><td>Applicability narrowed by a condition (e.g. only load-bearing elements)</td><td>✓</td><td>✓</td></tr>
+                            <tr><td>Process requirement (e.g. monthly review)</td><td>✓</td><td>✗</td></tr>
+                            <tr><td>Geometric requirement</td><td>✓</td><td>✗</td></tr>
+                            <tr><td>General-purpose procedural or cross-model logic</td><td>✓</td><td>✗</td></tr>
+                            <tr><td>Automated, repeatable, tool-independent verification</td><td>Manual</td><td>✓</td></tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                <h2>The Real Mechanism: Concept Templates and Exchange Requirements</h2>
-                <p>None of this is informal. buildingSMART formalises an MVD's actual content through a dedicated XML-based language, <strong>mvdXML</strong>, and two specific structures inside it are what do the real work.</p>
-                <p>A <strong>Concept Template</strong> defines a reusable pattern for how a particular idea gets represented using real schema entities and attributes. buildingSMART's own reference documentation gives a real, concrete example: a Concept Template named "Port Assignment," applicable specifically to IfcSensor, defining exactly how a sensor's port information should be structured whenever this concept is invoked inside an MVD.</p>
-                <p>An <strong>Exchange Requirement</strong> is defined by buildingSMART as the required population, meaning the data that must actually be present in a real exchange file, for one specific exchange scenario. A single MVD can carry more than one Exchange Requirement, each with its own rules for what a valid file for that particular purpose has to contain.</p>
-                <p>Each formally published MVD also carries a specific name and code, buildingSMART's own worked example names one directly: <code>name="IFC4 Reference View Version 1.0", code="IFC4 RV V1.0"</code>. That code is exactly the kind of string that ends up sitting inside a real file's own header, the way QuantityTakeOffAddOnView did in the FZK-Haus example above.</p>
-                <p>One distinction worth being precise about, since it matters for a later part of this series. mvdXML is the language that formalises MVDs and their exchange concepts, the technical-encoding mechanism this section just walked through. buildingSMART's own documentation states plainly that mvdXML has been "deemed unimplementable" by software vendors in practice, and that buildingSMART now recommends IDS, the Information Delivery Specification, as the way to define information requirements for IFC datasets. That's a specific, narrower claim than "IDS replaces MVDs." IDS is buildingSMART's recommended path for defining what information a project actually requires. It isn't a replacement for what an MVD itself governs, the technical encoding underneath. The next section makes that boundary explicit.</p>
+                <h2>What Prose Can Express That IDS Currently Cannot</h2>
+                <p>This asymmetry is real. A project team documenting their own experience with IDS, published on buildingSMART's own site, put it directly: IDS operates at the IFC information and data-structure level, checks aren't applicable to geometric information such as dimensions, and checks requiring complex logical assessment are difficult to implement.</p>
+                <p>Worth being precise about where that line actually falls, since one common example gets it wrong if stated carelessly. "If the element is load-bearing, it must carry a fire rating" sounds like a conditional, but it's actually a case IDS handles cleanly: applicability narrows to elements where LoadBearing is TRUE, and the requirement, fire rating present, only applies to that narrowed set. That's an applicability constraint, not procedural logic, and it's well within what a specification can express.</p>
+                <p>What genuinely falls outside is logic that depends on something other than a single element's own attributes, project process state, aggregate facts across the whole model, or a comparison between two different elements' values. "The model shall be reviewed monthly" is a process requirement with no IFC content to check at all. "Dimensions shall be coordinated within 5mm of the architectural model" reaches into geometry IDS was never built to touch. Neither of these is expressible as an applicability filter, because neither reduces to a fact about one element's own data.</p>
 
-                <h2>Reading an MVD Declaration Directly From a File</h2>
-                <p>The FZK-Haus header line from the introduction can now be read properly:</p>
-                <pre><code>ViewDefinition [QuantityTakeOffAddOnView, SpaceBoundary2ndLevelAddOnView]</code></pre>
-                <p>Two MVDs are declared at once, meaning this file claims to have been exported to satisfy the Exchange Requirements of both. QuantityTakeOffAddOnView names an exchange view whose defined Exchange Requirements concern quantity-related data. SpaceBoundary2ndLevelAddOnView names a second, separate exchange view, concerned with the detailed space boundary data used for calculations like thermal or energy analysis.</p>
-                <p>It's worth being exact about what this declaration does and doesn't establish. It tells you this file was intended to target an exchange view with quantity-related requirements. It does not, by itself, prove the exporting software actually satisfied every requirement that view defines, and it says nothing about whether the resulting quantity values are complete or trustworthy. Whether a file's declared MVD was correctly and fully honoured by the tool that produced it is a separate question from the declaration itself, the same distinction this series has already drawn between a file's declared schema version and whether its actual content is trustworthy. A declared QuantityTakeOffAddOnView is a stated intent, worth knowing and worth checking, not a guarantee.</p>
+                <h2>What IDS Can Do That Prose Alone Cannot</h2>
+                <p>A prose requirement has no repeatable, tool-independent way to be checked. Two reviewers can read the same sentence and reach different conclusions about the same file. An IDS specification produces the same verdict every time, from any compliant tool, trading expressive range for something prose never had.</p>
 
-                <h2>Where an MVD's Job Ends and a Project's Own Requirements Begin</h2>
-                <p>It's worth being precise about the boundary this lesson sits against, because it's easy to blur MVDs and IDS into the same idea. buildingSMART's own documentation draws this line directly, separating two genuinely different concerns.</p>
-                <p>One concern is the low-level technical encoding of a file, which entities are used, which representation types, how a given concept like material assignment gets structured underneath. That's exactly what an MVD governs, the subject of this entire lesson.</p>
-                <p>The other concern is what a specific project or client actually requires a model to contain, described in buildingSMART's own words as the primitives used in the actual information exchange, what elements, what properties, what relationships a particular delivery needs to include. That's a separate question entirely, and buildingSMART's own recommended answer to it is IDS, covered fully later in this series.</p>
-                <p>The distinction to carry forward: an MVD constrains what a file's technical encoding is allowed to look like for a given kind of exchange. It says nothing about whether one specific project's client actually requires particular content to be present in this particular delivery, and it says nothing about whether a file that declares an MVD actually honoured it correctly. A file can declare a perfectly matching MVD and still fail a specific project's own requirements, or fail to have actually satisfied the MVD's own requirements in practice, because these are genuinely separate checks, against separate things.</p>
+                <h2>Why They Coexist Rather Than Compete</h2>
+                <p>buildingSMART's own documentation states plainly that IDS is meant to be used in combination with other standards, specifically naming ISO 19650's Exchange Information Requirements, not as a replacement for the EIR but as a way to capture the parts of it that can be expressed in machine-checkable form. A project doesn't choose one over the other. It uses IDS for the subset of its requirements facets can express, and keeps the human document for everything still outside that boundary, process requirements, geometry, and logic that depends on more than one element's own data.</p>
 
                 <div class="key-takeaways">
                     <h2>Key Takeaways</h2>
                     <ul>
-                        <li>An MVD declaration in a file's header, like ViewDefinition [QuantityTakeOffAddOnView], identifies which formally published exchange view the file claims to target. The actual constraints live in that MVD's own separate definition, not in the header string itself.</li>
-                        <li>buildingSMART's own documentation states an MVD is not merely a subset of the schema. A real MVD, the Reference View, narrows which of the schema's own already-legal options, such as material assignment methods and geometry types, are acceptable for that specific exchange, without inventing any new entity or attribute.</li>
-                        <li>The real mechanism behind a published MVD is mvdXML, structured around Concept Templates, reusable representation patterns for a given idea, and Exchange Requirements, the required data population for one specific exchange scenario.</li>
-                        <li>A file's MVD declaration states an intended target, not a proven outcome. Whether the exporting software actually satisfied that view's requirements, and whether the resulting data is trustworthy, is a separate question the declaration alone doesn't answer.</li>
-                        <li>mvdXML formalises MVDs and their technical-encoding concepts. buildingSMART recommends IDS specifically for defining information requirements, a distinct concern from what an MVD itself governs, not a wholesale replacement of it.</li>
+                        <li>A prose requirement and an IDS specification can express the identical fact, one needing human interpretation, the other producing a repeatable, tool-independent verdict automatically.</li>
+                        <li>IDS operates at the IFC information and data-structure level. It does not define geometric checks or general-purpose project logic, documented directly by a project team that tested it in practice.</li>
+                        <li>Applicability narrowing by a condition on an element's own data ("only load-bearing elements need this") is well within what IDS expresses. What falls outside is logic depending on process state, aggregate facts, or comparisons across different elements.</li>
+                        <li>IDS doesn't replace a project's requirements document. buildingSMART's own guidance describes it as usable alongside standards like ISO 19650's EIR, capturing the machine-checkable subset while the human document carries the rest.</li>
                     </ul>
                 </div>
 
                 <div class="further-reading">
                     <h3>Further Reading</h3>
                     <ul>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — Model View Definitions (MVD)</a></li>
-                        <li><a href="https://technical.buildingsmart.org/standards/ifc/mvd/mvdxml/" target="_blank" rel="noopener noreferrer">buildingSMART Technical — mvdXML</a></li>
+                        <li><a href="https://technical.buildingsmart.org/projects/information-delivery-specification-ids/" target="_blank" rel="noopener noreferrer">buildingSMART — Information Delivery Specification (IDS)</a></li>
+                        <li><a href="https://www.buildingsmart.org/wp-content/uploads/2022/10/385-Handover-bSI-Information-Delivery-Specification-IDS-for-integrated-openBIM-and-openGIS-Pl.pdf" target="_blank" rel="noopener noreferrer">buildingSMART Awards — Handover Using openBIM, IDS experience report</a></li>
                     </ul>
                 </div>
 
             </div>
 
             <div class="lesson-nav">
-                <a href="lesson-5-3-official-schema-docs.html">← Prev</a>
-                <a href="lesson-6-1-why-models-fail.html">Next →</a>
+                <a href="lesson-7-3-writing-your-first-ids-file.html">← Prev</a>
+                <a href="lesson-7-5-validating-against-ids.html">Next →</a>
             </div>
 
         </div>
