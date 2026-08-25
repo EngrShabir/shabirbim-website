@@ -175,3 +175,11 @@ Structural engineering consultancies, BIM coordinators, and technical directors
 working with IFC workflows are welcome to get in touch directly.
 
 Shabir Ahmad — admitted to Bauhaus University Weimar, Digital Engineering track, 2026.
+## License
+
+This repository documents shabirbim.com, including case study findings, Knowledge Hub
+content, and site methodology. All content is copyright Shabir Ahmad and is not
+licensed for reuse or redistribution.
+
+The StructBOQ engine referenced here is maintained separately and is not published
+in this repository.
