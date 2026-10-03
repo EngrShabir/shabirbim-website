@@ -174,7 +174,7 @@ or custom automation — and I'll follow up to discuss scope and next steps.
 Structural engineering consultancies, BIM coordinators, and technical directors
 working with IFC workflows are welcome to get in touch directly.
 
-Shabir Ahmad — admitted to Bauhaus University Weimar, Digital Engineering track, 2026.
+MSc Digital Engineering @ Bauhaus University Weimar, since October 2026.
 ## License
 
 This repository documents shabirbim.com, including case study findings, Knowledge Hub
